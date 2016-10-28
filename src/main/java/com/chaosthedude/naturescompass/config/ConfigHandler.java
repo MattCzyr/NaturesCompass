@@ -16,6 +16,7 @@ public class ConfigHandler {
 
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
+	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
 	public static int lineOffset = 1;
 
@@ -36,6 +37,9 @@ public class ConfigHandler {
 
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
+
+		comment = "Displays Nature's Compass information even while chat is open.";
+		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.displayWithChatOpen", comment, displayWithChatOpen);
 
 		comment = "Fixes biome names by adding missing spaces. Ex: ForestHills becomes Forest Hills";
 		fixBiomeNames = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.fixBiomeNames", comment, fixBiomeNames);
