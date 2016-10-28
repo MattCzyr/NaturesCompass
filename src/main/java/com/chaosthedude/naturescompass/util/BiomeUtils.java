@@ -1,11 +1,12 @@
 package com.chaosthedude.naturescompass.util;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.chaosthedude.naturescompass.sorting.CategoryName;
+import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,15 +53,10 @@ public class BiomeUtils {
 		return new SearchResult(0, 0, maxDist, false);
 	}
 
-	public static List<Biome> getAlphabetizedBiomes() {
-		List<Biome> biomes = BiomeUtils.getBiomes();
-
-		Collections.sort(biomes, new Comparator() {
-			@Override
-			public int compare(Object biome1, Object biome2) {
-				return getBiomeName((Biome) biome1).compareTo(getBiomeName((Biome) biome2));
-			}
-		});
+	public static List<Biome> sortBiomes(ISortingCategory sortingCategory) {
+		final List<Biome> biomes = getBiomes();
+		Collections.sort(biomes, new CategoryName());
+		Collections.sort(biomes, sortingCategory);
 
 		return biomes;
 	}

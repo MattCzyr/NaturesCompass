@@ -20,8 +20,7 @@ public class GuiListBiomes extends GuiListExtended {
 	private final List<GuiListBiomesEntry> entries = Lists.<GuiListBiomesEntry> newArrayList();
 	private int selectedIndex = -1;
 
-	public GuiListBiomes(GuiNaturesCompass guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom,
-			int slotHeight) {
+	public GuiListBiomes(GuiNaturesCompass guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
 		this.guiNaturesCompass = guiNaturesCompass;
 		refreshList();
@@ -59,7 +58,7 @@ public class GuiListBiomes extends GuiListExtended {
 
 	public void refreshList() {
 		entries.clear();
-		for (Biome biome : BiomeUtils.getAlphabetizedBiomes()) {
+		for (Biome biome : BiomeUtils.sortBiomes(guiNaturesCompass.getSortingCategory())) {
 			entries.add(new GuiListBiomesEntry(this, biome));
 		}
 	}

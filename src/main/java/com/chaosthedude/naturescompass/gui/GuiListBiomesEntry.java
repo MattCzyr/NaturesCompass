@@ -37,8 +37,15 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 			precipitationState = "Rain";
 		}
 
+		String title = guiNaturesCompass.getSortingCategory().getLocalizedName();
+		Object value = guiNaturesCompass.getSortingCategory().getValue(biome);
+		if (value == null) {
+			title = I18n.format("string.naturescompass.topBlock");
+			value = biome.topBlock.getBlock().getLocalizedName();
+		}
+
 		mc.fontRendererObj.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
-		mc.fontRendererObj.drawString(I18n.format("string.naturescompass.topBlock") + ": " + biome.topBlock.getBlock().getLocalizedName(), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRendererObj.drawString(title + ": " + value, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRendererObj.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

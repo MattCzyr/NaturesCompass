@@ -6,6 +6,8 @@ import javax.annotation.Nullable;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
+import com.chaosthedude.naturescompass.sorting.CategoryName;
+import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -24,11 +26,15 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiButton searchButton;
 	private GuiButton infoButton;
 	private GuiButton cancelButton;
+	private GuiButton sortByButton;
 	private GuiListBiomes selectionList;
+	private ISortingCategory sortingCategory;
 
 	public GuiNaturesCompass(World world, EntityPlayer player) {
 		this.world = world;
 		this.player = player;
+
+		sortingCategory = new CategoryName();
 	}
 
 	@Override
@@ -53,6 +59,10 @@ public class GuiNaturesCompass extends GuiScreen {
 				}
 			} else if (button == infoButton) {
 				biomesEntry.viewInfo();
+			} else if (button == sortByButton) {
+				sortingCategory = sortingCategory.next();
+				sortByButton.displayString = I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName();
+				selectionList.refreshList();
 			} else if (button == cancelButton) {
 				mc.displayGuiScreen(null);
 			}
@@ -79,7 +89,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		selectionList.mouseReleased(mouseX, mouseY, state);
 	}
 
-	public void selectBiome(@Nullable GuiListBiomesEntry entry) {
+	public void selectBiome(GuiListBiomesEntry entry) {
 		boolean enable = entry != null;
 		searchButton.enabled = enable;
 		infoButton.enabled = enable;
@@ -90,6 +100,10 @@ public class GuiNaturesCompass extends GuiScreen {
 		mc.displayGuiScreen(null);
 	}
 
+	public ISortingCategory getSortingCategory() {
+		return sortingCategory;
+	}
+
 	protected <T extends GuiButton> T addButton(T button) {
 		buttonList.add(button);
 		return (T) button;
@@ -97,9 +111,10 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		cancelButton = addButton(new GuiButton(0, width / 2 + 82, height - 28, 72, 20, I18n.format("gui.cancel")));
-		infoButton = addButton(new GuiButton(1, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
-		searchButton = addButton(new GuiButton(2, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
+		cancelButton = addButton(new GuiButton(0, width / 2 + 64, height - 28, 90, 20, I18n.format("gui.cancel")));
+		sortByButton = addButton(new GuiButton(1, width / 2 - 154, height - 28, 210, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
+		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
 
 		searchButton.enabled = false;
 		infoButton.enabled = false;
