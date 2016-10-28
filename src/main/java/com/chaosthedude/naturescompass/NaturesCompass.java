@@ -28,7 +28,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 public class NaturesCompass {
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.1.0";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
