@@ -3,6 +3,7 @@
 Nature's Compass is a Minecraft mod that allows you to search for a biome and view information about it.
 
 Downloads and more information available on CurseForge:
+
 https://minecraft.curseforge.com/projects/natures-compass
 
 # License
