@@ -1,21 +1,19 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import java.util.Comparator;
-
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public class CategoryName implements ISortingCategory {
 
 	@Override
 	public int compare(Object biome1, Object biome2) {
-		return BiomeUtils.getBiomeName((Biome) biome1).compareTo(BiomeUtils.getBiomeName((Biome) biome2));
+		return BiomeUtils.getBiomeName((BiomeGenBase) biome1).compareTo(BiomeUtils.getBiomeName((BiomeGenBase) biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
+	public Object getValue(BiomeGenBase biome) {
 		return null;
 	}
 

@@ -1,20 +1,20 @@
 package com.chaosthedude.naturescompass.client;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
-import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.RenderUtils;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 public class RenderTickHandler {
 
@@ -24,8 +24,8 @@ public class RenderTickHandler {
 	public void onRenderTick(RenderTickEvent event) {
 		if (event.phase == Phase.END && mc.thePlayer != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo && (mc.currentScreen == null || (ConfigHandler.displayWithChatOpen && mc.currentScreen instanceof GuiChat))) {
 			final EntityPlayer player = mc.thePlayer;
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
-			if (stack != null && stack.getItem() instanceof ItemNaturesCompass) {
+			final ItemStack stack = player.getHeldItem();
+			if (stack != null && stack.getItem() == NaturesCompass.naturesCompass) {
 				final ItemNaturesCompass compass = (ItemNaturesCompass) stack.getItem();
 				if (compass.getState(stack) == EnumCompassState.SEARCHING) {
 					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.naturescompass.status"), 5, 0, 0xFFFFFF, 0);

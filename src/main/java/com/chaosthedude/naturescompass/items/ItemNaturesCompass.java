@@ -7,117 +7,89 @@ import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.SearchResult;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public class ItemNaturesCompass extends Item {
 
 	public static final String NAME = "NaturesCompass";
 
+	private IIcon[] icons = new IIcon[32];
+	@SideOnly(Side.CLIENT)
+	private double rotation;
+	@SideOnly(Side.CLIENT)
+	private double rota;
+	@SideOnly(Side.CLIENT)
+	private long lastUpdateTick;
+
 	public ItemNaturesCompass() {
 		super();
 
-		setCreativeTab(CreativeTabs.TOOLS);
+		setCreativeTab(CreativeTabs.tabTools);
 		setUnlocalizedName(NaturesCompass.MODID + "." + NAME);
-
-		addPropertyOverride(new ResourceLocation("angle"), new IItemPropertyGetter() {
-			@SideOnly(Side.CLIENT)
-			double rotation;
-			@SideOnly(Side.CLIENT)
-			double rota;
-			@SideOnly(Side.CLIENT)
-			long lastUpdateTick;
-
-			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, World world, EntityLivingBase entityLiving) {
-				if (entityLiving == null && !stack.isOnItemFrame()) {
-					return 0.0F;
-				} else {
-					final boolean entityExists = entityLiving != null;
-					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getItemFrame());
-					if (world == null) {
-						world = entity.worldObj;
-					}
-
-					double rotation = entityExists ? (double) entity.rotationYaw : getFrameRotation((EntityItemFrame) entity);
-					rotation = rotation % 360.0D;
-					double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
-
-					if (entityExists) {
-						adjusted = wobble(world, adjusted);
-					}
-
-					final float f = (float) (adjusted / (Math.PI * 2D));
-					return MathHelper.positiveModulo(f, 1.0F);
-				}
-			}
-
-			@SideOnly(Side.CLIENT)
-			private double wobble(World world, double amount) {
-				if (world.getTotalWorldTime() != lastUpdateTick) {
-					lastUpdateTick = world.getTotalWorldTime();
-					double d0 = amount - rotation;
-					d0 = d0 % (Math.PI * 2D);
-					d0 = MathHelper.clamp_double(d0, -1.0D, 1.0D);
-					rota += d0 * 0.1D;
-					rota *= 0.8D;
-					rotation += rota;
-				}
-
-				return rotation;
-			}
-
-			@SideOnly(Side.CLIENT)
-			private double getFrameRotation(EntityItemFrame itemFrame) {
-				return (double) MathHelper.clampAngle(180 + itemFrame.facingDirection.getHorizontalIndex() * 90);
-			}
-
-			@SideOnly(Side.CLIENT)
-			private double getAngle(World world, Entity entity, ItemStack stack) {
-				BlockPos pos;
-				if (getState(stack) == EnumCompassState.FOUND) {
-					pos = new BlockPos(getFoundBiomeX(stack), 0, getFoundBiomeZ(stack));
-				} else {
-					pos = world.getSpawnPoint();
-				}
-
-				return Math.atan2((double) pos.getZ() - entity.posZ, (double) pos.getX() - entity.posX);
-			}
-		});
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (!player.isSneaking()) {
 			player.openGui(NaturesCompass.instance, GuiHandler.ID_NATURES_COMPASS, world, 0, 0, 0);
 		} else {
-			setState(stack, null, EnumCompassState.INACTIVE, player);
+			setState(stack, EnumCompassState.INACTIVE, player);
 		}
 
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+		return stack;
+	}
+	
+	@Override
+	public void registerIcons(IIconRegister iconRegister) {
+		for (int i = 0; i < 32; i++) {
+			String index = String.valueOf(i);
+			if (index.length() < 2) {
+				index = "0" + index;
+			}
+			icons[i] = iconRegister.registerIcon("naturescompass:natures_compass_" + index);
+		}
+
+		itemIcon = iconRegister.registerIcon("naturescompass:natures_compass_00");
 	}
 
-	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
-		setState(stack, null, EnumCompassState.SEARCHING, player);
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(ItemStack stack, int renderPass) {
+		final Minecraft mc = Minecraft.getMinecraft();
+		final World world = mc.theWorld;
+		final EntityPlayer player = mc.thePlayer;
+
+		if (world != null && player != null && stack != null) {
+			return icons[(int) apply(stack, world, player)];
+		}
+
+		return itemIcon;
+	}
+
+	@Override
+	public boolean requiresMultipleRenderPasses() {
+		return true;
+	}
+
+	public void searchForBiome(World world, EntityPlayer player, int biomeID, int x, int z, ItemStack stack) {
+		setState(stack, EnumCompassState.SEARCHING, player);
 		setBiomeID(stack, biomeID, player);
-		setSearchRadius(stack, (4 << BiomeUtils.getBiomeSize(world)) * 100, player);
-		final SearchResult result = BiomeUtils.searchForBiome(world, stack, Biome.getBiome(biomeID), pos);
+		final SearchResult result = BiomeUtils.searchForBiome(world, stack, BiomeGenBase.getBiome(biomeID), x, z);
 		if (result.found()) {
 			setFound(stack, result.getX(), result.getZ(), player);
 		} else {
@@ -160,7 +132,7 @@ public class ItemNaturesCompass extends Item {
 		}
 	}
 
-	public void setState(ItemStack stack, BlockPos pos, EnumCompassState state, EntityPlayer player) {
+	public void setState(ItemStack stack, EnumCompassState state, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", state.getID());
 		}
@@ -236,6 +208,79 @@ public class ItemNaturesCompass extends Item {
 
 	public int getDistanceToBiome(EntityPlayer player, ItemStack stack) {
 		return (int) player.getDistance(getFoundBiomeX(stack), player.posY, getFoundBiomeZ(stack));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int apply(ItemStack stack, World world, EntityLivingBase entityLiving) {
+		if (entityLiving == null && !stack.isOnItemFrame()) {
+			return 0;
+		} else {
+			final boolean entityExists = entityLiving != null;
+			final Entity entity = (Entity) (entityExists ? entityLiving : stack.getItemFrame());
+			if (world == null) {
+				world = entity.worldObj;
+			}
+
+			double rotation = entityExists ? (double) entity.rotationYaw : getFrameRotation((EntityItemFrame) entity);
+			rotation = rotation % 360.0D;
+			double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
+
+			if (entityExists) {
+				adjusted = wobble(world, adjusted);
+			}
+
+			final float f = ((float) (adjusted / (Math.PI * 2D)) % 1.0F + 1.0F % 1.0F);
+			return MathHelper.clamp_int(Math.round(((f * 32) + 16) % 32), 0, 31);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private double wobble(World world, double amount) {
+		if (world.getTotalWorldTime() != lastUpdateTick) {
+			lastUpdateTick = world.getTotalWorldTime();
+			double d0 = amount - rotation;
+			d0 = d0 % (Math.PI * 2D);
+			d0 = MathHelper.clamp_double(d0, -1.0D, 1.0D);
+			rota += d0 * 0.1D;
+			rota *= 0.8D;
+			rotation += rota;
+		}
+
+		return rotation;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private int clampAngle(int angle) {
+		angle = angle % 360;
+
+		if (angle >= 180) {
+			angle -= 360;
+		}
+
+		if (angle < -180) {
+			angle += 360;
+		}
+
+		return angle;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private double getFrameRotation(EntityItemFrame itemFrame) {
+		return (double) clampAngle(180 + itemFrame.hangingDirection * 90); // itemFrame.facingDirection.getHorizontalIndex()
+																			// *
+																			// 90);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private double getAngle(World world, Entity entity, ItemStack stack) {
+		ChunkCoordinates pos;
+		if (getState(stack) == EnumCompassState.FOUND) {
+			pos = new ChunkCoordinates(getFoundBiomeX(stack), 0, getFoundBiomeZ(stack));
+		} else {
+			pos = world.getSpawnPoint();
+		}
+
+		return Math.atan2((double) pos.posZ - entity.posZ, (double) pos.posX - entity.posX);
 	}
 
 }

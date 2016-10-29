@@ -8,7 +8,7 @@ import net.minecraft.client.gui.FontRenderer;
 public class RenderUtils {
 
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawLineOffsetStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
 		drawStringOnHUD(string, xOffset, yOffset, color, ConfigHandler.lineOffset + lineOffset);

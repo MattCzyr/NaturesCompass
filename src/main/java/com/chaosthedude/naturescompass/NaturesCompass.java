@@ -9,26 +9,26 @@ import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.proxy.CommonProxy;
 
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-@Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.10,1.10.2]")
+@Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.7.10]")
 
 public class NaturesCompass {
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.1.0";
+	public static final String VERSION = "1.2.0";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -46,8 +46,7 @@ public class NaturesCompass {
 		ConfigHandler.loadConfig(event.getSuggestedConfigurationFile());
 
 		naturesCompass = new ItemNaturesCompass();
-		naturesCompass.setRegistryName(ItemNaturesCompass.NAME);
-		GameRegistry.register(naturesCompass);
+		GameRegistry.registerItem(naturesCompass, ItemNaturesCompass.NAME);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 		network.registerMessage(PacketCompassSearch.Handler.class, PacketCompassSearch.class, 0, Side.SERVER);
@@ -60,7 +59,7 @@ public class NaturesCompass {
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
-		GameRegistry.addRecipe(new ShapedOreRecipe(naturesCompass, "SLS", "LCL", "SLS", 'C', Items.COMPASS, 'L', Blocks.LOG, 'S', "treeSapling"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(naturesCompass, "SLS", "LCL", "SLS", 'C', Items.compass, 'L', Blocks.log, 'S', "treeSapling"));
 	}
 
 }

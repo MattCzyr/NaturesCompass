@@ -2,26 +2,26 @@ package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.BiomeGenBase;
 
 @SideOnly(Side.CLIENT)
 public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 
 	private final Minecraft mc;
 	private final GuiNaturesCompass guiNaturesCompass;
-	private final Biome biome;
+	private final BiomeGenBase biome;
 	private final GuiListBiomes biomesList;
 	private long lastClickTime;
 
-	public GuiListBiomesEntry(GuiListBiomes biomesList, Biome biome) {
+	public GuiListBiomesEntry(GuiListBiomes biomesList, BiomeGenBase biome) {
 		this.biomesList = biomesList;
 		this.biome = biome;
 		guiNaturesCompass = biomesList.getGuiNaturesCompass();
@@ -29,25 +29,32 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean isSelected) {
 		String precipitationState = "None";
 		if (biome.getEnableSnow()) {
 			precipitationState = "Snow";
-		} else if (biome.canRain()) {
+		} else if (biome.rainfall > 0) {
 			precipitationState = "Rain";
 		}
 
 		String title = guiNaturesCompass.getSortingCategory().getLocalizedName();
 		Object value = guiNaturesCompass.getSortingCategory().getValue(biome);
 		if (value == null) {
-			title = I18n.format("string.naturescompass.topBlock");
-			value = biome.topBlock.getBlock().getLocalizedName();
+			title = I18n.format("string.naturescompass.climate");
+			if (biome.getTempCategory() == BiomeGenBase.TempCategory.COLD) {
+				value = I18n.format("string.naturescompass.cold");
+			} else if (biome.getTempCategory() == BiomeGenBase.TempCategory.OCEAN) {
+				value = I18n.format("string.naturescompass.ocean");
+			} else if (biome.getTempCategory() == BiomeGenBase.TempCategory.WARM) {
+				value = I18n.format("string.naturescompass.warm");
+			} else {
+				value = I18n.format("string.naturescompass.medium");
+			}
 		}
 
-		mc.fontRendererObj.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
-		mc.fontRendererObj.drawString(title + ": " + value, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRendererObj.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.fontRenderer.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
+		mc.fontRenderer.drawString(title + ": " + value, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 	}
 
 	@Override
@@ -69,12 +76,8 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 	public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
 	}
 
-	@Override
-	public void setSelected(int par1, int par2, int par3) {
-	}
-
 	public void selectBiome() {
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		guiNaturesCompass.searchForBiome(biome);
 	}
 

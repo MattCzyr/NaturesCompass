@@ -1,28 +1,28 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.io.IOException;
-
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.BiomeGenBase;
 
 @SideOnly(Side.CLIENT)
 public class GuiNaturesCompass extends GuiScreen {
 
 	private World world;
 	private EntityPlayer player;
+	private List<BiomeGenBase> allowedBiomes;
 	private GuiButton searchButton;
 	private GuiButton infoButton;
 	private GuiButton cancelButton;
@@ -30,9 +30,10 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player) {
+	public GuiNaturesCompass(World world, EntityPlayer player, List<BiomeGenBase> allowedBiomes) {
 		this.world = world;
 		this.player = player;
+		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
 	}
@@ -44,13 +45,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	}
 
 	@Override
-	public void handleMouseInput() throws IOException {
-		super.handleMouseInput();
-		selectionList.handleMouseInput();
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			GuiListBiomesEntry biomesEntry = selectionList.getSelectedBiome();
 			if (button == searchButton) {
@@ -78,15 +73,9 @@ public class GuiNaturesCompass extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
-		selectionList.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		super.mouseReleased(mouseX, mouseY, state);
-		selectionList.mouseReleased(mouseX, mouseY, state);
+		selectionList.func_148179_a(mouseX, mouseY, mouseButton);
 	}
 
 	public void selectBiome(GuiListBiomesEntry entry) {
@@ -95,13 +84,21 @@ public class GuiNaturesCompass extends GuiScreen {
 		infoButton.enabled = enable;
 	}
 
-	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new PacketCompassSearch(Biome.getIdForBiome(biome), player.getPosition()));
+	public void searchForBiome(BiomeGenBase biome) {
+		NaturesCompass.network.sendToServer(new PacketCompassSearch(biome.biomeID, (int) player.posX, (int) player.posZ));
 		mc.displayGuiScreen(null);
 	}
 
 	public ISortingCategory getSortingCategory() {
 		return sortingCategory;
+	}
+
+	public List<BiomeGenBase> sortBiomes() {
+		final List<BiomeGenBase> biomes = allowedBiomes;
+		Collections.sort(biomes, new CategoryName());
+		Collections.sort(biomes, sortingCategory);
+
+		return biomes;
 	}
 
 	protected <T extends GuiButton> T addButton(T button) {

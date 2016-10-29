@@ -1,25 +1,23 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import java.util.Comparator;
-
 import net.minecraft.client.resources.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public class CategoryRainfall implements ISortingCategory {
 
 	@Override
 	public int compare(Object biome1, Object biome2) {
-		return Float.compare(((Biome) biome1).getRainfall(), ((Biome) biome2).getRainfall());
+		return Float.compare(((BiomeGenBase) biome1).rainfall, ((BiomeGenBase) biome2).rainfall);
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
-		return biome.getRainfall();
+	public Object getValue(BiomeGenBase biome) {
+		return biome.rainfall;
 	}
 
 	@Override
 	public ISortingCategory next() {
-		return new CategoryTopBlock();
+		return new CategoryName();
 	}
 
 	@Override

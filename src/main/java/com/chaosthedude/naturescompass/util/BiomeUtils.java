@@ -1,51 +1,51 @@
 package com.chaosthedude.naturescompass.util;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.chaosthedude.naturescompass.sorting.CategoryName;
-import com.chaosthedude.naturescompass.sorting.ISortingCategory;
-import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.gen.ChunkProviderSettings;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public class BiomeUtils {
 
-	public static List<Biome> getBiomes() {
-		return Lists.newArrayList(Biome.REGISTRY.iterator());
+	public static List<BiomeGenBase> getAllowedBiomes() {
+		final List<BiomeGenBase> biomes = new ArrayList<BiomeGenBase>();
+		for (BiomeGenBase biome : BiomeGenBase.getBiomeGenArray()) {
+			if (biome != null && !biomeIsBlacklisted(biome)) {
+				biomes.add(biome);
+			}
+		}
+
+		return biomes;
 	}
 
-	public static SearchResult searchForBiome(World world, ItemStack stack, Biome biome, BlockPos startPos) {
+	public static SearchResult searchForBiome(World world, ItemStack stack, BiomeGenBase biome, int startX, int startY) {
 		if (stack.getItem() != NaturesCompass.naturesCompass) {
 			return null;
 		}
 
-		final int sampleSpace = ConfigHandler.sampleSpaceModifier * getBiomeSize(world);
-		final int maxDist = ConfigHandler.distanceModifier * getBiomeSize(world);
+		final int sampleSpace = ConfigHandler.sampleSpace;
+		final int maxDist = ConfigHandler.maxSearchDistance;
 		if (maxDist <= 0 || sampleSpace <= 0) {
 			return new SearchResult(0, 0, maxDist, false);
 		}
 
-		final BiomeProvider chunkManager = world.getBiomeProvider();
 		final double adjustedSampleSpace = sampleSpace / Math.sqrt(Math.PI);
 		final double adjustedPi = 2 * Math.sqrt(Math.PI);
 		double dist = 0;
 		for (int i = 0; dist < maxDist; i++) {
 			double root = Math.sqrt(i);
 			dist = adjustedSampleSpace * root;
-			double x = startPos.getX() + (dist * Math.sin(adjustedPi * root));
-			double z = startPos.getZ() + (dist * Math.cos(adjustedPi * root));
+			double x = startX + (dist * Math.sin(adjustedPi * root));
+			double z = startY + (dist * Math.cos(adjustedPi * root));
 
-			final Biome[] biomesAtSample = chunkManager.getBiomeGenAt(null, (int) x, (int) z, 1, 1, false);
-			if (biomesAtSample[0] == biome) {
+			final BiomeGenBase biomeAtSample = world.getBiomeGenForCoords((int) x, (int) z);
+			if (biomeAtSample == biome) {
 				return new SearchResult((int) x, (int) z, maxDist, true);
 			}
 		}
@@ -53,26 +53,13 @@ public class BiomeUtils {
 		return new SearchResult(0, 0, maxDist, false);
 	}
 
-	public static List<Biome> sortBiomes(ISortingCategory sortingCategory) {
-		final List<Biome> biomes = getBiomes();
-		Collections.sort(biomes, new CategoryName());
-		Collections.sort(biomes, sortingCategory);
-
-		return biomes;
-	}
-
-	public static int getBiomeSize(World world) {
-		final String settings = world.getWorldInfo().getGeneratorOptions();
-		return ChunkProviderSettings.Factory.jsonToFactory(settings).build().biomeSize;
-	}
-
 	public static int getDistanceToBiome(EntityPlayer player, int x, int z) {
 		return (int) player.getDistance(x, player.posY, z);
 	}
 
-	public static String getBiomeName(Biome biome) {
+	public static String getBiomeName(BiomeGenBase biome) {
 		if (ConfigHandler.fixBiomeNames) {
-			final String original = biome.getBiomeName();
+			final String original = biome.biomeName;
 			String fixed = "";
 			char pre = ' ';
 			for (int i = 0; i < original.length(); i++) {
@@ -87,11 +74,16 @@ public class BiomeUtils {
 			return fixed;
 		}
 
-		return biome.getBiomeName();
+		return biome.biomeName;
 	}
 
 	public static String getBiomeName(int biomeID) {
-		return getBiomeName(Biome.getBiomeForId(biomeID));
+		return getBiomeName(BiomeGenBase.getBiome(biomeID));
+	}
+
+	public static boolean biomeIsBlacklisted(BiomeGenBase biome) {
+		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
+		return biomeBlacklist.contains(String.valueOf(biome.biomeID)) || biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.biomeName);
 	}
 
 }

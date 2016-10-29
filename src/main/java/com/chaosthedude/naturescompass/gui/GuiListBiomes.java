@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.BiomeGenBase;
 
 @SideOnly(Side.CLIENT)
 public class GuiListBiomes extends GuiListExtended {
@@ -58,7 +57,7 @@ public class GuiListBiomes extends GuiListExtended {
 
 	public void refreshList() {
 		entries.clear();
-		for (Biome biome : BiomeUtils.sortBiomes(guiNaturesCompass.getSortingCategory())) {
+		for (BiomeGenBase biome : guiNaturesCompass.sortBiomes()) {
 			entries.add(new GuiListBiomesEntry(this, biome));
 		}
 	}

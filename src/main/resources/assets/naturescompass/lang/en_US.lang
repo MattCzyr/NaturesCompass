@@ -38,14 +38,12 @@ string.naturescompass.status=Status
 # STRINGS - INFO
 string.naturescompass.baseHeight=Base Height
 string.naturescompass.climate=Climate
-string.naturescompass.fillerBlock=Filler Block
 string.naturescompass.heightVariation=Height Variation
 string.naturescompass.highHumidity=High Humidity
 string.naturescompass.name=Name
 string.naturescompass.precipitation=Precipitation
 string.naturescompass.rainfall=Rainfall
 string.naturescompass.temperature=Temperature
-string.naturescompass.topBlock=Top Block
 
 # STRINGS - PRECIPITATION
 string.naturescompass.snow=Snow
