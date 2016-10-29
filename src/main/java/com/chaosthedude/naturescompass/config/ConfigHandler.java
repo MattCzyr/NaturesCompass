@@ -1,8 +1,10 @@
 package com.chaosthedude.naturescompass.config;
 
 import java.io.File;
+import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -14,6 +16,7 @@ public class ConfigHandler {
 
 	public static Configuration config;
 
+	public static String[] biomeBlacklist = {};
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
 	public static boolean displayWithChatOpen = true;
@@ -37,6 +40,9 @@ public class ConfigHandler {
 
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
+		
+		comment = "A list of biomes that the compass will not be able to search for. Both biome names and numerical biome IDs are accepted.";
+		biomeBlacklist = loadStringArray(Configuration.CATEGORY_GENERAL, "naturescompass.biomeBlacklist", comment, biomeBlacklist);
 
 		comment = "Displays Nature's Compass information even while chat is open.";
 		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.displayWithChatOpen", comment, displayWithChatOpen);
@@ -68,6 +74,16 @@ public class ConfigHandler {
 		final Property prop = config.get(category, name, def);
 		prop.setComment(comment);
 		return prop.getBoolean(def);
+	}
+
+	public static String[] loadStringArray(String category, String comment, String name, String[] def) {
+		Property prop = config.get(category, name, def);
+		prop.setComment(comment);
+		return prop.getStringList();
+	}
+
+	public static List<String> getBiomeBlacklist() {
+		return Lists.newArrayList(biomeBlacklist);
 	}
 
 	public static class ChangeListener {

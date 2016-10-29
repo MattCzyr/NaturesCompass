@@ -58,7 +58,7 @@ public class GuiListBiomes extends GuiListExtended {
 
 	public void refreshList() {
 		entries.clear();
-		for (Biome biome : BiomeUtils.sortBiomes(guiNaturesCompass.getSortingCategory())) {
+		for (Biome biome : guiNaturesCompass.sortBiomes()) {
 			entries.add(new GuiListBiomesEntry(this, biome));
 		}
 	}

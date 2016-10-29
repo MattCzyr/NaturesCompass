@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.gui;
 
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,7 @@ public class GuiHandler implements IGuiHandler {
 		if (id == ID_NATURES_COMPASS) {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (stack != null) {
-				return new GuiNaturesCompass(world, player);
+				return new GuiNaturesCompass(world, player, BiomeUtils.getAllowedBiomes());
 			}
 		}
 

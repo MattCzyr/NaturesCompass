@@ -116,7 +116,6 @@ public class ItemNaturesCompass extends Item {
 	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
 		setState(stack, null, EnumCompassState.SEARCHING, player);
 		setBiomeID(stack, biomeID, player);
-		setSearchRadius(stack, (4 << BiomeUtils.getBiomeSize(world)) * 100, player);
 		final SearchResult result = BiomeUtils.searchForBiome(world, stack, Biome.getBiome(biomeID), pos);
 		if (result.found()) {
 			setFound(stack, result.getX(), result.getZ(), player);

@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,8 +20,15 @@ import net.minecraft.world.gen.ChunkProviderSettings;
 
 public class BiomeUtils {
 
-	public static List<Biome> getBiomes() {
-		return Lists.newArrayList(Biome.REGISTRY.iterator());
+	public static List<Biome> getAllowedBiomes() {
+		final List<Biome> biomes = new ArrayList<Biome>();
+		for (Biome biome : Biome.REGISTRY) {
+			if (biome != null && !biomeIsBlacklisted(biome)) {
+				biomes.add(biome);
+			}
+		}
+
+		return biomes;
 	}
 
 	public static SearchResult searchForBiome(World world, ItemStack stack, Biome biome, BlockPos startPos) {
@@ -51,14 +59,6 @@ public class BiomeUtils {
 		}
 
 		return new SearchResult(0, 0, maxDist, false);
-	}
-
-	public static List<Biome> sortBiomes(ISortingCategory sortingCategory) {
-		final List<Biome> biomes = getBiomes();
-		Collections.sort(biomes, new CategoryName());
-		Collections.sort(biomes, sortingCategory);
-
-		return biomes;
 	}
 
 	public static int getBiomeSize(World world) {
@@ -92,6 +92,11 @@ public class BiomeUtils {
 
 	public static String getBiomeName(int biomeID) {
 		return getBiomeName(Biome.getBiomeForId(biomeID));
+	}
+
+	public static boolean biomeIsBlacklisted(Biome biome) {
+		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
+		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome))) || biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName());
 	}
 
 }

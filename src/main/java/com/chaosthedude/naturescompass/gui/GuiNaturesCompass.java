@@ -1,8 +1,8 @@
 package com.chaosthedude.naturescompass.gui;
 
 import java.io.IOException;
-
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
@@ -23,6 +23,7 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private World world;
 	private EntityPlayer player;
+	private List<Biome> allowedBiomes;
 	private GuiButton searchButton;
 	private GuiButton infoButton;
 	private GuiButton cancelButton;
@@ -30,9 +31,10 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player) {
+	public GuiNaturesCompass(World world, EntityPlayer player, List<Biome> allowedBiomes) {
 		this.world = world;
 		this.player = player;
+		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
 	}
@@ -102,6 +104,14 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	public ISortingCategory getSortingCategory() {
 		return sortingCategory;
+	}
+
+	public List<Biome> sortBiomes() {
+		final List<Biome> biomes = allowedBiomes;
+		Collections.sort(biomes, new CategoryName());
+		Collections.sort(biomes, sortingCategory);
+
+		return biomes;
 	}
 
 	protected <T extends GuiButton> T addButton(T button) {
