@@ -1,7 +1,9 @@
 package com.chaosthedude.naturescompass.items;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.gui.GuiHandler;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
@@ -12,9 +14,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -23,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -105,7 +112,7 @@ public class ItemNaturesCompass extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		if (!player.isSneaking()) {
-			player.openGui(NaturesCompass.instance, GuiHandler.ID_NATURES_COMPASS, world, 0, 0, 0);
+			player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
 		} else {
 			setState(stack, null, EnumCompassState.INACTIVE, player);
 		}
@@ -122,6 +129,37 @@ public class ItemNaturesCompass extends Item {
 		} else {
 			setNotFound(stack, player, result.getRadius());
 		}
+	}
+
+	public void teleport(EntityPlayer player, ItemStack stack) {
+		if (canTeleport(player) && getState(stack) == EnumCompassState.FOUND) {
+			final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
+			final int x = getFoundBiomeX(stack);
+			final int z = getFoundBiomeZ(stack);
+			int y = 256;
+			while (player.worldObj.isAirBlock(new BlockPos(x, y - 1, z))) {
+				y--;
+			}
+
+			player.dismountRidingEntity();
+			((EntityPlayerMP) player).connection.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch, set);
+
+			if (!player.isElytraFlying()) {
+				player.motionY = 0.0D;
+				player.onGround = true;
+			}
+		}
+	}
+
+	public boolean canTeleport(EntityPlayer player) {
+		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		
+		if (server.isSinglePlayer()) {
+			return server.worldServers[0].getWorldInfo().areCommandsAllowed();
+		}
+
+		final UserListOpsEntry userEntry = server.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
+		return userEntry != null && userEntry.getPermissionLevel() >= 4;
 	}
 
 	public boolean isActive(ItemStack stack) {
