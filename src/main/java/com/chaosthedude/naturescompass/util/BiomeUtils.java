@@ -1,14 +1,10 @@
 package com.chaosthedude.naturescompass.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.chaosthedude.naturescompass.sorting.CategoryName;
-import com.chaosthedude.naturescompass.sorting.ISortingCategory;
-import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

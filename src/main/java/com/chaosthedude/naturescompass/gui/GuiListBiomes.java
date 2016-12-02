@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
