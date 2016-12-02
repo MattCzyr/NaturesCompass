@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
+import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 
@@ -23,17 +24,20 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private World world;
 	private EntityPlayer player;
+	private boolean canTeleport;
 	private List<Biome> allowedBiomes;
 	private GuiButton searchButton;
+	private GuiButton teleportButton;
 	private GuiButton infoButton;
 	private GuiButton cancelButton;
 	private GuiButton sortByButton;
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player, List<Biome> allowedBiomes) {
+	public GuiNaturesCompass(World world, EntityPlayer player, boolean canTeleport, List<Biome> allowedBiomes) {
 		this.world = world;
 		this.player = player;
+		this.canTeleport = canTeleport;
 		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
@@ -59,6 +63,8 @@ public class GuiNaturesCompass extends GuiScreen {
 				if (biomesEntry != null) {
 					biomesEntry.selectBiome();
 				}
+			} else if (button == teleportButton) {
+				teleport();
 			} else if (button == infoButton) {
 				biomesEntry.viewInfo();
 			} else if (button == sortByButton) {
@@ -102,6 +108,11 @@ public class GuiNaturesCompass extends GuiScreen {
 		mc.displayGuiScreen(null);
 	}
 
+	public void teleport() {
+		NaturesCompass.network.sendToServer(new PacketTeleport());
+		mc.displayGuiScreen(null);
+	}
+
 	public ISortingCategory getSortingCategory() {
 		return sortingCategory;
 	}
@@ -125,6 +136,10 @@ public class GuiNaturesCompass extends GuiScreen {
 		sortByButton = addButton(new GuiButton(1, width / 2 - 154, height - 28, 210, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
 		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
+
+		if (canTeleport) {
+			teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
+		}
 
 		searchButton.enabled = false;
 		infoButton.enabled = false;
