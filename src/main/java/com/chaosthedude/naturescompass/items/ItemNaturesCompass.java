@@ -131,26 +131,6 @@ public class ItemNaturesCompass extends Item {
 		}
 	}
 
-	public void teleport(EntityPlayer player, ItemStack stack) {
-		if (canTeleport(player) && getState(stack) == EnumCompassState.FOUND) {
-			final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
-			final int x = getFoundBiomeX(stack);
-			final int z = getFoundBiomeZ(stack);
-			int y = 256;
-			while (player.worldObj.isAirBlock(new BlockPos(x, y - 1, z))) {
-				y--;
-			}
-
-			player.dismountRidingEntity();
-			((EntityPlayerMP) player).connection.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch, set);
-
-			if (!player.isElytraFlying()) {
-				player.motionY = 0.0D;
-				player.onGround = true;
-			}
-		}
-	}
-
 	public boolean canTeleport(EntityPlayer player) {
 		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		
