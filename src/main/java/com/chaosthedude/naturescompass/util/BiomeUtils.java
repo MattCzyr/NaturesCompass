@@ -48,7 +48,7 @@ public class BiomeUtils {
 			double x = startPos.getX() + (dist * Math.sin(adjustedPi * root));
 			double z = startPos.getZ() + (dist * Math.cos(adjustedPi * root));
 
-			final Biome[] biomesAtSample = chunkManager.getBiomeGenAt(null, (int) x, (int) z, 1, 1, false);
+			final Biome[] biomesAtSample = chunkManager.getBiomes(null, (int) x, (int) z, 1, 1, false);
 			if (biomesAtSample[0] == biome) {
 				return new SearchResult((int) x, (int) z, maxDist, true);
 			}

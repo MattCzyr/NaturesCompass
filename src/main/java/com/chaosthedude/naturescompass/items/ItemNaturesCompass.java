@@ -110,14 +110,14 @@ public class ItemNaturesCompass extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		if (!player.isSneaking()) {
 			player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
 		} else {
-			setState(stack, null, EnumCompassState.INACTIVE, player);
+			setState(player.getHeldItem(hand), null, EnumCompassState.INACTIVE, player);
 		}
 
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+		return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
 	}
 
 	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
