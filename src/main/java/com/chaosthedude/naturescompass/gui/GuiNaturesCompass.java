@@ -25,7 +25,6 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private World world;
 	private EntityPlayer player;
-	private boolean canTeleport;
 	private List<Biome> allowedBiomes;
 	private GuiButton searchButton;
 	private GuiButton teleportButton;
@@ -35,10 +34,9 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player, boolean canTeleport, List<Biome> allowedBiomes) {
+	public GuiNaturesCompass(World world, EntityPlayer player, List<Biome> allowedBiomes) {
 		this.world = world;
 		this.player = player;
-		this.canTeleport = canTeleport;
 		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
@@ -48,6 +46,11 @@ public class GuiNaturesCompass extends GuiScreen {
 	public void initGui() {
 		selectionList = new GuiListBiomes(this, mc, width, height, 32, height - 64, 36);
 		setupButtons();
+	}
+	
+	@Override
+	public void updateScreen() {
+		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
 	}
 
 	@Override
@@ -138,13 +141,12 @@ public class GuiNaturesCompass extends GuiScreen {
 		sortByButton = addButton(new GuiButton(1, width / 2 - 154, height - 28, 210, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
 		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
-
-		if (canTeleport || PlayerUtils.cheatModeEnabled(player)) {
-			teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
-		}
+		teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
 
 		searchButton.enabled = false;
 		infoButton.enabled = false;
+
+		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
 	}
 
 }
