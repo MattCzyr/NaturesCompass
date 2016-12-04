@@ -7,14 +7,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketLogin implements IMessage {
+public class PacketSync implements IMessage {
 
 	private boolean canTeleport;
 
-	public PacketLogin() {
+	public PacketSync() {
 	}
 	
-	public PacketLogin(boolean canTeleport) {
+	public PacketSync(boolean canTeleport) {
 		this.canTeleport = canTeleport;
 	}
 
@@ -28,9 +28,9 @@ public class PacketLogin implements IMessage {
 		buf.writeBoolean(canTeleport);
 	}
 
-	public static class Handler implements IMessageHandler<PacketLogin, IMessage> {
+	public static class Handler implements IMessageHandler<PacketSync, IMessage> {
 		@Override
-		public IMessage onMessage(PacketLogin packet, MessageContext ctx) {
+		public IMessage onMessage(PacketSync packet, MessageContext ctx) {
 			NaturesCompass.canTeleport = packet.canTeleport;
 
 			return null;
