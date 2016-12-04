@@ -1,4 +1,17 @@
 --------------------------------------------------
+ VERSION: 1.3.0 -  1.11, 1.10.2, 1.7.10
+--------------------------------------------------
+1.11, 1.10.2, 1.7.10:
+  FEATURES:
+  - Added an op-only/cheat-only teleport button to the biome selection GUI that takes the user to the currently located biome
+  FIXES:
+  - Fixed a potential lack of localization for precipitation states
+1.11:
+  UPDATES:
+  - Initial release for MC 1.11 (Forge #2177)
+
+
+--------------------------------------------------
  VERSION: 1.2.0 -  1.10.2, 1.7.10
 --------------------------------------------------
 1.10.2:
