@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.gui;
 
+import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
@@ -13,8 +14,8 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
-		if (stack != null) {
-			return new GuiNaturesCompass(world, player, BiomeUtils.getAllowedBiomes());
+		if (ItemUtils.stackExists(stack)) {
+			return new GuiNaturesCompass(world, player, stack, (ItemNaturesCompass) stack.getItem(), BiomeUtils.getAllowedBiomes());
 		}
 
 		return null;

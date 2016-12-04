@@ -5,16 +5,19 @@ import java.util.Collections;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
+import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,6 +29,8 @@ public class GuiNaturesCompass extends GuiScreen {
 	private World world;
 	private EntityPlayer player;
 	private List<Biome> allowedBiomes;
+	private ItemStack stack;
+	private ItemNaturesCompass natureCompass;
 	private GuiButton searchButton;
 	private GuiButton teleportButton;
 	private GuiButton infoButton;
@@ -34,9 +39,11 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player, List<Biome> allowedBiomes) {
+	public GuiNaturesCompass(World world, EntityPlayer player, ItemStack stack, ItemNaturesCompass natureCompass, List<Biome> allowedBiomes) {
 		this.world = world;
 		this.player = player;
+		this.stack = stack;
+		this.natureCompass = natureCompass;
 		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
@@ -51,6 +58,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	@Override
 	public void updateScreen() {
 		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
+		teleportButton.enabled = natureCompass.getState(stack) == EnumCompassState.FOUND;
 	}
 
 	@Override
