@@ -9,6 +9,7 @@ import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
+import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -97,6 +98,12 @@ public class GuiNaturesCompass extends GuiScreen {
 		selectionList.mouseReleased(mouseX, mouseY, state);
 	}
 
+	@Override
+	protected <T extends GuiButton> T addButton(T button) {
+		buttonList.add(button);
+		return (T) button;
+	}
+
 	public void selectBiome(GuiListBiomesEntry entry) {
 		boolean enable = entry != null;
 		searchButton.enabled = enable;
@@ -125,11 +132,6 @@ public class GuiNaturesCompass extends GuiScreen {
 		return biomes;
 	}
 
-	protected <T extends GuiButton> T addButton(T button) {
-		buttonList.add(button);
-		return (T) button;
-	}
-
 	private void setupButtons() {
 		buttonList.clear();
 		cancelButton = addButton(new GuiButton(0, width / 2 + 64, height - 28, 90, 20, I18n.format("gui.cancel")));
@@ -137,7 +139,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
 		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
 
-		if (canTeleport) {
+		if (canTeleport || PlayerUtils.cheatModeEnabled(player)) {
 			teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
 		}
 
