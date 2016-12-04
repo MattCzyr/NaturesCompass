@@ -36,7 +36,7 @@ public class PacketTeleport implements IMessage {
 		@Override
 		public IMessage onMessage(PacketTeleport packet, MessageContext ctx) {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().playerEntity);
-			if (stack != null) {
+			if (ItemUtils.stackExists(stack)) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
 				final EntityPlayer player = ctx.getServerHandler().playerEntity;
 				if (PlayerUtils.canTeleport(player)) {
