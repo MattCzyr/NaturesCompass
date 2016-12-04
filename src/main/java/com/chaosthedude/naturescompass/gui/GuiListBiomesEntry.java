@@ -30,11 +30,11 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 
 	@Override
 	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean isSelected) {
-		String precipitationState = "None";
+		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getEnableSnow()) {
-			precipitationState = "Snow";
+			precipitationState = I18n.format("string.naturescompass.snow");
 		} else if (biome.rainfall > 0) {
-			precipitationState = "Rain";
+			precipitationState = I18n.format("string.naturescompass.rain");
 		}
 
 		String title = guiNaturesCompass.getSortingCategory().getLocalizedName();
