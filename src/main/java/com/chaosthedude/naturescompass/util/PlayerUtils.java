@@ -24,7 +24,7 @@ public class PlayerUtils {
 	public static boolean isOp(EntityPlayer player) {
 		if (player instanceof EntityPlayerMP) {
 			final UserListOpsEntry userEntry = ((EntityPlayerMP) player).getServer().getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
-			return userEntry != null && userEntry.getPermissionLevel() >= 4;
+			return userEntry != null;
 		}
 
 		return false;
