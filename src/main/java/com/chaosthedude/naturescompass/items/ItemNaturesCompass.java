@@ -1,8 +1,5 @@
 package com.chaosthedude.naturescompass.items;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
@@ -14,13 +11,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -29,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -129,17 +121,6 @@ public class ItemNaturesCompass extends Item {
 		} else {
 			setNotFound(stack, player, result.getRadius());
 		}
-	}
-
-	public boolean canTeleport(EntityPlayer player) {
-		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		
-		if (server.isSinglePlayer()) {
-			return server.worldServers[0].getWorldInfo().areCommandsAllowed();
-		}
-
-		final UserListOpsEntry userEntry = server.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
-		return userEntry != null && userEntry.getPermissionLevel() >= 4;
 	}
 
 	public boolean isActive(ItemStack stack) {
