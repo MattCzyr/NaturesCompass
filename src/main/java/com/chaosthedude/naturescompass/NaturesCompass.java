@@ -7,6 +7,7 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiHandler;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
+import com.chaosthedude.naturescompass.network.PacketLogin;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.proxy.CommonProxy;
 
@@ -36,6 +37,8 @@ public class NaturesCompass {
 	public static SimpleNetworkWrapper network;
 	public static ItemNaturesCompass naturesCompass;
 
+	public static boolean canTeleport;
+
 	@Instance(MODID)
 	public static NaturesCompass instance;
 
@@ -53,6 +56,7 @@ public class NaturesCompass {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 		network.registerMessage(PacketCompassSearch.Handler.class, PacketCompassSearch.class, 0, Side.SERVER);
 		network.registerMessage(PacketTeleport.Handler.class, PacketTeleport.class, 1, Side.SERVER);
+		network.registerMessage(PacketLogin.Handler.class, PacketLogin.class, 2, Side.CLIENT);
 
 		proxy.registerEvents();
 		proxy.registerModels();
