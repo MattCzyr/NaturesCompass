@@ -5,15 +5,19 @@ import java.util.Collections;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
+import com.chaosthedude.naturescompass.util.EnumCompassState;
+import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +28,8 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private World world;
 	private EntityPlayer player;
-	private boolean canTeleport;
+	private ItemStack stack;
+	private ItemNaturesCompass natureCompass;
 	private List<Biome> allowedBiomes;
 	private GuiButton searchButton;
 	private GuiButton teleportButton;
@@ -34,10 +39,11 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
 
-	public GuiNaturesCompass(World world, EntityPlayer player, boolean canTeleport, List<Biome> allowedBiomes) {
+	public GuiNaturesCompass(World world, EntityPlayer player, ItemStack stack, ItemNaturesCompass natureCompass, List<Biome> allowedBiomes) {
 		this.world = world;
 		this.player = player;
-		this.canTeleport = canTeleport;
+		this.stack = stack;
+		this.natureCompass = natureCompass;
 		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
@@ -47,6 +53,12 @@ public class GuiNaturesCompass extends GuiScreen {
 	public void initGui() {
 		selectionList = new GuiListBiomes(this, mc, width, height, 32, height - 64, 36);
 		setupButtons();
+	}
+
+	@Override
+	public void updateScreen() {
+		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
+		teleportButton.enabled = natureCompass.getState(stack) == EnumCompassState.FOUND;
 	}
 
 	@Override
@@ -136,13 +148,12 @@ public class GuiNaturesCompass extends GuiScreen {
 		sortByButton = addButton(new GuiButton(1, width / 2 - 154, height - 28, 210, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
 		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
-
-		if (canTeleport) {
-			teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
-		}
+		teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
 
 		searchButton.enabled = false;
 		infoButton.enabled = false;
+
+		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
 	}
 
 }
