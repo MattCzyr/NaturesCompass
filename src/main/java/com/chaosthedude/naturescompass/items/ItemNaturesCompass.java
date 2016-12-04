@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.items;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.gui.GuiHandler;
+import com.chaosthedude.naturescompass.network.PacketRequestSync;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
@@ -46,7 +46,10 @@ public class ItemNaturesCompass extends Item {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (!player.isSneaking()) {
-			player.openGui(NaturesCompass.instance, GuiHandler.ID_NATURES_COMPASS, world, 0, 0, 0);
+			if (world.isRemote) {
+				NaturesCompass.network.sendToServer(new PacketRequestSync());
+			}
+			player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
 		} else {
 			setState(stack, EnumCompassState.INACTIVE, player);
 		}
