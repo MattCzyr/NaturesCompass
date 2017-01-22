@@ -114,33 +114,34 @@ public class GuiBiomeInfo extends GuiScreen {
 		drawDefaultBackground();
 		drawCenteredString(fontRendererObj, BiomeUtils.getBiomeName(biome), width / 2, 20, 0xffffff);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
-		drawString(fontRendererObj, topBlock, width / 2 - 100, 50, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.topBlock"), 100, 40, 0xffffff);
+		drawString(fontRendererObj, topBlock, 100, 50, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		drawString(fontRendererObj, precipitation, width / 2 - 100, 80, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.precipitation"), 100, 70, 0xffffff);
+		drawString(fontRendererObj, precipitation, 100, 80, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.baseHeight"), width / 2 - 100, 100, 0xffffff);
-		drawString(fontRendererObj, baseHeight, width / 2 - 100, 110, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.baseHeight"), 100, 100, 0xffffff);
+		drawString(fontRendererObj, baseHeight, 100, 110, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.rainfall"), width / 2 - 100, 130, 0xffffff);
-		drawString(fontRendererObj, rainfall, width / 2 - 100, 140, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.rainfall"), 100, 130, 0xffffff);
+		drawString(fontRendererObj, rainfall, 100, 140, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.fillerBlock"), width / 2 + 40, 40, 0xffffff);
-		drawString(fontRendererObj, fillerBlock, width / 2 + 40, 50, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.fillerBlock"), width - 100 - fontRendererObj.getStringWidth(I18n.format("string.naturescompass.fillerBlock")), 40, 0xffffff);
+		drawString(fontRendererObj, fillerBlock, width - 100 - fontRendererObj.getStringWidth(fillerBlock), 50, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.climate"), width / 2 + 40, 70, 0xffffff);
-		drawString(fontRendererObj, climate, width / 2 + 40, 80, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.climate"), width - 100 - fontRendererObj.getStringWidth(I18n.format("string.naturescompass.climate")), 70, 0xffffff);
+		drawString(fontRendererObj, climate, width - 100 - fontRendererObj.getStringWidth(climate), 80, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.heightVariation"), width / 2 + 40, 100, 0xffffff);
-		drawString(fontRendererObj, heightVariation, width / 2 + 40, 110, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.heightVariation"), width - 100 - fontRendererObj.getStringWidth(I18n.format("string.naturescompass.heightVariation")), 100, 0xffffff);
+		drawString(fontRendererObj, heightVariation, width - 100 - fontRendererObj.getStringWidth(heightVariation), 110, 0x808080);
 
-		drawString(fontRendererObj, I18n.format("string.naturescompass.highHumidity"), width / 2 + 40, 130, 0xffffff);
-		drawString(fontRendererObj, highHumidity, width / 2 + 40, 140, 0x808080);
+		drawString(fontRendererObj, I18n.format("string.naturescompass.highHumidity"), width - 100 - fontRendererObj.getStringWidth(I18n.format("string.naturescompass.highHumidity")), 130, 0xffffff);
+		drawString(fontRendererObj, highHumidity, width - 100 - fontRendererObj.getStringWidth(highHumidity), 140, 0x808080);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
+	@Override
 	protected <T extends GuiButton> T addButton(T button) {
 		buttonList.add(button);
 		return (T) button;
