@@ -36,7 +36,7 @@ public class PacketTeleport implements IMessage {
 		@Override
 		public IMessage onMessage(PacketTeleport packet, MessageContext ctx) {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().playerEntity);
-			if (ItemUtils.stackExists(stack)) {
+			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
 				final EntityPlayer player = ctx.getServerHandler().playerEntity;
 				if (PlayerUtils.canTeleport(player)) {
@@ -45,7 +45,7 @@ public class PacketTeleport implements IMessage {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
 						int y = 256;
-						while (player.worldObj.isAirBlock(new BlockPos(x, y - 1, z))) {
+						while (player.world.isAirBlock(new BlockPos(x, y - 1, z))) {
 							y--;
 						}
 

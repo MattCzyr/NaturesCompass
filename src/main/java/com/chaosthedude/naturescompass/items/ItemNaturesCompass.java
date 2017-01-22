@@ -52,7 +52,7 @@ public class ItemNaturesCompass extends Item {
 					final boolean entityExists = entityLiving != null;
 					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getItemFrame());
 					if (world == null) {
-						world = entity.worldObj;
+						world = entity.world;
 					}
 
 					double rotation = entityExists ? (double) entity.rotationYaw : getFrameRotation((EntityItemFrame) entity);
@@ -74,7 +74,7 @@ public class ItemNaturesCompass extends Item {
 					lastUpdateTick = world.getTotalWorldTime();
 					double d0 = amount - rotation;
 					d0 = d0 % (Math.PI * 2D);
-					d0 = MathHelper.clamp_double(d0, -1.0D, 1.0D);
+					d0 = MathHelper.clamp(d0, -1.0D, 1.0D);
 					rota += d0 * 0.1D;
 					rota *= 0.8D;
 					rotation += rota;

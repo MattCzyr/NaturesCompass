@@ -22,8 +22,8 @@ public class RenderTickHandler {
 
 	@SubscribeEvent
 	public void onRenderTick(RenderTickEvent event) {
-		if (event.phase == Phase.END && mc.thePlayer != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo && (mc.currentScreen == null || (ConfigHandler.displayWithChatOpen && mc.currentScreen instanceof GuiChat))) {
-			final EntityPlayer player = mc.thePlayer;
+		if (event.phase == Phase.END && mc.player != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo && (mc.currentScreen == null || (ConfigHandler.displayWithChatOpen && mc.currentScreen instanceof GuiChat))) {
+			final EntityPlayer player = mc.player;
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (stack != null && stack.getItem() instanceof ItemNaturesCompass) {
 				final ItemNaturesCompass compass = (ItemNaturesCompass) stack.getItem();

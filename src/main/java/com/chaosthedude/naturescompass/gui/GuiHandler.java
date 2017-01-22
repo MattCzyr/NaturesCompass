@@ -14,7 +14,7 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
-		if (ItemUtils.stackExists(stack)) {
+		if (!stack.isEmpty()) {
 			return new GuiNaturesCompass(world, player, stack, (ItemNaturesCompass) stack.getItem(), BiomeUtils.getAllowedBiomes());
 		}
 

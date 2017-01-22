@@ -28,7 +28,7 @@ public class BiomeUtils {
 	}
 
 	public static SearchResult searchForBiome(World world, ItemStack stack, Biome biome, BlockPos startPos) {
-		if (!ItemUtils.stackExists(stack) || stack.getItem() != NaturesCompass.naturesCompass) {
+		if (stack.isEmpty() || stack.getItem() != NaturesCompass.naturesCompass) {
 			return null;
 		}
 

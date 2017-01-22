@@ -52,9 +52,9 @@ public class PacketCompassSearch implements IMessage {
 		@Override
 		public IMessage onMessage(PacketCompassSearch packet, MessageContext ctx) {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().playerEntity);
-			if (ItemUtils.stackExists(stack)) {
+			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
-				final World world = ctx.getServerHandler().playerEntity.worldObj;
+				final World world = ctx.getServerHandler().playerEntity.world;
 				natureCompass.searchForBiome(world, ctx.getServerHandler().playerEntity, packet.biomeID, new BlockPos(packet.x, packet.y, packet.z), stack);
 			}
 

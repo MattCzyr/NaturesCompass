@@ -15,7 +15,7 @@ public class PlayerUtils {
 	public static boolean cheatModeEnabled(EntityPlayer player) {
 		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (server != null && server.isSinglePlayer()) {
-			return server.worldServers[0].getWorldInfo().areCommandsAllowed();
+			return server.worlds[0].getWorldInfo().areCommandsAllowed();
 		}
 
 		return false;
