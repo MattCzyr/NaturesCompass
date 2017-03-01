@@ -67,23 +67,27 @@ public class BiomeUtils {
 	}
 
 	public static String getBiomeName(Biome biome) {
-		if (ConfigHandler.fixBiomeNames) {
-			final String original = biome.getBiomeName();
-			String fixed = "";
-			char pre = ' ';
-			for (int i = 0; i < original.length(); i++) {
-				final char c = original.charAt(i);
-				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-					fixed = fixed + " ";
+		if (biome != null && biome.getBiomeName() != null) {
+			if (ConfigHandler.fixBiomeNames) {
+				final String original = biome.getBiomeName();
+				String fixed = "";
+				char pre = ' ';
+				for (int i = 0; i < original.length(); i++) {
+					final char c = original.charAt(i);
+					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+						fixed = fixed + " ";
+					}
+					fixed = fixed + String.valueOf(c);
+					pre = c;
 				}
-				fixed = fixed + String.valueOf(c);
-				pre = c;
+
+				return fixed;
 			}
 
-			return fixed;
+			return biome.getBiomeName();
 		}
 
-		return biome.getBiomeName();
+		return "";
 	}
 
 	public static String getBiomeName(int biomeID) {
@@ -92,7 +96,8 @@ public class BiomeUtils {
 
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
-		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome))) || biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName());
+		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome)))
+				|| biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName());
 	}
 
 }
