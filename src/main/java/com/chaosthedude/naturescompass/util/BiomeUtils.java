@@ -58,23 +58,27 @@ public class BiomeUtils {
 	}
 
 	public static String getBiomeName(BiomeGenBase biome) {
-		if (ConfigHandler.fixBiomeNames) {
-			final String original = biome.biomeName;
-			String fixed = "";
-			char pre = ' ';
-			for (int i = 0; i < original.length(); i++) {
-				final char c = original.charAt(i);
-				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-					fixed = fixed + " ";
+		if (biome != null && biome.biomeName != null) {
+			if (ConfigHandler.fixBiomeNames) {
+				final String original = biome.biomeName;
+				String fixed = "";
+				char pre = ' ';
+				for (int i = 0; i < original.length(); i++) {
+					final char c = original.charAt(i);
+					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+						fixed = fixed + " ";
+					}
+					fixed = fixed + String.valueOf(c);
+					pre = c;
 				}
-				fixed = fixed + String.valueOf(c);
-				pre = c;
+
+				return fixed;
 			}
 
-			return fixed;
+			return biome.biomeName;
 		}
 
-		return biome.biomeName;
+		return "";
 	}
 
 	public static String getBiomeName(int biomeID) {
