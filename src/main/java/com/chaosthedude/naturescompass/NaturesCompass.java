@@ -12,12 +12,6 @@ import com.chaosthedude.naturescompass.network.PacketSync;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.proxy.CommonProxy;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -27,7 +21,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.registries.GameData;
 
 @Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.12]")
 
@@ -35,7 +28,7 @@ public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.3.0";
+	public static final String VERSION = "1.4.0";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
