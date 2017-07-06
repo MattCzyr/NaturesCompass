@@ -93,7 +93,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
 		selectionList.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(fontRendererObj, I18n.format("string.naturescompass.selectBiome"), width / 2, 20, 0xffffff);
+		drawCenteredString(fontRenderer, I18n.format("string.naturescompass.selectBiome"), width / 2, 20, 0xffffff);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 

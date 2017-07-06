@@ -29,7 +29,7 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
 		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getEnableSnow()) {
 			precipitationState = I18n.format("string.naturescompass.snow");
@@ -44,9 +44,9 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 			value = biome.topBlock.getBlock().getLocalizedName();
 		}
 
-		mc.fontRendererObj.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
-		mc.fontRendererObj.drawString(title + ": " + value, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRendererObj.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
+		mc.fontRenderer.drawString(title + ": " + value, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
@@ -70,7 +70,7 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void setSelected(int par1, int par2, int par3) {
+	public void updatePosition(int par1, int par2, int par3, float par4) {
 	}
 
 	public void selectBiome() {

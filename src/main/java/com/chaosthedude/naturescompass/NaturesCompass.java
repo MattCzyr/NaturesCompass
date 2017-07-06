@@ -14,6 +14,10 @@ import com.chaosthedude.naturescompass.proxy.CommonProxy;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -22,11 +26,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.registries.GameData;
 
-@Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.11.2]")
+@Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.12]")
 
 public class NaturesCompass {
 
@@ -53,7 +56,6 @@ public class NaturesCompass {
 
 		naturesCompass = new ItemNaturesCompass();
 		naturesCompass.setRegistryName(ItemNaturesCompass.NAME);
-		GameRegistry.register(naturesCompass);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 		network.registerMessage(PacketCompassSearch.Handler.class, PacketCompassSearch.class, 0, Side.SERVER);
@@ -68,8 +70,6 @@ public class NaturesCompass {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-
-		GameRegistry.addRecipe(new ShapedOreRecipe(naturesCompass, "SLS", "LCL", "SLS", 'C', Items.COMPASS, 'L', Blocks.LOG, 'S', "treeSapling"));
 	}
 
 }

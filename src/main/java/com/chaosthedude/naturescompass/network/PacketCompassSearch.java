@@ -51,11 +51,11 @@ public class PacketCompassSearch implements IMessage {
 	public static class Handler implements IMessageHandler<PacketCompassSearch, IMessage> {
 		@Override
 		public IMessage onMessage(PacketCompassSearch packet, MessageContext ctx) {
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().playerEntity);
+			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().player);
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
-				final World world = ctx.getServerHandler().playerEntity.world;
-				natureCompass.searchForBiome(world, ctx.getServerHandler().playerEntity, packet.biomeID, new BlockPos(packet.x, packet.y, packet.z), stack);
+				final World world = ctx.getServerHandler().player.world;
+				natureCompass.searchForBiome(world, ctx.getServerHandler().player, packet.biomeID, new BlockPos(packet.x, packet.y, packet.z), stack);
 			}
 
 			return null;

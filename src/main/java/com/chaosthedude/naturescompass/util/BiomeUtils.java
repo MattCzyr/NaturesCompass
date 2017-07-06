@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.gen.ChunkProviderSettings;
+import net.minecraft.world.gen.ChunkGeneratorSettings;
 
 public class BiomeUtils {
 
@@ -59,7 +59,7 @@ public class BiomeUtils {
 
 	public static int getBiomeSize(World world) {
 		final String settings = world.getWorldInfo().getGeneratorOptions();
-		return ChunkProviderSettings.Factory.jsonToFactory(settings).build().biomeSize;
+		return ChunkGeneratorSettings.Factory.jsonToFactory(settings).build().biomeSize;
 	}
 
 	public static int getDistanceToBiome(EntityPlayer player, int x, int z) {

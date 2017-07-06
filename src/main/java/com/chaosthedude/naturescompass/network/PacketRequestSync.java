@@ -23,7 +23,7 @@ public class PacketRequestSync implements IMessage {
 	public static class Handler implements IMessageHandler<PacketRequestSync, IMessage> {
 		@Override
 		public IMessage onMessage(PacketRequestSync packet, MessageContext ctx) {
-			final boolean canTeleport = PlayerUtils.canTeleport(ctx.getServerHandler().playerEntity);
+			final boolean canTeleport = PlayerUtils.canTeleport(ctx.getServerHandler().player);
 			return new PacketSync(canTeleport);
 		}
 	}

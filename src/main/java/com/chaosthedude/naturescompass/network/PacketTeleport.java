@@ -35,10 +35,10 @@ public class PacketTeleport implements IMessage {
 	public static class Handler implements IMessageHandler<PacketTeleport, IMessage> {
 		@Override
 		public IMessage onMessage(PacketTeleport packet, MessageContext ctx) {
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().playerEntity);
+			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().player);
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
-				final EntityPlayer player = ctx.getServerHandler().playerEntity;
+				final EntityPlayer player = ctx.getServerHandler().player;
 				if (PlayerUtils.canTeleport(player)) {
 					if (natureCompass.getState(stack) == EnumCompassState.FOUND) {
 						final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags> noneOf(SPacketPlayerPosLook.EnumFlags.class);
