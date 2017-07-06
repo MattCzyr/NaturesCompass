@@ -1,7 +1,6 @@
 package com.chaosthedude.naturescompass.registry;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;

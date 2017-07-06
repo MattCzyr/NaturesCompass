@@ -149,8 +149,8 @@ public class GuiBiomeInfo extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		backButton = addButton(new GuiButton(0, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.back")));
-		searchButton = addButton(new GuiButton(1, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
+		backButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("string.naturescompass.back")));
+		searchButton = addButton(new GuiTransparentButton(1, width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search")));
 	}
 
 }

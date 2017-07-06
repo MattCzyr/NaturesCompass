@@ -51,7 +51,7 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		selectionList = new GuiListBiomes(this, mc, width, height, 32, height - 64, 36);
+		selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height - 64, 36);
 		setupButtons();
 	}
 	
@@ -91,9 +91,8 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
 		selectionList.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(fontRenderer, I18n.format("string.naturescompass.selectBiome"), width / 2, 20, 0xffffff);
+		drawCenteredString(fontRenderer, I18n.format("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
@@ -145,11 +144,11 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		cancelButton = addButton(new GuiButton(0, width / 2 + 64, height - 28, 90, 20, I18n.format("gui.cancel")));
-		sortByButton = addButton(new GuiButton(1, width / 2 - 154, height - 28, 210, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
-		infoButton = addButton(new GuiButton(2, width / 2 - 154, height - 52, 150, 20, I18n.format("string.naturescompass.info")));
-		searchButton = addButton(new GuiButton(3, width / 2 + 4, height - 52, 150, 20, I18n.format("string.naturescompass.search")));
-		teleportButton = addButton(new GuiButton(4, width - 126, 6, 120, 20, I18n.format("string.naturescompass.teleport")));
+		cancelButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("gui.cancel")));
+		sortByButton = addButton(new GuiTransparentButton(1, 10, 90, 110, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+		infoButton = addButton(new GuiTransparentButton(2, 10, 65, 110, 20, I18n.format("string.naturescompass.info")));
+		searchButton = addButton(new GuiTransparentButton(3, 10, 40, 110, 20, I18n.format("string.naturescompass.search")));
+		teleportButton = addButton(new GuiTransparentButton(4, width - 120, 10, 110, 20, I18n.format("string.naturescompass.teleport")));
 
 		searchButton.enabled = false;
 		infoButton.enabled = false;

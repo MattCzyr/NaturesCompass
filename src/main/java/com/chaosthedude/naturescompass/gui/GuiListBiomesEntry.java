@@ -53,10 +53,7 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 	@Override
 	public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
 		biomesList.selectBiome(slotIndex);
-		if (relativeX <= 32 && relativeX < 32) {
-			selectBiome();
-			return true;
-		} else if (Minecraft.getSystemTime() - lastClickTime < 250L) {
+		if (Minecraft.getSystemTime() - lastClickTime < 250L) {
 			selectBiome();
 			return true;
 		}

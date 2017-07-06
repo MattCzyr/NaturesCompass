@@ -4,10 +4,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.input.Mouse;
+
+import com.chaosthedude.naturescompass.util.RenderUtils;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,6 +44,72 @@ public class GuiListBiomes extends GuiListExtended {
 	@Override
 	protected boolean isSelected(int slotIndex) {
 		return slotIndex == selectedIndex;
+	}
+	
+	@Override
+	public void handleMouseInput() {
+		int i2 = Mouse.getEventDWheel();
+		if (i2 != 0) {
+			if (i2 > 0) {
+				i2 = -1;
+			} else if (i2 < 0) {
+				i2 = 1;
+			}
+
+			amountScrolled += (float) (i2 * slotHeight);
+		} else {
+			super.handleMouseInput();
+		}
+	}
+	
+	@Override
+	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
+		if (visible) {
+			mouseX = parMouseX;
+			mouseY = parMouseY;
+			drawBackground();
+			int x = getScrollBarX();
+			int j = x + 6;
+			bindAmountScrolled();
+			GlStateManager.disableLighting();
+			GlStateManager.disableFog();
+			final Tessellator tessellator = Tessellator.getInstance();
+			final BufferBuilder buffer = tessellator.getBuffer();
+			drawContainerBackground(tessellator);
+			final int insideLeft = left + width / 2 - getListWidth() / 2 + 2;
+			final int insideTop = top + 4 - (int) amountScrolled;
+			if (hasListHeader) {
+				drawListHeader(insideLeft, insideTop, tessellator);
+			}
+
+			drawSelectionBox(insideLeft, insideTop, parMouseX, parMouseY, partialTicks);
+		}
+	}
+
+	@Override
+	protected void drawContainerBackground(Tessellator tessellator) {
+		guiNaturesCompass.drawDefaultBackground();
+	}
+	
+	@Override
+	protected void drawSelectionBox(int insideLeft, int insideTop, int mouseX, int mouseY, float partialTicks) {
+		final Tessellator tessellator = Tessellator.getInstance();
+		final BufferBuilder buffer = tessellator.getBuffer();
+
+		for (int i = 0; i < getSize(); i++) {
+			int k = insideTop + i * slotHeight + headerPadding;
+			int l = slotHeight - 4;
+
+			if (k > bottom || k + l < top) {
+				updateItemPos(i, insideLeft, k, partialTicks);
+			}
+
+			if (showSelectionBox && isSelected(i)) {
+				RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getListWidth() + 4, k + slotHeight, 255 / 2 << 24);
+			}
+
+			drawSlot(i, insideLeft, k, l, mouseX, mouseY, partialTicks);
+		}
 	}
 
 	@Override
