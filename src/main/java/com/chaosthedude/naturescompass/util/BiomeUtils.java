@@ -8,6 +8,7 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -33,28 +34,43 @@ public class BiomeUtils {
 		}
 
 		final int sampleSpace = ConfigHandler.sampleSpaceModifier * getBiomeSize(world);
-		final int maxDist = ConfigHandler.distanceModifier * getBiomeSize(world);
-		if (maxDist <= 0 || sampleSpace <= 0) {
-			return new SearchResult(0, 0, maxDist, false);
+		final int maxDistance = ConfigHandler.distanceModifier * getBiomeSize(world);
+		if (maxDistance <= 0 || sampleSpace <= 0) {
+			return new SearchResult(0, 0, maxDistance, 0, false);
 		}
 
-		final BiomeProvider chunkManager = world.getBiomeProvider();
-		final double adjustedSampleSpace = sampleSpace / Math.sqrt(Math.PI);
-		final double adjustedPi = 2 * Math.sqrt(Math.PI);
-		double dist = 0;
-		for (int i = 0; dist < maxDist; i++) {
-			double root = Math.sqrt(i);
-			dist = adjustedSampleSpace * root;
-			double x = startPos.getX() + (dist * Math.sin(adjustedPi * root));
-			double z = startPos.getZ() + (dist * Math.cos(adjustedPi * root));
+		final BiomeProvider biomeProvider = world.getBiomeProvider();
+		int direction = 0;
+		int samples = 0;
+		int x = startPos.getX();
+		int z = startPos.getZ();
+		int nextLength = sampleSpace;
+		while (nextLength / 2 <= maxDistance && samples <= ConfigHandler.maxSamples) {
+			final int fixedDirection = direction % 4;
+			for (int i = 0; i < nextLength; i += sampleSpace) {
+				if (fixedDirection == 0) {
+					x += sampleSpace;
+				} else if (fixedDirection == 1) {
+					z -= sampleSpace;
+				} else if (fixedDirection == 2) {
+					x -= sampleSpace;
+				} else if (fixedDirection == 3) {
+					z += sampleSpace;
+				}
 
-			final Biome[] biomesAtSample = chunkManager.getBiomes(null, (int) x, (int) z, 1, 1, false);
-			if (biomesAtSample[0] == biome) {
-				return new SearchResult((int) x, (int) z, maxDist, true);
+				final Biome[] biomes = biomeProvider.getBiomes(null, x, z, 1, 1, false);
+				if (biomes[0] == biome) {
+					return new SearchResult(x, z, nextLength / 2, samples, true);
+				}
+
+				samples++;
 			}
+
+			nextLength += sampleSpace;
+			direction++;
 		}
 
-		return new SearchResult(0, 0, maxDist, false);
+		return new SearchResult(0, 0, nextLength / 2, samples, false);
 	}
 
 	public static int getBiomeSize(World world) {
