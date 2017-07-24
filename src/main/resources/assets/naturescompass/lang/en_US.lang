@@ -33,6 +33,7 @@ string.naturescompass.distance=Distance
 string.naturescompass.found=Found
 string.naturescompass.notFound=Not Found
 string.naturescompass.radius=Radius
+string.naturescompass.samples=Samples
 string.naturescompass.searching=Searching
 string.naturescompass.status=Status
 

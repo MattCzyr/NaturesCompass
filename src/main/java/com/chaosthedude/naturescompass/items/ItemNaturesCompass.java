@@ -121,9 +121,9 @@ public class ItemNaturesCompass extends Item {
 		setBiomeID(stack, biomeID, player);
 		final SearchResult result = BiomeUtils.searchForBiome(world, stack, Biome.getBiome(biomeID), pos);
 		if (result.found()) {
-			setFound(stack, result.getX(), result.getZ(), player);
+			setFound(stack, result.getX(), result.getZ(), result.getSamples(), player);
 		} else {
-			setNotFound(stack, player, result.getRadius());
+			setNotFound(stack, player, result.getRadius(), result.getSamples());
 		}
 	}
 
@@ -141,18 +141,20 @@ public class ItemNaturesCompass extends Item {
 		}
 	}
 
-	public void setFound(ItemStack stack, int x, int z, EntityPlayer player) {
+	public void setFound(ItemStack stack, int x, int z, int samples, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", EnumCompassState.FOUND.getID());
 			stack.getTagCompound().setInteger("FoundX", x);
 			stack.getTagCompound().setInteger("FoundZ", z);
+			stack.getTagCompound().setInteger("Samples", samples);
 		}
 	}
 
-	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius) {
+	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius, int samples) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", EnumCompassState.NOT_FOUND.getID());
 			stack.getTagCompound().setInteger("SearchRadius", searchRadius);
+			stack.getTagCompound().setInteger("Samples", samples);
 		}
 	}
 
@@ -192,6 +194,12 @@ public class ItemNaturesCompass extends Item {
 		}
 	}
 
+	public void setSamples(ItemStack stack, int samples, EntityPlayer player) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTagCompound().setInteger("Samples", samples);
+		}
+	}
+
 	public EnumCompassState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
 			return EnumCompassState.fromID(stack.getTagCompound().getInteger("State"));
@@ -227,6 +235,14 @@ public class ItemNaturesCompass extends Item {
 	public int getSearchRadius(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
 			return stack.getTagCompound().getInteger("SearchRadius");
+		}
+
+		return -1;
+	}
+
+	public int getSamples(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTagCompound().getInteger("Samples");
 		}
 
 		return -1;

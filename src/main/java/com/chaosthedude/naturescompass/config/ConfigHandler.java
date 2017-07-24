@@ -19,6 +19,7 @@ public class ConfigHandler {
 	public static String[] biomeBlacklist = {};
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
+	public static int maxSamples = 100000;
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
 	public static int lineOffset = 1;
@@ -40,9 +41,12 @@ public class ConfigHandler {
 
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
-		
+
 		comment = "A list of biomes that the compass will not be able to search for. Both biome names and numerical biome IDs are accepted.";
 		biomeBlacklist = loadStringArray(Configuration.CATEGORY_GENERAL, "naturescompass.biomeBlacklist", comment, biomeBlacklist);
+
+		comment = "The maximum samples to be taken when searching for a biome.";
+		maxSamples = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.maxSamples", comment, maxSamples);
 
 		comment = "Displays Nature's Compass information even while chat is open.";
 		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.displayWithChatOpen", comment, displayWithChatOpen);
