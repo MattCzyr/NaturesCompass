@@ -57,7 +57,6 @@ public class NaturesCompass {
 		network.registerMessage(PacketSync.Handler.class, PacketSync.class, 3, Side.CLIENT);
 
 		proxy.registerEvents();
-		proxy.registerModels();
 	}
 
 	@EventHandler

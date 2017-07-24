@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.client;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
@@ -9,14 +10,17 @@ import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
-public class RenderTickHandler {
+public class ClientEventHandler {
 
 	private static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -54,9 +58,17 @@ public class RenderTickHandler {
 
 					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.naturescompass.radius"), 5, 0, 0xFFFFFF, 6);
 					RenderUtils.drawLineOffsetStringOnHUD(String.valueOf(compass.getSearchRadius(stack)), 5, 0, 0xAAAAAA, 7);
+
+					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.naturescompass.samples"), 5, 0, 0xFFFFFF, 9);
+					RenderUtils.drawLineOffsetStringOnHUD(String.valueOf(compass.getSamples(stack)), 5, 0, 0xAAAAAA, 10);
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onRegisterModels(ModelRegistryEvent event) {
+		ModelLoader.setCustomModelResourceLocation(NaturesCompass.naturesCompass, 0, new ModelResourceLocation("naturescompass:natures_compass", "inventory"));
 	}
 
 }

@@ -5,7 +5,4 @@ public class CommonProxy {
 	public void registerEvents() {
 	}
 
-	public void registerModels() {
-	}
-
 }
