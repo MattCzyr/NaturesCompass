@@ -40,13 +40,13 @@ public class BiomeUtils {
 		}
 
 		final BiomeProvider biomeProvider = world.getBiomeProvider();
-		int direction = 0;
+		int direction = -1;
 		int samples = 0;
+		int nextLength = sampleSpace;
 		int x = startPos.getX();
 		int z = startPos.getZ();
-		int nextLength = sampleSpace;
 		while (nextLength / 2 <= maxDistance && samples <= ConfigHandler.maxSamples) {
-			final int fixedDirection = direction % 4;
+			final int fixedDirection = direction == -1 ? -1 : direction % 4;
 			for (int i = 0; i < nextLength; i += sampleSpace) {
 				if (fixedDirection == 0) {
 					x += sampleSpace;
@@ -66,7 +66,9 @@ public class BiomeUtils {
 				samples++;
 			}
 
-			nextLength += sampleSpace;
+			if (direction >= 0) {
+				nextLength += sampleSpace;
+			}
 			direction++;
 		}
 
