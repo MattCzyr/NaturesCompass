@@ -1,4 +1,15 @@
 --------------------------------------------------
+ VERSION: 1.5.0 -  1.12
+--------------------------------------------------
+1.12:
+  FEATURES:
+  - Added number of biome samples to HUD info after an unsuccessful biome search
+  FIXES:
+  - Fixed mismatched or missing texture issue when certain mods are present
+  - Rewrote biome searching algorithm
+
+
+--------------------------------------------------
  VERSION: 1.4.0 -  1.12
 --------------------------------------------------
 1.12:
