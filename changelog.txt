@@ -2,6 +2,16 @@
  VERSION: 1.5.0 -  1.12.2
 --------------------------------------------------
 1.12.2:
+  FEATURES:
+  - Added a config field to disable teleportation to a located biome
+  UPDATES:
+  - Updated to Forge #2581 (1.12.2)
+
+
+--------------------------------------------------
+ VERSION: 1.5.0 -  1.12.2
+--------------------------------------------------
+1.12.2:
   FIXES:
   - Marked 1.12.2 as an accepted version
 
