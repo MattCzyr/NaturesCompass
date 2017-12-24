@@ -11,12 +11,12 @@ public class CategoryTemperature implements ISortingCategory {
 
 	@Override
 	public int compare(Object biome1, Object biome2) {
-		return Float.compare(((Biome) biome1).getTemperature(), ((Biome) biome2).getTemperature());
+		return Float.compare(((Biome) biome1).getDefaultTemperature(), ((Biome) biome2).getDefaultTemperature());
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return biome.getTemperature();
+		return biome.getDefaultTemperature();
 	}
 
 	@Override

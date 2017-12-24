@@ -85,7 +85,7 @@ public class ItemNaturesCompass extends Item {
 
 			@SideOnly(Side.CLIENT)
 			private double getFrameRotation(EntityItemFrame itemFrame) {
-				return (double) MathHelper.clampAngle(180 + itemFrame.facingDirection.getHorizontalIndex() * 90);
+				return (double) MathHelper.wrapDegrees(180 + itemFrame.facingDirection.getHorizontalIndex() * 90);
 			}
 
 			@SideOnly(Side.CLIENT)
