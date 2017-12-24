@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
@@ -39,7 +40,7 @@ public class PacketTeleport implements IMessage {
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
 				final EntityPlayer player = ctx.getServerHandler().player;
-				if (PlayerUtils.canTeleport(player)) {
+				if (ConfigHandler.allowTeleport && PlayerUtils.canTeleport(player)) {
 					if (natureCompass.getState(stack) == EnumCompassState.FOUND) {
 						final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags> noneOf(SPacketPlayerPosLook.EnumFlags.class);
 						final int x = natureCompass.getFoundBiomeX(stack);

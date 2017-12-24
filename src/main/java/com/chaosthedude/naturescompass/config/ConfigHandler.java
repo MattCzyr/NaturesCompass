@@ -16,6 +16,7 @@ public class ConfigHandler {
 
 	public static Configuration config;
 
+	public static boolean allowTeleport = true;
 	public static String[] biomeBlacklist = {};
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
@@ -36,6 +37,9 @@ public class ConfigHandler {
 	public static void init() {
 		String comment;
 
+		comment = "Allows a player to teleport to a located biome when in creative mode, opped, or in cheat mode.";
+		allowTeleport = loadBool(Configuration.CATEGORY_GENERAL, "naturescompass.allowTeleport", comment, allowTeleport);
+
 		comment = "biomeSize * distanceModifier = maxSearchDistance. Raising this value will increase search accuracy but will potentially make the process more resource intensive.";
 		distanceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.distanceModifier", comment, distanceModifier);
 
@@ -47,7 +51,7 @@ public class ConfigHandler {
 
 		comment = "The maximum samples to be taken when searching for a biome.";
 		maxSamples = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.maxSamples", comment, maxSamples);
-
+		
 		comment = "Displays Nature's Compass information even while chat is open.";
 		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.displayWithChatOpen", comment, displayWithChatOpen);
 

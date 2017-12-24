@@ -7,6 +7,7 @@ import java.util.List;
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
+import com.chaosthedude.naturescompass.network.PacketRequestSync;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
@@ -57,7 +58,6 @@ public class GuiNaturesCompass extends GuiScreen {
 	
 	@Override
 	public void updateScreen() {
-		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
 		teleportButton.enabled = natureCompass.getState(stack) == EnumCompassState.FOUND;
 	}
 
@@ -153,7 +153,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		searchButton.enabled = false;
 		infoButton.enabled = false;
 
-		teleportButton.visible = NaturesCompass.canTeleport || PlayerUtils.cheatModeEnabled(player);
+		teleportButton.visible = NaturesCompass.canTeleport;
 	}
 
 }
