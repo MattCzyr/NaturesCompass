@@ -8,11 +8,11 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
 
 public class BiomeUtils {
@@ -58,8 +58,9 @@ public class BiomeUtils {
 					z += sampleSpace;
 				}
 
-				final Biome[] biomes = biomeProvider.getBiomes(null, x, z, 1, 1, false);
-				if (biomes[0] == biome) {
+				final BlockPos pos = new BlockPos(x, world.getHeight(x, z), z);
+				final Biome biomeAtPos = world.getChunkFromBlockCoords(pos).getBiome(pos, world.getBiomeProvider());
+				if (biomeAtPos == biome) {
 					return new SearchResult(x, z, nextLength / 2, samples, true);
 				}
 
