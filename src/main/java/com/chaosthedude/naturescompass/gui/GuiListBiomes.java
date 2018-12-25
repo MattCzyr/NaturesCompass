@@ -132,6 +132,7 @@ public class GuiListBiomes extends GuiListExtended {
 		for (Biome biome : guiNaturesCompass.sortBiomes()) {
 			entries.add(new GuiListBiomesEntry(this, biome));
 		}
+		selectBiome(-1);
 	}
 
 	public void selectBiome(int index) {

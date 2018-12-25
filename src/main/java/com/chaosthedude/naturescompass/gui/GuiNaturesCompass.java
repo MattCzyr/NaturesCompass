@@ -52,8 +52,10 @@ public class GuiNaturesCompass extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height - 64, 36);
 		setupButtons();
+		if (selectionList == null) {
+			selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height, 36);
+		}
 	}
 	
 	@Override
