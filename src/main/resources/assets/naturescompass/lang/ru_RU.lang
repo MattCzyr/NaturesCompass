@@ -1,0 +1,54 @@
+# Nature's Compass - Language File
+#ru_RU
+
+# ITEMS
+item.naturescompass.NaturesCompass.name=Компас природы
+
+# STRINGS - BUTTONS
+string.naturescompass.back=Назад
+string.naturescompass.info=Информация
+string.naturescompass.search=Искать
+string.naturescompass.selectBiome=Выбрать биом
+string.naturescompass.sortBy=Сорт. по
+string.naturescompass.teleport=Телепортироваться
+
+# STRINGS - CLIMATES
+string.naturescompass.cold=Холодный
+string.naturescompass.medium=Умеренный
+string.naturescompass.ocean=Океанический
+string.naturescompass.warm=Тёплый
+
+# STRINGS - RANGE
+string.naturescompass.none=Отсутствует
+string.naturescompass.veryLow=Очень низкая
+string.naturescompass.low=Низкая
+string.naturescompass.average=Средняя
+string.naturescompass.high=Высокая
+string.naturescompass.veryHigh=Очень высокая
+
+# STRINGS - HUD
+string.naturescompass.biome=Биом
+string.naturescompass.coordinates=Координаты
+string.naturescompass.distance=Дистанция
+string.naturescompass.found=Найден
+string.naturescompass.notFound=Не найден
+string.naturescompass.radius=Пределы
+string.naturescompass.samples=Список
+string.naturescompass.searching=Поиск
+string.naturescompass.status=Статус
+
+# STRINGS - INFO
+string.naturescompass.baseHeight=Осн. высота (0 = 64)
+string.naturescompass.climate=Климат
+string.naturescompass.fillerBlock=Блок-заполнитель
+string.naturescompass.heightVariation=Колебания высот
+string.naturescompass.highHumidity=Высокая влажность
+string.naturescompass.name=Название
+string.naturescompass.precipitation=Тип осадков
+string.naturescompass.rainfall=Количество осадков
+string.naturescompass.temperature=Температура
+string.naturescompass.topBlock=Верхний блок
+
+# STRINGS - PRECIPITATION
+string.naturescompass.snow=Снег
+string.naturescompass.rain=Дождь
