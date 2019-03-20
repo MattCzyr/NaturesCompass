@@ -8,12 +8,14 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BiomeUtils {
 
@@ -115,8 +117,10 @@ public class BiomeUtils {
 
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
+		final ResourceLocation biomeResourceLoc = ForgeRegistries.BIOMES.getKey(biome);
 		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome)))
-				|| biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName());
+				|| biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName())
+				|| biomeResourceLoc != null && biomeBlacklist.contains(biomeResourceLoc.toString());
 	}
 
 }
