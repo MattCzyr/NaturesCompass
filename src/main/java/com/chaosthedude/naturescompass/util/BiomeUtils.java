@@ -117,10 +117,11 @@ public class BiomeUtils {
 
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
-		final ResourceLocation biomeResourceLoc = ForgeRegistries.BIOMES.getKey(biome);
+		final ResourceLocation biomeResourceLocation = ForgeRegistries.BIOMES.getKey(biome);
 		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome)))
-				|| biomeBlacklist.contains(getBiomeName(biome)) || biomeBlacklist.contains(biome.getBiomeName())
-				|| biomeResourceLoc != null && biomeBlacklist.contains(biomeResourceLoc.toString());
+				|| biomeBlacklist.contains(getBiomeName(biome))
+				|| biomeBlacklist.contains(biome.getBiomeName())
+				|| (biomeResourceLocation != null && biomeBlacklist.contains(biomeResourceLocation.toString()));
 	}
 
 }
