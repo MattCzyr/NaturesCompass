@@ -193,7 +193,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	}
 	
 	private void setupTextFields() {
-		searchTextField = new GuiTransparentTextField(0, fontRenderer, 130, 10, 120, 20);
+		searchTextField = new GuiTransparentTextField(0, fontRenderer, 130, 10, 140, 20);
 		searchTextField.setLabel(I18n.format("string.naturescompass.search"));
 	}
 

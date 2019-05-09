@@ -7,7 +7,7 @@ item.naturescompass.NaturesCompass.name=Компас природы
 # STRINGS - BUTTONS
 string.naturescompass.back=Назад
 string.naturescompass.info=Информация
-string.naturescompass.search=Искать
+string.naturescompass.startSearch=Начать поиск
 string.naturescompass.selectBiome=Выбрать биом
 string.naturescompass.sortBy=Сорт. по
 string.naturescompass.teleport=Телепортироваться
@@ -26,7 +26,7 @@ string.naturescompass.average=Средняя
 string.naturescompass.high=Высокая
 string.naturescompass.veryHigh=Очень высокая
 
-# STRINGS - HUD
+# STRINGS - GUI
 string.naturescompass.biome=Биом
 string.naturescompass.coordinates=Координаты
 string.naturescompass.distance=Дистанция
@@ -34,6 +34,7 @@ string.naturescompass.found=Найден
 string.naturescompass.notFound=Не найден
 string.naturescompass.radius=Пределы
 string.naturescompass.samples=Список
+string.naturescompass.search=Искать
 string.naturescompass.searching=Поиск
 string.naturescompass.status=Статус
 
