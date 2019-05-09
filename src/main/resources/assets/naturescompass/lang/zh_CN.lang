@@ -7,7 +7,7 @@ item.naturescompass.NaturesCompass.name=自然罗盘
 # STRINGS - BUTTONS
 string.naturescompass.back=返回
 string.naturescompass.info=信息
-string.naturescompass.search=搜索
+string.naturescompass.startSearch=开始搜索
 string.naturescompass.selectBiome=选择生物群系
 string.naturescompass.sortBy=排序依据
 string.naturescompass.teleport=传送点
@@ -26,7 +26,7 @@ string.naturescompass.average=适中
 string.naturescompass.high=高
 string.naturescompass.veryHigh=较高
 
-# STRINGS - HUD
+# STRINGS - GUI
 string.naturescompass.biome=生物群系
 string.naturescompass.coordinates=坐标
 string.naturescompass.distance=距离
@@ -34,6 +34,7 @@ string.naturescompass.found=已发现
 string.naturescompass.notFound=未发现
 string.naturescompass.radius=半径
 string.naturescompass.samples=样本
+string.naturescompass.search=搜索
 string.naturescompass.searching=搜索
 string.naturescompass.status=状态
 

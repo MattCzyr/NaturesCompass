@@ -7,7 +7,7 @@ item.naturescompass.NaturesCompass.name=Nature's Compass
 # STRINGS - BUTTONS
 string.naturescompass.back=Back
 string.naturescompass.info=Info
-string.naturescompass.search=Search
+string.naturescompass.startSearch=Start Search
 string.naturescompass.selectBiome=Select Biome
 string.naturescompass.sortBy=Sort By
 string.naturescompass.teleport=Teleport
@@ -26,7 +26,7 @@ string.naturescompass.average=Average
 string.naturescompass.high=High
 string.naturescompass.veryHigh=Very High
 
-# STRINGS - HUD
+# STRINGS - GUI
 string.naturescompass.biome=Biome
 string.naturescompass.coordinates=Coordinates
 string.naturescompass.distance=Distance
@@ -34,6 +34,7 @@ string.naturescompass.found=Found
 string.naturescompass.notFound=Not Found
 string.naturescompass.radius=Radius
 string.naturescompass.samples=Samples
+string.naturescompass.search=Search
 string.naturescompass.searching=Searching
 string.naturescompass.status=Status
 
