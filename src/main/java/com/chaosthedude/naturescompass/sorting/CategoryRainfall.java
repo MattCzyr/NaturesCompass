@@ -8,8 +8,8 @@ import net.minecraft.world.biome.Biome;
 public class CategoryRainfall implements ISortingCategory {
 
 	@Override
-	public int compare(Object biome1, Object biome2) {
-		return Float.compare(((Biome) biome1).getRainfall(), ((Biome) biome2).getRainfall());
+	public int compare(Biome biome1, Biome biome2) {
+		return Float.compare(biome1.getRainfall(), biome2.getRainfall());
 	}
 
 	@Override

@@ -10,8 +10,8 @@ import net.minecraft.world.biome.Biome;
 public class CategoryTopBlock implements ISortingCategory {
 
 	@Override
-	public int compare(Object biome1, Object biome2) {
-		return ((Biome) biome1).topBlock.getBlock().getLocalizedName().compareTo(((Biome) biome2).topBlock.getBlock().getLocalizedName());
+	public int compare(Biome biome1, Biome biome2) {
+		return biome1.topBlock.getBlock().getLocalizedName().compareTo(biome2.topBlock.getBlock().getLocalizedName());
 	}
 
 	@Override

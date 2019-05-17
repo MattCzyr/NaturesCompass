@@ -6,8 +6,8 @@ import net.minecraft.world.biome.Biome;
 public class CategoryBaseHeight implements ISortingCategory {
 
 	@Override
-	public int compare(Object biome1, Object biome2) {
-		return Float.compare(((Biome) biome1).getBaseHeight(), ((Biome) biome2).getBaseHeight());
+	public int compare(Biome biome1, Biome biome2) {
+		return Float.compare(biome1.getBaseHeight(), biome2.getBaseHeight());
 	}
 	
 	@Override

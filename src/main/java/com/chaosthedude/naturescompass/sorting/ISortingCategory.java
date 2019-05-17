@@ -4,10 +4,10 @@ import java.util.Comparator;
 
 import net.minecraft.world.biome.Biome;
 
-public interface ISortingCategory extends Comparator {
+public interface ISortingCategory extends Comparator<Biome> {
 
 	@Override
-	public int compare(Object biome1, Object biome2);
+	public int compare(Biome biome1, Biome biome2);
 
 	public Object getValue(Biome biome);
 
