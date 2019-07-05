@@ -117,8 +117,7 @@ public class ItemNaturesCompass extends Item {
 	}
 
 	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
-		setState(stack, null, EnumCompassState.SEARCHING, player);
-		setBiomeID(stack, biomeID, player);
+		setSearching(stack, biomeID, player);
 		final SearchResult result = BiomeUtils.searchForBiome(world, stack, Biome.getBiome(biomeID), pos);
 		if (result.found()) {
 			setFound(stack, result.getX(), result.getZ(), result.getSamples(), player);
@@ -137,6 +136,7 @@ public class ItemNaturesCompass extends Item {
 
 	public void setSearching(ItemStack stack, int biomeID, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTagCompound().setInteger("BiomeID", biomeID);
 			stack.getTagCompound().setInteger("State", EnumCompassState.SEARCHING.getID());
 		}
 	}
@@ -147,7 +147,7 @@ public class ItemNaturesCompass extends Item {
 			stack.getTagCompound().setInteger("FoundX", x);
 			stack.getTagCompound().setInteger("FoundZ", z);
 			stack.getTagCompound().setInteger("Samples", samples);
-		}
+		} 
 	}
 
 	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius, int samples) {
