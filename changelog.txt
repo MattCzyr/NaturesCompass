@@ -1,4 +1,12 @@
 --------------------------------------------------
+ VERSION: 1.6.1 -  1.12.2
+--------------------------------------------------
+1.12.2:
+  FIXES:
+  - Fixed ConcurrentModificationException and NullPointerException after using the search GUI due to stacktrace spam in log
+  - Fixed disabled biomes still appearing in biome search list due to server config not syncing with client
+
+--------------------------------------------------
  VERSION: 1.6.0 -  1.12.2
 --------------------------------------------------
 1.12.2:
