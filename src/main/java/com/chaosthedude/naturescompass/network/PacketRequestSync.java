@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.network;
 
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -25,7 +26,7 @@ public class PacketRequestSync implements IMessage {
 		@Override
 		public IMessage onMessage(PacketRequestSync packet, MessageContext ctx) {
 			final boolean canTeleport = ConfigHandler.allowTeleport && PlayerUtils.canTeleport(ctx.getServerHandler().player);
-			return new PacketSync(canTeleport);
+			return new PacketSync(canTeleport, BiomeUtils.getAllowedBiomes());
 		}
 	}
 

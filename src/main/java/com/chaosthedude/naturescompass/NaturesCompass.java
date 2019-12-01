@@ -1,5 +1,7 @@
 package com.chaosthedude.naturescompass;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +13,9 @@ import com.chaosthedude.naturescompass.network.PacketRequestSync;
 import com.chaosthedude.naturescompass.network.PacketSync;
 import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.proxy.CommonProxy;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -28,7 +32,7 @@ public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.6.0";
+	public static final String VERSION = "1.6.1";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -36,6 +40,7 @@ public class NaturesCompass {
 	public static ItemNaturesCompass naturesCompass;
 
 	public static boolean canTeleport;
+	public static List<Biome> allowedBiomes;
 
 	@Instance(MODID)
 	public static NaturesCompass instance;
@@ -62,6 +67,7 @@ public class NaturesCompass {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		allowedBiomes = BiomeUtils.getAllowedBiomes();
 	}
 
 }
