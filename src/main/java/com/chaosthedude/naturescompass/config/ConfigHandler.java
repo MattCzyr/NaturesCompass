@@ -46,7 +46,7 @@ public class ConfigHandler {
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
 
-		comment = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean), name (ex: Ocean), or ID (ex: 0)";
+		comment = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean) or ID (ex: 0)";
 		biomeBlacklist = loadStringArray(Configuration.CATEGORY_GENERAL, "naturescompass.biomeBlacklist", comment, biomeBlacklist);
 
 		comment = "The maximum samples to be taken when searching for a biome.";

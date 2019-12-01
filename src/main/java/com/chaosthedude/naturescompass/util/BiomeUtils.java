@@ -13,9 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BiomeUtils {
 
@@ -87,6 +88,7 @@ public class BiomeUtils {
 		return (int) player.getDistance(x, player.posY, z);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static String getBiomeName(Biome biome) {
 		if (biome != null && biome.getBiomeName() != null) {
 			if (ConfigHandler.fixBiomeNames) {
@@ -111,6 +113,7 @@ public class BiomeUtils {
 		return "";
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static String getBiomeName(int biomeID) {
 		return getBiomeName(Biome.getBiomeForId(biomeID));
 	}
@@ -119,8 +122,6 @@ public class BiomeUtils {
 		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
 		final ResourceLocation biomeResourceLocation = ForgeRegistries.BIOMES.getKey(biome);
 		return biomeBlacklist.contains(String.valueOf(Biome.getIdForBiome(biome)))
-				|| biomeBlacklist.contains(getBiomeName(biome))
-				|| biomeBlacklist.contains(biome.getBiomeName())
 				|| (biomeResourceLocation != null && biomeBlacklist.contains(biomeResourceLocation.toString()));
 	}
 
