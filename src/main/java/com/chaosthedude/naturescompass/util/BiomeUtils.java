@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.ibm.icu.impl.duration.TimeUnit;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
@@ -42,41 +45,50 @@ public class BiomeUtils {
 			return new SearchResult(0, 0, maxDistance, 0, false);
 		}
 
-		final BiomeProvider biomeProvider = world.getBiomeProvider();
-		int direction = -1;
+		EnumFacing direction = EnumFacing.UP;
 		int samples = 0;
+		int chunksGenerated = 0;
 		int nextLength = sampleSpace;
 		int x = startPos.getX();
 		int z = startPos.getZ();
-		while (nextLength / 2 <= maxDistance && samples <= ConfigHandler.maxSamples) {
-			final int fixedDirection = direction == -1 ? -1 : direction % 4;
+		while (startPos.getDistance(x, startPos.getY(), z) <= maxDistance && samples <= ConfigHandler.maxSamples && chunksGenerated < ConfigHandler.maxChunksGenerated) {
 			for (int i = 0; i < nextLength; i += sampleSpace) {
-				if (fixedDirection == 0) {
-					x += sampleSpace;
-				} else if (fixedDirection == 1) {
-					z -= sampleSpace;
-				} else if (fixedDirection == 2) {
-					x -= sampleSpace;
-				} else if (fixedDirection == 3) {
-					z += sampleSpace;
+				switch (direction) {
+					case NORTH:
+						z -= sampleSpace;
+					case EAST:
+						x += sampleSpace;
+					case SOUTH:
+						z += sampleSpace;
+					case WEST:
+						x -= sampleSpace;
+					default:
+						break;
 				}
 
 				final BlockPos pos = new BlockPos(x, world.getHeight(x, z), z);
+				if (!world.isChunkGeneratedAt(x >> 4, z >> 4)) {
+					chunksGenerated++;
+				}
 				final Biome biomeAtPos = world.getChunkFromBlockCoords(pos).getBiome(pos, world.getBiomeProvider());
 				if (biomeAtPos == biome) {
-					return new SearchResult(x, z, nextLength / 2, samples, true);
+					NaturesCompass.logger.info("Search succeeded: " + (int) startPos.getDistance(x, startPos.getY(), z) + " radius, " + samples + " samples, " + chunksGenerated + " chunks generated");
+					return new SearchResult(x, z, (int) startPos.getDistance(x, startPos.getY(), z), samples, true);
 				}
 
 				samples++;
 			}
 
-			if (direction >= 0) {
+			if (direction != EnumFacing.UP) {
 				nextLength += sampleSpace;
+				direction = direction.rotateY();
+			} else {
+				direction = EnumFacing.NORTH;
 			}
-			direction++;
 		}
 
-		return new SearchResult(0, 0, nextLength / 2, samples, false);
+		NaturesCompass.logger.info("Search failed: " + (int) startPos.getDistance(x, startPos.getY(), z) + " radius, " + samples + " samples, " + chunksGenerated + " chunks generated");
+		return new SearchResult(0, 0, (int) startPos.getDistance(x, startPos.getY(), z), samples, false);
 	}
 
 	public static int getBiomeSize(World world) {
