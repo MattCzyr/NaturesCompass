@@ -1,10 +1,22 @@
 --------------------------------------------------
+ VERSION: 1.6.2 -  1.12.2
+--------------------------------------------------
+1.12.2:
+  FEATURES:
+  - Added a new config field to specify how many new chunks can be generated from a single search
+  - Added search success/failure info to log
+  FIX:
+  - Fixed server crash by removing localized biome names as a valid disabled biome identifier
+
+
+--------------------------------------------------
  VERSION: 1.6.1 -  1.12.2
 --------------------------------------------------
 1.12.2:
   FIXES:
   - Fixed ConcurrentModificationException and NullPointerException after using the search GUI due to stacktrace spam in log
   - Fixed disabled biomes still appearing in biome search list due to server config not syncing with client
+
 
 --------------------------------------------------
  VERSION: 1.6.0 -  1.12.2
