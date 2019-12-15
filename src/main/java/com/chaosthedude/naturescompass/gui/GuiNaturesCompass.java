@@ -61,7 +61,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		setupButtons();
 		setupTextFields();
 		if (selectionList == null) {
-			selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height, 36);
+			selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height, 45);
 		}
 	}
 	

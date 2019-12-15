@@ -47,6 +47,7 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 		mc.fontRenderer.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
 		mc.fontRenderer.drawString(title + ": " + value, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString("Source: " + BiomeUtils.getBiomeModId(biome), x+1, y + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 

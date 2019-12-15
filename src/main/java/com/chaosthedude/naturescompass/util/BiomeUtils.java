@@ -130,6 +130,21 @@ public class BiomeUtils {
 		return getBiomeName(Biome.getBiomeForId(biomeID));
 	}
 
+	@SideOnly(Side.CLIENT)
+	public static String getBiomeModId(Biome biome) {
+		if (biome != null && biome.getRegistryName() != null) {
+			String registryEntry = biome.getRegistryName().toString();
+			return registryEntry.substring(0, registryEntry.indexOf(":"));
+		}
+		return "";
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static String getBiomeModId(int biomeID) {
+		return getBiomeModId(Biome.getBiomeForId(biomeID));
+	}
+
+
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.getBiomeBlacklist();
 		final ResourceLocation biomeResourceLocation = ForgeRegistries.BIOMES.getKey(biome);
