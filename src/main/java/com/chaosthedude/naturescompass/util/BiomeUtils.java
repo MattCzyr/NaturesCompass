@@ -131,7 +131,7 @@ public class BiomeUtils {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static String getBiomeModId(Biome biome) {
+	public static String getBiomeSource(Biome biome) {
 		if (biome != null && biome.getRegistryName() != null) {
 			String registryEntry = biome.getRegistryName().toString();
 			return registryEntry.substring(0, registryEntry.indexOf(":"));
@@ -140,8 +140,8 @@ public class BiomeUtils {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static String getBiomeModId(int biomeID) {
-		return getBiomeModId(Biome.getBiomeForId(biomeID));
+	public static String getBiomeSource(int biomeID) {
+		return getBiomeSource(Biome.getBiomeForId(biomeID));
 	}
 
 
