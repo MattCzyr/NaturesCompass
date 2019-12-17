@@ -70,6 +70,7 @@ public class BiomeUtils {
 				if (!world.isChunkGeneratedAt(x >> 4, z >> 4)) {
 					chunksGenerated++;
 				}
+
 				final Biome biomeAtPos = world.getBiomeForCoordsBody(pos);
 				if (biomeAtPos == biome) {
 					NaturesCompass.logger.info("Search succeeded: " + (int) startPos.getDistance(x, startPos.getY(), z) + " radius, " + samples + " samples, " + chunksGenerated + " chunks generated");
