@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.client.EnumOverlaySide;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +25,8 @@ public class ConfigHandler {
 	public static int maxChunksGenerated = 500;
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
-	public static int lineOffset = 1;
+	public static EnumOverlaySide overlaySide = EnumOverlaySide.LEFT;
+	public static int overlayLineOffset = 1;
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -63,7 +65,10 @@ public class ConfigHandler {
 		fixBiomeNames = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.fixBiomeNames", comment, fixBiomeNames);
 
 		comment = "The line offset for information rendered on the HUD.";
-		lineOffset = loadInt(Configuration.CATEGORY_CLIENT, "naturescompass.lineOffset", comment, lineOffset);
+		overlayLineOffset = loadInt(Configuration.CATEGORY_CLIENT, "naturescompass.overlayLineOffset", comment, overlayLineOffset);
+		
+		comment = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
+		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "naturescompass.overlaySide", comment, overlaySide);
 
 		if (config.hasChanged()) {
 			config.save();
@@ -87,8 +92,14 @@ public class ConfigHandler {
 		prop.setComment(comment);
 		return prop.getBoolean(def);
 	}
+	
+	public static EnumOverlaySide loadOverlaySide(String category, String name, String comment, EnumOverlaySide def) {
+		Property prop = config.get(category, name, def.toString());
+		prop.setComment(comment);
+		return EnumOverlaySide.fromString(prop.getString());
+	}
 
-	public static String[] loadStringArray(String category, String comment, String name, String[] def) {
+	public static String[] loadStringArray(String category, String name, String comment, String[] def) {
 		Property prop = config.get(category, name, def);
 		prop.setComment(comment);
 		return prop.getStringList();
