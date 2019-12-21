@@ -1,4 +1,15 @@
 --------------------------------------------------
+ VERSION: 1.7.0 -  1.12.2
+--------------------------------------------------
+1.12.2:
+  FEATURES:
+  - Added each biome's source mod ID to GUI entries and the functionality to sort by mod ID
+  - Added config field to specify the side to render information on the HUD
+  FIX:
+  - Fixed server crash when using Sponge
+
+
+--------------------------------------------------
  VERSION: 1.6.2 -  1.12.2
 --------------------------------------------------
 1.12.2:
