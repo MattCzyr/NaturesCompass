@@ -5,18 +5,17 @@ import java.util.List;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.ibm.icu.impl.duration.TimeUnit;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -135,7 +134,9 @@ public class BiomeUtils {
 	public static String getBiomeSource(Biome biome) {
 		if (biome != null && biome.getRegistryName() != null) {
 			String registryEntry = biome.getRegistryName().toString();
-			return registryEntry.substring(0, registryEntry.indexOf(":"));
+			String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
+			ModContainer sourceContainer = Loader.instance().getIndexedModList().get(modid);
+			return sourceContainer != null ? sourceContainer.getName() : modid;
 		}
 		return "";
 	}
