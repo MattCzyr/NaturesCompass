@@ -1,17 +1,17 @@
 package com.chaosthedude.naturescompass.network;
 
+import java.util.function.Supplier;
+
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketCompassSearch implements IMessage {
+public class PacketCompassSearch {
 
 	private int biomeID;
 
@@ -19,8 +19,7 @@ public class PacketCompassSearch implements IMessage {
 	private int y;
 	private int z;
 
-	public PacketCompassSearch() {
-	}
+	public PacketCompassSearch() {}
 
 	public PacketCompassSearch(int biomeID, BlockPos pos) {
 		this.biomeID = biomeID;
@@ -30,8 +29,7 @@ public class PacketCompassSearch implements IMessage {
 		this.z = pos.getZ();
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
+	public PacketCompassSearch(PacketBuffer buf) {
 		biomeID = buf.readInt();
 
 		x = buf.readInt();
@@ -39,8 +37,7 @@ public class PacketCompassSearch implements IMessage {
 		z = buf.readInt();
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(PacketBuffer buf) {
 		buf.writeInt(biomeID);
 
 		buf.writeInt(x);
@@ -48,18 +45,19 @@ public class PacketCompassSearch implements IMessage {
 		buf.writeInt(z);
 	}
 
-	public static class Handler implements IMessageHandler<PacketCompassSearch, IMessage> {
-		@Override
-		public IMessage onMessage(PacketCompassSearch packet, MessageContext ctx) {
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getServerHandler().player);
+
+	public void handle(Supplier<NetworkEvent.Context> ctx) {
+		System.out.println("enqueue");
+		ctx.get().enqueueWork(() -> {
+			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
-				final World world = ctx.getServerHandler().player.world;
-				natureCompass.searchForBiome(world, ctx.getServerHandler().player, packet.biomeID, new BlockPos(packet.x, packet.y, packet.z), stack);
+				final World world = ctx.get().getSender().world;
+				System.out.println("searching");
+				natureCompass.searchForBiome(world, ctx.get().getSender(), biomeID, new BlockPos(x, y, z), stack);
 			}
-
-			return null;
-		}
+		});
+		ctx.get().setPacketHandled(true);
 	}
 
 }

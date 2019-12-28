@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import java.util.Comparator;
-
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.resources.I18n;

@@ -1,17 +1,16 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.io.IOException;
-
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.Biome.RainType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBiomeInfo extends GuiScreen {
 
 	private GuiNaturesCompass parentScreen;
@@ -31,32 +30,32 @@ public class GuiBiomeInfo extends GuiScreen {
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
-		topBlock = biome.topBlock.getBlock().getLocalizedName();
-		fillerBlock = biome.fillerBlock.getBlock().getLocalizedName();
+		topBlock = biome.getSurfaceBuilderConfig().getTop().getBlock().getNameTextComponent().getFormattedText();
+		fillerBlock = biome.getSurfaceBuilderConfig().getMiddle().getBlock().getNameTextComponent().getFormattedText();
 
-		if (biome.getBaseHeight() < -1) {
+		if (biome.getDepth() < -1) {
 			baseHeight = I18n.format("string.naturescompass.veryLow");
-		} else if (biome.getBaseHeight() < 0) {
+		} else if (biome.getDepth() < 0) {
 			baseHeight = I18n.format("string.naturescompass.low");
-		} else if (biome.getBaseHeight() < 0.4) {
+		} else if (biome.getDepth() < 0.4) {
 			baseHeight = I18n.format("string.naturescompass.average");
-		} else if (biome.getBaseHeight() < 1) {
+		} else if (biome.getDepth() < 1) {
 			baseHeight = I18n.format("string.naturescompass.high");
 		} else {
 			baseHeight = I18n.format("string.naturescompass.veryHigh");
 		}
 
-		if (biome.getHeightVariation() < 0.3) {
+		if (biome.getScale() < 0.3) {
 			heightVariation = I18n.format("string.naturescompass.average");
-		} else if (biome.getHeightVariation() < 0.6) {
+		} else if (biome.getScale() < 0.6) {
 			heightVariation = I18n.format("string.naturescompass.high");
 		} else {
 			heightVariation = I18n.format("string.naturescompass.veryHigh");
 		}
 
-		if (biome.getEnableSnow()) {
+		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitation = I18n.format("string.naturescompass.snow");
-		} else if (biome.canRain()) {
+		} else if (biome.getPrecipitation() == RainType.RAIN) {
 			precipitation = I18n.format("string.naturescompass.rain");
 		} else {
 			precipitation = I18n.format("string.naturescompass.none");
@@ -72,15 +71,15 @@ public class GuiBiomeInfo extends GuiScreen {
 			climate = I18n.format("string.naturescompass.medium");
 		}
 
-		if (biome.getRainfall() <= 0) {
+		if (biome.getDownfall() <= 0) {
 			rainfall = I18n.format("string.naturescompass.none");
-		} else if (biome.getRainfall() < 0.2) {
+		} else if (biome.getDownfall() < 0.2) {
 			rainfall = I18n.format("string.naturescompass.veryLow");
-		} else if (biome.getRainfall() < 0.3) {
+		} else if (biome.getDownfall() < 0.3) {
 			rainfall = I18n.format("string.naturescompass.low");
-		} else if (biome.getRainfall() < 0.5) {
+		} else if (biome.getDownfall() < 0.5) {
 			rainfall = I18n.format("string.naturescompass.average");
-		} else if (biome.getRainfall() < 0.85) {
+		} else if (biome.getDownfall() < 0.85) {
 			rainfall = I18n.format("string.naturescompass.high");
 		} else {
 			rainfall = I18n.format("string.naturescompass.veryHigh");
@@ -99,20 +98,9 @@ public class GuiBiomeInfo extends GuiScreen {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.enabled) {
-			if (button == searchButton) {
-				parentScreen.searchForBiome(biome);
-			} else if (button == backButton) {
-				mc.displayGuiScreen(parentScreen);
-			}
-		}
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		drawCenteredString(fontRenderer, BiomeUtils.getBiomeName(biome), width / 2, 20, 0xffffff);
+		drawCenteredString(fontRenderer, BiomeUtils.getBiomeNameForDisplay(biome), width / 2, 20, 0xffffff);
 
 		drawString(fontRenderer, I18n.format("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
 		drawString(fontRenderer, topBlock, width / 2 - 100, 50, 0x808080);
@@ -138,19 +126,31 @@ public class GuiBiomeInfo extends GuiScreen {
 		drawString(fontRenderer, I18n.format("string.naturescompass.highHumidity"), width / 2 + 40, 130, 0xffffff);
 		drawString(fontRenderer, highHumidity, width / 2 + 40, 140, 0x808080);
 
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		super.render(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
 	protected <T extends GuiButton> T addButton(T button) {
-		buttonList.add(button);
+		buttons.add(button);
 		return (T) button;
 	}
 
 	private void setupButtons() {
-		buttonList.clear();
-		backButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("string.naturescompass.back")));
-		searchButton = addButton(new GuiTransparentButton(1, width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search")));
+		buttons.clear();
+		backButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("string.naturescompass.back")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				super.onClick(mouseX, mouseY);
+				mc.displayGuiScreen(parentScreen);
+			}
+		});
+		searchButton = addButton(new GuiTransparentButton(1, width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				super.onClick(mouseX, mouseY);
+				parentScreen.searchForBiome(biome);
+			}
+		});
 	}
 
 }

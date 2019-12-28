@@ -1,33 +1,32 @@
 package com.chaosthedude.naturescompass.network;
 
+import java.util.function.Supplier;
+
+import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketRequestSync implements IMessage {
+public class PacketRequestSync {
 
-	public PacketRequestSync() {
-	}
+	public PacketRequestSync() {}
+	
+	public PacketRequestSync(PacketBuffer buf) {}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-	}
+	public void fromBytes(PacketBuffer buf) {}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-	}
+	public void toBytes(PacketBuffer buf) {}
 
-	public static class Handler implements IMessageHandler<PacketRequestSync, IMessage> {
-		@Override
-		public IMessage onMessage(PacketRequestSync packet, MessageContext ctx) {
-			final boolean canTeleport = ConfigHandler.allowTeleport && PlayerUtils.canTeleport(ctx.getServerHandler().player);
-			return new PacketSync(canTeleport, BiomeUtils.getAllowedBiomes());
-		}
+	public void handle(Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(ctx.get().getSender());
+			NaturesCompass.network.sendTo(new PacketSync(canTeleport, BiomeUtils.getAllowedBiomes()), ctx.get().getSender().connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+		});
+		ctx.get().setPacketHandled(true);
 	}
 
 }

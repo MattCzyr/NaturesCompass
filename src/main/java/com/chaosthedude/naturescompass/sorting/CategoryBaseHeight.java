@@ -7,12 +7,12 @@ public class CategoryBaseHeight implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getBaseHeight(), biome2.getBaseHeight());
+		return Float.compare(biome1.getDepth(), biome2.getDepth());
 	}
 	
 	@Override
 	public Object getValue(Biome biome) {
-		return biome.getBaseHeight();
+		return biome.getDepth();
 	}
 
 	@Override

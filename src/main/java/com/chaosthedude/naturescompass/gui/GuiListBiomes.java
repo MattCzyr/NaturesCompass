@@ -1,13 +1,8 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
-import org.lwjgl.input.Mouse;
-
 import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
@@ -15,14 +10,13 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class GuiListBiomes extends GuiListExtended {
+@OnlyIn(Dist.CLIENT)
+public class GuiListBiomes extends GuiListExtended<GuiListBiomesEntry> {
 
 	private final GuiNaturesCompass guiNaturesCompass;
-	private final List<GuiListBiomesEntry> entries = Lists.<GuiListBiomesEntry> newArrayList();
 	private int selectedIndex = -1;
 
 	public GuiListBiomes(GuiNaturesCompass guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
@@ -45,28 +39,15 @@ public class GuiListBiomes extends GuiListExtended {
 	protected boolean isSelected(int slotIndex) {
 		return slotIndex == selectedIndex;
 	}
-	
-	@Override
-	public void handleMouseInput() {
-		int i2 = Mouse.getEventDWheel();
-		if (i2 != 0) {
-			if (i2 > 0) {
-				i2 = -1;
-			} else if (i2 < 0) {
-				i2 = 1;
-			}
 
-			amountScrolled += (float) (i2 * slotHeight);
-		} else {
-			super.handleMouseInput();
-		}
+	@Override
+	protected void drawContainerBackground(Tessellator tessellator) {
+		guiNaturesCompass.drawDefaultBackground();
 	}
 	
 	@Override
 	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
 		if (visible) {
-			mouseX = parMouseX;
-			mouseY = parMouseY;
 			drawBackground();
 			int x = getScrollBarX();
 			int j = x + 6;
@@ -85,17 +66,9 @@ public class GuiListBiomes extends GuiListExtended {
 			drawSelectionBox(insideLeft, insideTop, parMouseX, parMouseY, partialTicks);
 		}
 	}
-
-	@Override
-	protected void drawContainerBackground(Tessellator tessellator) {
-		guiNaturesCompass.drawDefaultBackground();
-	}
 	
 	@Override
 	protected void drawSelectionBox(int insideLeft, int insideTop, int mouseX, int mouseY, float partialTicks) {
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder buffer = tessellator.getBuffer();
-
 		for (int i = 0; i < getSize(); i++) {
 			int k = insideTop + i * slotHeight + headerPadding;
 			int l = slotHeight - 4;
@@ -111,15 +84,9 @@ public class GuiListBiomes extends GuiListExtended {
 			drawSlot(i, insideLeft, k, l, mouseX, mouseY, partialTicks);
 		}
 	}
-
-	@Override
+	
 	public GuiListBiomesEntry getListEntry(int index) {
-		return (GuiListBiomesEntry) entries.get(index);
-	}
-
-	@Override
-	protected int getSize() {
-		return entries.size();
+		return getChildren().get(index);
 	}
 
 	@Nullable
@@ -128,9 +95,9 @@ public class GuiListBiomes extends GuiListExtended {
 	}
 
 	public void refreshList() {
-		entries.clear();
+		clearEntries();
 		for (Biome biome : guiNaturesCompass.sortBiomes()) {
-			entries.add(new GuiListBiomesEntry(this, biome));
+			addEntry(new GuiListBiomesEntry(this, biome));
 		}
 		selectBiome(-1);
 	}
@@ -138,6 +105,10 @@ public class GuiListBiomes extends GuiListExtended {
 	public void selectBiome(int index) {
 		selectedIndex = index;
 		guiNaturesCompass.selectBiome(getSelectedBiome());
+	}
+	
+	public boolean hasSelection() {
+		return getSelectedBiome() != null;
 	}
 
 	public GuiNaturesCompass getGuiNaturesCompass() {

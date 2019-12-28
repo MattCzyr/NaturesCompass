@@ -1,17 +1,19 @@
 package com.chaosthedude.naturescompass.registry;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@EventBusSubscriber(modid = NaturesCompass.MODID)
+@EventBusSubscriber(modid = NaturesCompass.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class NaturesCompassRegistry {
 	
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> e) {
+		NaturesCompass.naturesCompass = new ItemNaturesCompass();
 		e.getRegistry().register(NaturesCompass.naturesCompass);
 	}
 

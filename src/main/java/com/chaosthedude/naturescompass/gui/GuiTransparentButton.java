@@ -4,7 +4,10 @@ import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiTransparentButton extends GuiButton {
 	
 	public GuiTransparentButton(int id, int x, int y, int width, int height, String text) {
@@ -12,8 +15,9 @@ public class GuiTransparentButton extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
+			Minecraft mc = Minecraft.getInstance();
 			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			final float state = getHoverState(hovered);
 			final float f = state / 2 * 0.9F + 0.1F;

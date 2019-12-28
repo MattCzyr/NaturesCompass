@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "ru_RU",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Компас природы",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Назад",
+    "string.naturescompass.info": "Информация",
+    "string.naturescompass.startSearch": "Начать поиск",
+    "string.naturescompass.selectBiome": "Выбрать биом",
+    "string.naturescompass.sortBy": "Сорт. по",
+    "string.naturescompass.teleport": "Телепортироваться",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Холодный",
+    "string.naturescompass.medium": "Умеренный",
+    "string.naturescompass.ocean": "Океанический",
+    "string.naturescompass.warm": "Тёплый",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Отсутствует",
+    "string.naturescompass.veryLow": "Очень низкая",
+    "string.naturescompass.low": "Низкая",
+    "string.naturescompass.average": "Средняя",
+    "string.naturescompass.high": "Высокая",
+    "string.naturescompass.veryHigh": "Очень высокая",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Биом",
+    "string.naturescompass.coordinates": "Координаты",
+    "string.naturescompass.distance": "Дистанция",
+    "string.naturescompass.found": "Найден",
+    "string.naturescompass.notFound": "Не найден",
+    "string.naturescompass.radius": "Пределы",
+    "string.naturescompass.samples": "Список",
+    "string.naturescompass.search": "Искать",
+    "string.naturescompass.searching": "Поиск",
+    "string.naturescompass.source": "начало",
+    "string.naturescompass.status": "Статус",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Осн. высота (0 = 64)",
+    "string.naturescompass.climate": "Климат",
+    "string.naturescompass.fillerBlock": "Блок-заполнитель",
+    "string.naturescompass.heightVariation": "Колебания высот",
+    "string.naturescompass.highHumidity": "Высокая влажность",
+    "string.naturescompass.name": "Название",
+    "string.naturescompass.precipitation": "Тип осадков",
+    "string.naturescompass.rainfall": "Количество осадков",
+    "string.naturescompass.temperature": "Температура",
+    "string.naturescompass.topBlock": "Верхний блок",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Снег",
+    "string.naturescompass.rain": "Дождь"
+}

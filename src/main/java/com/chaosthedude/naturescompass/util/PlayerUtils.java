@@ -4,7 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListOpsEntry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 
 public class PlayerUtils {
 	
@@ -13,9 +15,9 @@ public class PlayerUtils {
 	}
 
 	public static boolean cheatModeEnabled(EntityPlayer player) {
-		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		final MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
 		if (server != null && server.isSinglePlayer()) {
-			return server.worlds[0].getWorldInfo().areCommandsAllowed();
+			return server.getWorld(DimensionType.OVERWORLD).getWorldInfo().areCommandsAllowed();
 		}
 
 		return false;

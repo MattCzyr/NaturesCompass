@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.chaosthedude.naturescompass.client.ClientProxy;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.chaosthedude.naturescompass.gui.GuiHandler;
 import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketCompassSearch;
 import com.chaosthedude.naturescompass.network.PacketRequestSync;
@@ -15,19 +15,18 @@ import com.chaosthedude.naturescompass.network.PacketTeleport;
 import com.chaosthedude.naturescompass.proxy.CommonProxy;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(modid = NaturesCompass.MODID, name = NaturesCompass.NAME, version = NaturesCompass.VERSION, acceptedMinecraftVersions = "[1.12,1.12.2]")
-
+@Mod(NaturesCompass.MODID)
 public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
@@ -36,37 +35,37 @@ public class NaturesCompass {
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
-	public static SimpleNetworkWrapper network;
+	public static SimpleChannel network;
 	public static ItemNaturesCompass naturesCompass;
 
 	public static boolean canTeleport;
 	public static List<Biome> allowedBiomes;
 
-	@Instance(MODID)
 	public static NaturesCompass instance;
 
-	@SidedProxy(clientSide = "com.chaosthedude.naturescompass.client.ClientProxy", serverSide = "com.chaosthedude.naturescompass.proxy.CommonProxy")
-	public static CommonProxy proxy;
-
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		ConfigHandler.loadConfig(event.getSuggestedConfigurationFile());
-
-		naturesCompass = new ItemNaturesCompass();
-		naturesCompass.setRegistryName(ItemNaturesCompass.NAME);
-
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-		network.registerMessage(PacketCompassSearch.Handler.class, PacketCompassSearch.class, 0, Side.SERVER);
-		network.registerMessage(PacketTeleport.Handler.class, PacketTeleport.class, 1, Side.SERVER);
-		network.registerMessage(PacketRequestSync.Handler.class, PacketRequestSync.class, 2, Side.SERVER);
-		network.registerMessage(PacketSync.Handler.class, PacketSync.class, 3, Side.CLIENT);
-
-		proxy.registerEvents();
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
+	
+	public NaturesCompass() {
+		instance = this;
+		
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 	}
 
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+	private void preInit(FMLCommonSetupEvent event) {
+		network = NetworkRegistry.newSimpleChannel(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID), () -> "1.0", s -> true, s -> true);
+		
+		// Server packets
+		network.registerMessage(0, PacketCompassSearch.class, PacketCompassSearch::toBytes, PacketCompassSearch::new, PacketCompassSearch::handle);
+		network.registerMessage(1, PacketTeleport.class, PacketTeleport::toBytes, PacketTeleport::new, PacketTeleport::handle);
+		network.registerMessage(2, PacketRequestSync.class, PacketRequestSync::toBytes, PacketRequestSync::new, PacketRequestSync::handle);
+		
+		// Client packet
+		network.registerMessage(3, PacketSync.class, PacketSync::toBytes, PacketSync::new, PacketSync::handle);
+
+		proxy.registerEvents();
+		
 		allowedBiomes = BiomeUtils.getAllowedBiomes();
 	}
 

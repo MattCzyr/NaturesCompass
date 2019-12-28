@@ -12,8 +12,8 @@ public class ItemUtils {
 	public static boolean verifyNBT(ItemStack stack) {
 		if (stack.isEmpty() || stack.getItem() != NaturesCompass.naturesCompass) {
 			return false;
-		} else if (!stack.hasTagCompound()) {
-			stack.setTagCompound(new NBTTagCompound());
+		} else if (!stack.hasTag()) {
+			stack.setTag(new NBTTagCompound());
 		}
 
 		return true;

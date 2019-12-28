@@ -1,19 +1,20 @@
 package com.chaosthedude.naturescompass.items;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.gui.GuiNaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketRequestSync;
-import com.chaosthedude.naturescompass.util.BiomeSearchWorker;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -23,29 +24,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemNaturesCompass extends Item {
 
-	public static final String NAME = "NaturesCompass";
+	public static final String NAME = "naturescompass";
 
 	public ItemNaturesCompass() {
-		super();
-
-		setCreativeTab(CreativeTabs.TOOLS);
-		setUnlocalizedName(NaturesCompass.MODID + "." + NAME);
+		super(new Properties().maxStackSize(1).group(ItemGroup.TOOLS));
+        setRegistryName(NAME);
 
 		addPropertyOverride(new ResourceLocation("angle"), new IItemPropertyGetter() {
-			@SideOnly(Side.CLIENT)
-			double rotation;
-			@SideOnly(Side.CLIENT)
-			double rota;
-			@SideOnly(Side.CLIENT)
-			long lastUpdateTick;
+			@OnlyIn(Dist.CLIENT)
+	        private double rotation;
+	        @OnlyIn(Dist.CLIENT)
+	        private double rota;
+	        @OnlyIn(Dist.CLIENT)
+	        private long lastUpdateTick;
 
-			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, World world, EntityLivingBase entityLiving) {
+	        @OnlyIn(Dist.CLIENT)
+	        @Override
+			public float call(ItemStack stack, World world, EntityLivingBase entityLiving) {
 				if (entityLiving == null && !stack.isOnItemFrame()) {
 					return 0.0F;
 				} else {
@@ -68,10 +68,10 @@ public class ItemNaturesCompass extends Item {
 				}
 			}
 
-			@SideOnly(Side.CLIENT)
+	        @OnlyIn(Dist.CLIENT)
 			private double wobble(World world, double amount) {
-				if (world.getTotalWorldTime() != lastUpdateTick) {
-					lastUpdateTick = world.getTotalWorldTime();
+				if (world.getGameTime() != lastUpdateTick) {
+					lastUpdateTick = world.getGameTime();
 					double d0 = amount - rotation;
 					d0 = d0 % (Math.PI * 2D);
 					d0 = MathHelper.clamp(d0, -1.0D, 1.0D);
@@ -83,12 +83,12 @@ public class ItemNaturesCompass extends Item {
 				return rotation;
 			}
 
-			@SideOnly(Side.CLIENT)
+	        @OnlyIn(Dist.CLIENT)
 			private double getFrameRotation(EntityItemFrame itemFrame) {
 				return (double) MathHelper.wrapDegrees(180 + itemFrame.facingDirection.getHorizontalIndex() * 90);
 			}
 
-			@SideOnly(Side.CLIENT)
+	        @OnlyIn(Dist.CLIENT)
 			private double getAngle(World world, Entity entity, ItemStack stack) {
 				BlockPos pos;
 				if (getState(stack) == EnumCompassState.FOUND) {
@@ -106,9 +106,12 @@ public class ItemNaturesCompass extends Item {
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		if (!player.isSneaking()) {
 			if (world.isRemote) {
+				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				NaturesCompass.network.sendToServer(new PacketRequestSync());
+				Minecraft.getInstance().displayGuiScreen(new GuiNaturesCompass(world, player, stack, (ItemNaturesCompass) stack.getItem(), NaturesCompass.allowedBiomes));
 			}
-			player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
+			//player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
+			
 		} else {
 			setState(player.getHeldItem(hand), null, EnumCompassState.INACTIVE, player);
 		}
@@ -118,8 +121,7 @@ public class ItemNaturesCompass extends Item {
 
 	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeID, player);
-		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), pos);
-		worker.start();
+		BiomeUtils.searchForBiome(world, player, stack, Biome.getBiome(biomeID, null), pos);
 	}
 
 	public boolean isActive(ItemStack stack) {
@@ -132,73 +134,73 @@ public class ItemNaturesCompass extends Item {
 
 	public void setSearching(ItemStack stack, int biomeID, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("BiomeID", biomeID);
-			stack.getTagCompound().setInteger("State", EnumCompassState.SEARCHING.getID());
+			stack.getTag().setInt("BiomeID", biomeID);
+			stack.getTag().setInt("State", EnumCompassState.SEARCHING.getID());
 		}
 	}
 
 	public void setFound(ItemStack stack, int x, int z, int samples, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("State", EnumCompassState.FOUND.getID());
-			stack.getTagCompound().setInteger("FoundX", x);
-			stack.getTagCompound().setInteger("FoundZ", z);
-			stack.getTagCompound().setInteger("Samples", samples);
-		} 
+			stack.getTag().setInt("State", EnumCompassState.FOUND.getID());
+			stack.getTag().setInt("FoundX", x);
+			stack.getTag().setInt("FoundZ", z);
+			stack.getTag().setInt("Samples", samples);
+		}
 	}
 
 	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius, int samples) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("State", EnumCompassState.NOT_FOUND.getID());
-			stack.getTagCompound().setInteger("SearchRadius", searchRadius);
-			stack.getTagCompound().setInteger("Samples", samples);
+			stack.getTag().setInt("State", EnumCompassState.NOT_FOUND.getID());
+			stack.getTag().setInt("SearchRadius", searchRadius);
+			stack.getTag().setInt("Samples", samples);
 		}
 	}
 
 	public void setInactive(ItemStack stack, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("State", EnumCompassState.INACTIVE.getID());
+			stack.getTag().setInt("State", EnumCompassState.INACTIVE.getID());
 		}
 	}
 
 	public void setState(ItemStack stack, BlockPos pos, EnumCompassState state, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("State", state.getID());
+			stack.getTag().setInt("State", state.getID());
 		}
 	}
 
 	public void setFoundBiomeX(ItemStack stack, int x, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("FoundX", x);
+			stack.getTag().setInt("FoundX", x);
 		}
 	}
 
 	public void setFoundBiomeZ(ItemStack stack, int z, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("FoundZ", z);
+			stack.getTag().setInt("FoundZ", z);
 		}
 	}
 
 	public void setBiomeID(ItemStack stack, int biomeID, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("BiomeID", biomeID);
+			stack.getTag().setInt("BiomeID", biomeID);
 		}
 	}
 
 	public void setSearchRadius(ItemStack stack, int searchRadius, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("SearchRadius", searchRadius);
+			stack.getTag().setInt("SearchRadius", searchRadius);
 		}
 	}
 
 	public void setSamples(ItemStack stack, int samples, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTagCompound().setInteger("Samples", samples);
+			stack.getTag().setInt("Samples", samples);
 		}
 	}
 
 	public EnumCompassState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return EnumCompassState.fromID(stack.getTagCompound().getInteger("State"));
+			return EnumCompassState.fromID(stack.getTag().getInt("State"));
 		}
 
 		return null;
@@ -206,7 +208,7 @@ public class ItemNaturesCompass extends Item {
 
 	public int getFoundBiomeX(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTagCompound().getInteger("FoundX");
+			return stack.getTag().getInt("FoundX");
 		}
 
 		return 0;
@@ -214,7 +216,7 @@ public class ItemNaturesCompass extends Item {
 
 	public int getFoundBiomeZ(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTagCompound().getInteger("FoundZ");
+			return stack.getTag().getInt("FoundZ");
 		}
 
 		return 0;
@@ -222,7 +224,7 @@ public class ItemNaturesCompass extends Item {
 
 	public int getBiomeID(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTagCompound().getInteger("BiomeID");
+			return stack.getTag().getInt("BiomeID");
 		}
 
 		return -1;
@@ -230,7 +232,7 @@ public class ItemNaturesCompass extends Item {
 
 	public int getSearchRadius(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTagCompound().getInteger("SearchRadius");
+			return stack.getTag().getInt("SearchRadius");
 		}
 
 		return -1;
@@ -238,7 +240,7 @@ public class ItemNaturesCompass extends Item {
 
 	public int getSamples(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTagCompound().getInteger("Samples");
+			return stack.getTag().getInt("Samples");
 		}
 
 		return -1;

@@ -1,117 +1,77 @@
 package com.chaosthedude.naturescompass.config;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.client.EnumOverlaySide;
-import com.google.common.collect.Lists;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
-
-	public static Configuration config;
-
-	public static boolean allowTeleport = true;
-	public static String[] biomeBlacklist = {};
-	public static int distanceModifier = 2500;
-	public static int sampleSpaceModifier = 16;
-	public static int maxSamples = 50000;
-	public static boolean displayWithChatOpen = true;
-	public static boolean fixBiomeNames = true;
-	public static EnumOverlaySide overlaySide = EnumOverlaySide.LEFT;
-	public static int overlayLineOffset = 1;
-
-	public static void loadConfig(File configFile) {
-		config = new Configuration(configFile);
-
-		config.load();
-		init();
-
-		MinecraftForge.EVENT_BUS.register(new ChangeListener());
-	}
-
-	public static void init() {
-		String comment;
-
-		comment = "Allows a player to teleport to a located biome when in creative mode, opped, or in cheat mode.";
-		allowTeleport = loadBool(Configuration.CATEGORY_GENERAL, "naturescompass.allowTeleport", comment, allowTeleport);
-
-		comment = "biomeSize * distanceModifier = maxSearchDistance. Raising this value will increase search accuracy but will potentially make the process more resource intensive.";
-		distanceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.distanceModifier", comment, distanceModifier);
-
-		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
-		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
-
-		comment = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean) or ID (ex: 0)";
-		biomeBlacklist = loadStringArray(Configuration.CATEGORY_GENERAL, "naturescompass.biomeBlacklist", comment, biomeBlacklist);
-
-		comment = "The maximum samples to be taken when searching for a biome.";
-		maxSamples = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.maxSamples", comment, maxSamples);
-		
-		comment = "Displays Nature's Compass information even while chat is open.";
-		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.displayWithChatOpen", comment, displayWithChatOpen);
-
-		comment = "Fixes biome names by adding missing spaces. Ex: ForestHills becomes Forest Hills";
-		fixBiomeNames = loadBool(Configuration.CATEGORY_CLIENT, "naturescompass.fixBiomeNames", comment, fixBiomeNames);
-
-		comment = "The line offset for information rendered on the HUD.";
-		overlayLineOffset = loadInt(Configuration.CATEGORY_CLIENT, "naturescompass.overlayLineOffset", comment, overlayLineOffset);
-		
-		comment = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
-		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "naturescompass.overlaySide", comment, overlaySide);
-
-		if (config.hasChanged()) {
-			config.save();
-		}
-	}
-
-	public static int loadInt(String category, String name, String comment, int def) {
-		final Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		int val = prop.getInt(def);
-		if (val < 0) {
-			val = def;
-			prop.set(def);
-		}
-
-		return val;
-	}
-
-	public static boolean loadBool(String category, String name, String comment, boolean def) {
-		final Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		return prop.getBoolean(def);
-	}
 	
-	public static EnumOverlaySide loadOverlaySide(String category, String name, String comment, EnumOverlaySide def) {
-		Property prop = config.get(category, name, def.toString());
-		prop.setComment(comment);
-		return EnumOverlaySide.fromString(prop.getString());
-	}
+	private static final ForgeConfigSpec.Builder GENERAL_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+	
+    public static final General GENERAL = new General(GENERAL_BUILDER);
+    public static final Client CLIENT = new Client(CLIENT_BUILDER);
+    
+    public static final ForgeConfigSpec GENERAL_SPEC = GENERAL_BUILDER.build();
+    public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 
-	public static String[] loadStringArray(String category, String name, String comment, String[] def) {
-		Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		return prop.getStringList();
-	}
+    public static class General {
+        public final ForgeConfigSpec.BooleanValue allowTeleport;
+        public final ForgeConfigSpec.IntValue radiusModifier;
+        public final ForgeConfigSpec.IntValue sampleSpaceModifier;
+        public final ForgeConfigSpec.ConfigValue<List<String>> biomeBlacklist;
+        public final ForgeConfigSpec.IntValue maxSamples;
 
-	public static List<String> getBiomeBlacklist() {
-		return Lists.newArrayList(biomeBlacklist);
-	}
+        General(ForgeConfigSpec.Builder builder) {
+        	String desc;
+            builder.push("General");
+            
+            desc = "Allows a player to teleport to a located biome when in creative mode, opped, or in cheat mode.";
+            allowTeleport = builder.comment(desc).define("allowTeleport", true);
 
-	public static class ChangeListener {
-		@SubscribeEvent
-		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-			if (event.getModID().equals(NaturesCompass.MODID)) {
-				init();
-			}
-		}
-	}
+            desc = "biomeSize * radiusModifier = maxSearchRadius. Raising this value will increase search accuracy but will potentially make the process more resource .";
+    		radiusModifier = builder.comment(desc).defineInRange("radiusModifier", 2500, 0, 1000000);
+
+    		desc = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
+    		sampleSpaceModifier = builder.comment(desc).defineInRange("sampleSpaceModifier", 16, 0, 1000000);
+
+    		desc = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean) or ID (ex: 0)";
+    		biomeBlacklist = builder.comment(desc).define("biomeBlacklist", new ArrayList<String>());
+
+    		desc = "The maximum number of samples to be taken when searching for a biome.";
+    		maxSamples = builder.comment(desc).defineInRange("maxSamples", 50000, 0, 1000000);
+
+            builder.pop();
+        }
+    }
+    
+    public static class Client {
+    	public final ForgeConfigSpec.BooleanValue displayWithChatOpen;
+        public final ForgeConfigSpec.BooleanValue fixBiomeNames;
+        public final ForgeConfigSpec.EnumValue<EnumOverlaySide> overlaySide;
+     	public final ForgeConfigSpec.IntValue overlayLineOffset;
+        
+        Client(ForgeConfigSpec.Builder builder) {
+        	String desc;
+        	builder.push("Client");
+        	
+        	desc = "Displays Nature's Compass information even while chat is open.";
+    		displayWithChatOpen = builder.comment(desc).define("displayWithChatOpen", true);
+
+    		desc = "Fixes biome names by adding missing spaces. Ex: ForestHills becomes Forest Hills";
+    		fixBiomeNames = builder.comment(desc).define("fixBiomeNames", true);
+    		
+    		desc = "The line offset for information rendered on the HUD.";
+    		overlayLineOffset = builder.comment(desc).defineInRange("overlayLineOffset", 1, 0, 50);
+    		
+    		desc = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
+     		overlaySide = builder.comment(desc).defineEnum("overlaySide", EnumOverlaySide.LEFT);
+        
+    		builder.pop();
+        }
+    }
 
 }

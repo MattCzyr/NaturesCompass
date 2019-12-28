@@ -3,17 +3,19 @@ package com.chaosthedude.naturescompass.gui;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.biome.Biome.RainType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
+@OnlyIn(Dist.CLIENT)
+public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBiomesEntry> {
 
 	private final Minecraft mc;
 	private final GuiNaturesCompass guiNaturesCompass;
@@ -25,15 +27,16 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 		this.biomesList = biomesList;
 		this.biome = biome;
 		guiNaturesCompass = biomesList.getGuiNaturesCompass();
-		mc = Minecraft.getMinecraft();
+		mc = Minecraft.getInstance();
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
+	public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_,
+			float partialTicks) {
 		String precipitationState = I18n.format("string.naturescompass.none");
-		if (biome.getEnableSnow()) {
+		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitationState = I18n.format("string.naturescompass.snow");
-		} else if (biome.canRain()) {
+		} else if (biome.getPrecipitation() == RainType.RAIN) {
 			precipitationState = I18n.format("string.naturescompass.rain");
 		}
 
@@ -41,38 +44,30 @@ public class GuiListBiomesEntry implements GuiListExtended.IGuiListEntry {
 		Object value = guiNaturesCompass.getSortingCategory().getValue(biome);
 		if (value == null) {
 			title = I18n.format("string.naturescompass.topBlock");
-			value = biome.topBlock.getBlock().getLocalizedName();
+			value = I18n.format(biome.getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
-		mc.fontRenderer.drawString(BiomeUtils.getBiomeName(biome), x + 1, y + 1, 0xffffff);
-		mc.fontRenderer.drawString(title + ": " + value, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), x + 1, y + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.fontRenderer.drawString(BiomeUtils.getBiomeNameForDisplay(biome), getX() + 1, getY() + 1, 0xffffff);
+		mc.fontRenderer.drawString(title + ": " + value, getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-
+	
 	@Override
-	public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-		biomesList.selectBiome(slotIndex);
-		if (Minecraft.getSystemTime() - lastClickTime < 250L) {
-			selectBiome();
-			return true;
-		}
+	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+      biomesList.selectBiome(getIndex());
+      if (Util.milliTime() - lastClickTime < 250L) {
+         searchForBiome();
+         return true;
+      } else {
+         lastClickTime = Util.milliTime();
+         return false;
+      }
+   }
 
-		lastClickTime = Minecraft.getSystemTime();
-		return false;
-	}
-
-	@Override
-	public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
-	}
-
-	@Override
-	public void updatePosition(int par1, int par2, int par3, float par4) {
-	}
-
-	public void selectBiome() {
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+	public void searchForBiome() {
+		mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		guiNaturesCompass.searchForBiome(biome);
 	}
 

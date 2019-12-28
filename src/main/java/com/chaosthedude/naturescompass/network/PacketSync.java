@@ -2,56 +2,51 @@ package com.chaosthedude.naturescompass.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketSync implements IMessage {
+public class PacketSync {
 
 	private boolean canTeleport;
 	private List<Biome> allowedBiomes;
 
-	public PacketSync() {
-	}
+	public PacketSync() {}
 	
 	public PacketSync(boolean canTeleport, List<Biome> allowedBiomes) {
 		this.canTeleport = canTeleport;
 		this.allowedBiomes = allowedBiomes;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
+	public PacketSync(PacketBuffer buf) {
 		canTeleport = buf.readBoolean();
 		allowedBiomes = new ArrayList<Biome>();
-		int size = buf.readInt();
-		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(Biome.getBiomeForId(buf.readInt()));
-		}
+ 		int size = buf.readInt();
+ 		for (int i = 0; i < size; i++) {
+ 			allowedBiomes.add(Biome.getBiome(buf.readInt(), null));
+ 		}
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(PacketBuffer buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
-		for (Biome biome : allowedBiomes) {
-			buf.writeInt(Biome.getIdForBiome(biome));
-		}
+ 		for (Biome biome : allowedBiomes) {
+ 			System.out.println(BiomeUtils.getBiomeName(biome));
+ 			buf.writeInt(BiomeUtils.getIDForBiome(biome));
+ 		}
 	}
 
-	public static class Handler implements IMessageHandler<PacketSync, IMessage> {
-		@Override
-		public IMessage onMessage(PacketSync packet, MessageContext ctx) {
-			NaturesCompass.canTeleport = packet.canTeleport;
-			NaturesCompass.allowedBiomes = packet.allowedBiomes;
-
-			return null;
-		}
+	public void handle(Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			NaturesCompass.canTeleport = canTeleport;
+			NaturesCompass.allowedBiomes = allowedBiomes;
+		});
+		ctx.get().setPacketHandled(true);
 	}
 
 }

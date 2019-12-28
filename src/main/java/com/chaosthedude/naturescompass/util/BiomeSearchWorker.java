@@ -15,7 +15,7 @@ import net.minecraftforge.common.WorldWorkerManager;
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	public final int sampleSpace;
-	public final int maxDistance;
+	public final int maxRadius;
 	public World world;
 	public Biome biome;
 	public BlockPos startPos;
@@ -37,8 +37,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		sampleSpace = ConfigHandler.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
-		maxDistance = ConfigHandler.distanceModifier * BiomeUtils.getBiomeSize(world);
+		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(world);
+		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(world);
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
@@ -48,8 +48,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	public void start() {
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-			if (maxDistance > 0 && sampleSpace > 0) {
-				NaturesCompass.logger.info("Starting search: " + sampleSpace + " sample space, " + maxDistance + " max distance");
+			if (maxRadius > 0 && sampleSpace > 0) {
+				NaturesCompass.logger.info("Starting search: " + sampleSpace + " sample space, " + maxRadius + " max radius");
 				WorldWorkerManager.addWorker(this);
 			} else {
 				finish(false);
@@ -59,7 +59,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	@Override
 	public boolean hasWork() {
-		return !finished && getRadius() < maxDistance && samples < ConfigHandler.maxSamples;
+		return !finished && getRadius() <= maxRadius && samples <= ConfigHandler.GENERAL.maxSamples.get();
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			final Biome biomeAtPos = world.getBiomeForCoordsBody(pos);
+			final Biome biomeAtPos = world.getBiomeBody(pos);
 			if (biomeAtPos == biome) {
 				finish(true);
 				return false;
