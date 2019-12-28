@@ -2,10 +2,10 @@ package com.chaosthedude.naturescompass.items;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.network.PacketRequestSync;
+import com.chaosthedude.naturescompass.util.BiomeSearchWorker;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
-import com.chaosthedude.naturescompass.util.SearchResult;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -118,12 +118,8 @@ public class ItemNaturesCompass extends Item {
 
 	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeID, player);
-		final SearchResult result = BiomeUtils.searchForBiome(world, stack, Biome.getBiome(biomeID), pos);
-		if (result.found()) {
-			setFound(stack, result.getX(), result.getZ(), result.getSamples(), player);
-		} else {
-			setNotFound(stack, player, result.getRadius(), result.getSamples());
-		}
+		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), pos);
+		worker.start();
 	}
 
 	public boolean isActive(ItemStack stack) {

@@ -33,64 +33,6 @@ public class BiomeUtils {
 		return biomes;
 	}
 
-	public static SearchResult searchForBiome(World world, ItemStack stack, Biome biome, BlockPos startPos) {
-		if (stack.isEmpty() || stack.getItem() != NaturesCompass.naturesCompass) {
-			return null;
-		}
-
-		final int sampleSpace = ConfigHandler.sampleSpaceModifier * getBiomeSize(world);
-		final int maxDistance = ConfigHandler.distanceModifier * getBiomeSize(world);
-		if (maxDistance <= 0 || sampleSpace <= 0) {
-			return new SearchResult(0, 0, maxDistance, 0, false);
-		}
-
-		EnumFacing direction = EnumFacing.UP;
-		int samples = 0;
-		int chunksGenerated = 0;
-		int nextLength = sampleSpace;
-		int x = startPos.getX();
-		int z = startPos.getZ();
-		while (startPos.getDistance(x, startPos.getY(), z) <= maxDistance && samples <= ConfigHandler.maxSamples && chunksGenerated < ConfigHandler.maxChunksGenerated) {
-			for (int i = 0; i < nextLength; i += sampleSpace) {
-				switch (direction) {
-					case NORTH:
-						z -= sampleSpace;
-					case EAST:
-						x += sampleSpace;
-					case SOUTH:
-						z += sampleSpace;
-					case WEST:
-						x -= sampleSpace;
-					default:
-						break;
-				}
-
-				final BlockPos pos = new BlockPos(x, world.getHeight(x, z), z);
-				if (!world.isChunkGeneratedAt(x >> 4, z >> 4)) {
-					chunksGenerated++;
-				}
-
-				final Biome biomeAtPos = world.getBiomeForCoordsBody(pos);
-				if (biomeAtPos == biome) {
-					NaturesCompass.logger.info("Search succeeded: " + (int) startPos.getDistance(x, startPos.getY(), z) + " radius, " + samples + " samples, " + chunksGenerated + " chunks generated");
-					return new SearchResult(x, z, (int) startPos.getDistance(x, startPos.getY(), z), samples, true);
-				}
-
-				samples++;
-			}
-
-			if (direction != EnumFacing.UP) {
-				nextLength += sampleSpace;
-				direction = direction.rotateY();
-			} else {
-				direction = EnumFacing.NORTH;
-			}
-		}
-
-		NaturesCompass.logger.info("Search failed: " + (int) startPos.getDistance(x, startPos.getY(), z) + " radius, " + samples + " samples, " + chunksGenerated + " chunks generated");
-		return new SearchResult(0, 0, (int) startPos.getDistance(x, startPos.getY(), z), samples, false);
-	}
-
 	public static int getBiomeSize(World world) {
 		final String settings = world.getWorldInfo().getGeneratorOptions();
 		return ChunkGeneratorSettings.Factory.jsonToFactory(settings).build().biomeSize;
