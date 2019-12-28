@@ -1,4 +1,14 @@
 --------------------------------------------------
+ VERSION: 1.8.0 -  1.12.2
+--------------------------------------------------
+1.12.2:
+  FEATURES:
+  - Significantly improved biome search efficiency to essentially lag-free performance under normal circumstances
+  FIX:
+  - Fixed a major flaw in search accuracy present in version 1.7.0
+
+
+--------------------------------------------------
  VERSION: 1.7.0 -  1.12.2
 --------------------------------------------------
 1.12.2:
