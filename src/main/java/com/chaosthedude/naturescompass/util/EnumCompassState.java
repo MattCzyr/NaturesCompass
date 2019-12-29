@@ -2,10 +2,7 @@ package com.chaosthedude.naturescompass.util;
 
 public enum EnumCompassState {
 
-	INACTIVE(0),
-	SEARCHING(1),
-	FOUND(2),
-	NOT_FOUND(3);
+	INACTIVE(0), SEARCHING(1), FOUND(2), NOT_FOUND(3);
 
 	private int id;
 

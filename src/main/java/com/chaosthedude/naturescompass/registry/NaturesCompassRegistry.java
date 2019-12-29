@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = NaturesCompass.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class NaturesCompassRegistry {
-	
+
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> e) {
 		NaturesCompass.naturesCompass = new ItemNaturesCompass();

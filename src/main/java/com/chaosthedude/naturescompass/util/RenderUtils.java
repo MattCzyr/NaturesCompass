@@ -19,12 +19,12 @@ public class RenderUtils {
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
-        fontRenderer.drawStringWithShadow(string, x, y, color);
-    }
-    
-    public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
-        fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
-    }
+		fontRenderer.drawStringWithShadow(string, x, y, color);
+	}
+
+	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
+	}
 
 	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
 		yOffset += lineOffset * 9;
@@ -34,7 +34,7 @@ public class RenderUtils {
 			drawStringRight(string, fontRenderer, mc.mainWindow.getScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
-	
+
 	public static void drawRect(int left, int top, int right, int bottom, int color) {
 		if (left < right) {
 			int temp = left;

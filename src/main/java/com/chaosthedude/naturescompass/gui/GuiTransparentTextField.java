@@ -39,7 +39,7 @@ public class GuiTransparentTextField extends GuiTextField {
 				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
-            int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
+			int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = getSelectionEnd() - pseudoLineScrollOffset;
 			String text = showLabel ? label : getText();
@@ -87,7 +87,7 @@ public class GuiTransparentTextField extends GuiTextField {
 			}
 		}
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
@@ -113,13 +113,13 @@ public class GuiTransparentTextField extends GuiTextField {
 		}
 		super.setFocused(isFocused);
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
 		pseudoCursorCounter++;
 	}
-	
+
 	@Override
 	public void setSelectionPos(int position) {
 		super.setSelectionPos(position);

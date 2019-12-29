@@ -51,11 +51,11 @@ public class GuiNaturesCompass extends GuiScreen {
 		sortingCategory = new CategoryName();
 		biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
 	}
-	
+
 	@Override
 	public boolean mouseScrolled(double amount) {
-	      return selectionList.mouseScrolled(amount);
-	   }
+		return selectionList.mouseScrolled(amount);
+	}
 
 	@Override
 	public void initGui() {
@@ -64,10 +64,10 @@ public class GuiNaturesCompass extends GuiScreen {
 		setupTextFields();
 		if (selectionList == null) {
 			selectionList = new GuiListBiomes(this, mc, width + 110, height, 40, height, 45);
-			children.add(selectionList);
 		}
+		children.add(selectionList);
 	}
-	
+
 	@Override
 	public void tick() {
 		searchTextField.tick();
@@ -81,7 +81,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		drawCenteredString(fontRenderer, I18n.format("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(mouseX, mouseY, partialTicks);
 	}
-	
+
 	@Override
 	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
 		boolean ret = super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
@@ -91,7 +91,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public boolean charTyped(char typedChar, int keyCode) {
 		boolean ret = super.charTyped(typedChar, keyCode);
@@ -101,7 +101,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public void onGuiClosed() {
 		mc.keyboardListener.enableRepeatEvents(false);
@@ -126,7 +126,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	public ISortingCategory getSortingCategory() {
 		return sortingCategory;
 	}
-	
+
 	public void processSearchTerm() {
 		biomesMatchingSearch = new ArrayList<Biome>();
 		for (Biome biome : allowedBiomes) {
@@ -189,7 +189,7 @@ public class GuiNaturesCompass extends GuiScreen {
 
 		teleportButton.visible = NaturesCompass.canTeleport;
 	}
-	
+
 	private void setupTextFields() {
 		searchTextField = new GuiTransparentTextField(0, fontRenderer, 130, 10, 140, 20);
 		searchTextField.setLabel(I18n.format("string.naturescompass.search"));

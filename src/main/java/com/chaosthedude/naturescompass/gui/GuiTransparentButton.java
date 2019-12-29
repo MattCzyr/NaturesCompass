@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiTransparentButton extends GuiButton {
-	
+
 	public GuiTransparentButton(int id, int x, int y, int width, int height, String text) {
 		super(id, x, y, width, height, text);
 	}

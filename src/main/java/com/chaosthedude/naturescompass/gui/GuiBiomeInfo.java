@@ -129,12 +129,6 @@ public class GuiBiomeInfo extends GuiScreen {
 		super.render(mouseX, mouseY, partialTicks);
 	}
 
-	@Override
-	protected <T extends GuiButton> T addButton(T button) {
-		buttons.add(button);
-		return (T) button;
-	}
-
 	private void setupButtons() {
 		buttons.clear();
 		backButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("string.naturescompass.back")) {

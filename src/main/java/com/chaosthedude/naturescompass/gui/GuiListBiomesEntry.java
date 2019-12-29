@@ -31,8 +31,7 @@ public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBio
 	}
 
 	@Override
-	public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_,
-			float partialTicks) {
+	public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
 		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitationState = I18n.format("string.naturescompass.snow");
@@ -53,18 +52,18 @@ public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBio
 		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-      biomesList.selectBiome(getIndex());
-      if (Util.milliTime() - lastClickTime < 250L) {
-         searchForBiome();
-         return true;
-      } else {
-         lastClickTime = Util.milliTime();
-         return false;
-      }
-   }
+		biomesList.selectBiome(getIndex());
+		if (Util.milliTime() - lastClickTime < 250L) {
+			searchForBiome();
+			return true;
+		} else {
+			lastClickTime = Util.milliTime();
+			return false;
+		}
+	}
 
 	public void searchForBiome() {
 		mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));

@@ -45,7 +45,6 @@ public class PacketCompassSearch {
 		buf.writeInt(z);
 	}
 
-
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());

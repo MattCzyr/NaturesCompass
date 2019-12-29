@@ -13,7 +13,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
-	
+
 	public final int sampleSpace;
 	public final int maxRadius;
 	public World world;
@@ -28,7 +28,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public int z;
 	public int length;
 	public boolean finished;
-	
+
 	public BiomeSearchWorker(World world, EntityPlayer player, ItemStack stack, Biome biome, BlockPos startPos) {
 		this.world = world;
 		this.player = player;
@@ -45,7 +45,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		direction = EnumFacing.UP;
 		finished = false;
 	}
-	
+
 	public void start() {
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
 			if (maxRadius > 0 && sampleSpace > 0) {
@@ -100,7 +100,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		finish(false);
 		return false;
 	}
-	
+
 	private void finish(boolean found) {
 		if (found) {
 			NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
@@ -111,7 +111,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		}
 		finished = true;
 	}
-	
+
 	private int getRadius() {
 		return (int) startPos.getDistance(x, startPos.getY(), z);
 	}

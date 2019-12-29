@@ -27,7 +27,7 @@ public class SearchResult {
 	public int getRadius() {
 		return radius;
 	}
-	
+
 	public int getSamples() {
 		return samples;
 	}

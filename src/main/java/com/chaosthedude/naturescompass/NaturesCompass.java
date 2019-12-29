@@ -44,10 +44,10 @@ public class NaturesCompass {
 	public static NaturesCompass instance;
 
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
-	
+
 	public NaturesCompass() {
 		instance = this;
-		
+
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
@@ -55,17 +55,17 @@ public class NaturesCompass {
 
 	private void preInit(FMLCommonSetupEvent event) {
 		network = NetworkRegistry.newSimpleChannel(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID), () -> "1.0", s -> true, s -> true);
-		
+
 		// Server packets
 		network.registerMessage(0, PacketCompassSearch.class, PacketCompassSearch::toBytes, PacketCompassSearch::new, PacketCompassSearch::handle);
 		network.registerMessage(1, PacketTeleport.class, PacketTeleport::toBytes, PacketTeleport::new, PacketTeleport::handle);
 		network.registerMessage(2, PacketRequestSync.class, PacketRequestSync::toBytes, PacketRequestSync::new, PacketRequestSync::handle);
-		
+
 		// Client packet
 		network.registerMessage(3, PacketSync.class, PacketSync::toBytes, PacketSync::new, PacketSync::handle);
 
 		proxy.registerEvents();
-		
+
 		allowedBiomes = BiomeUtils.getAllowedBiomes();
 	}
 

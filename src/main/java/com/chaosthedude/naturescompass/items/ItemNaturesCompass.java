@@ -33,18 +33,18 @@ public class ItemNaturesCompass extends Item {
 
 	public ItemNaturesCompass() {
 		super(new Properties().maxStackSize(1).group(ItemGroup.TOOLS));
-        setRegistryName(NAME);
+		setRegistryName(NAME);
 
 		addPropertyOverride(new ResourceLocation("angle"), new IItemPropertyGetter() {
 			@OnlyIn(Dist.CLIENT)
-	        private double rotation;
-	        @OnlyIn(Dist.CLIENT)
-	        private double rota;
-	        @OnlyIn(Dist.CLIENT)
-	        private long lastUpdateTick;
+			private double rotation;
+			@OnlyIn(Dist.CLIENT)
+			private double rota;
+			@OnlyIn(Dist.CLIENT)
+			private long lastUpdateTick;
 
-	        @OnlyIn(Dist.CLIENT)
-	        @Override
+			@OnlyIn(Dist.CLIENT)
+			@Override
 			public float call(ItemStack stack, World world, EntityLivingBase entityLiving) {
 				if (entityLiving == null && !stack.isOnItemFrame()) {
 					return 0.0F;
@@ -68,7 +68,7 @@ public class ItemNaturesCompass extends Item {
 				}
 			}
 
-	        @OnlyIn(Dist.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			private double wobble(World world, double amount) {
 				if (world.getGameTime() != lastUpdateTick) {
 					lastUpdateTick = world.getGameTime();
@@ -83,12 +83,12 @@ public class ItemNaturesCompass extends Item {
 				return rotation;
 			}
 
-	        @OnlyIn(Dist.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			private double getFrameRotation(EntityItemFrame itemFrame) {
 				return (double) MathHelper.wrapDegrees(180 + itemFrame.facingDirection.getHorizontalIndex() * 90);
 			}
 
-	        @OnlyIn(Dist.CLIENT)
+			@OnlyIn(Dist.CLIENT)
 			private double getAngle(World world, Entity entity, ItemStack stack) {
 				BlockPos pos;
 				if (getState(stack) == EnumCompassState.FOUND) {
@@ -110,8 +110,7 @@ public class ItemNaturesCompass extends Item {
 				NaturesCompass.network.sendToServer(new PacketRequestSync());
 				Minecraft.getInstance().displayGuiScreen(new GuiNaturesCompass(world, player, stack, (ItemNaturesCompass) stack.getItem(), NaturesCompass.allowedBiomes));
 			}
-			//player.openGui(NaturesCompass.instance, 0, world, 0, 0, 0);
-			
+
 		} else {
 			setState(player.getHeldItem(hand), null, EnumCompassState.INACTIVE, player);
 		}

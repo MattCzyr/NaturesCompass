@@ -21,7 +21,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BiomeUtils {
-	
+
 	public static int getIDForBiome(Biome biome) {
 		return IRegistry.field_212624_m.getId(biome);
 	}
@@ -36,7 +36,7 @@ public class BiomeUtils {
 
 		return biomes;
 	}
-	
+
 	public static void searchForBiome(World world, EntityPlayer player, ItemStack stack, Biome biome, BlockPos startPos) {
 		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, biome, startPos);
 		worker.start();
@@ -75,7 +75,7 @@ public class BiomeUtils {
 
 		return "";
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeName(Biome biome) {
 		return I18n.format(biome.getTranslationKey());
@@ -85,9 +85,9 @@ public class BiomeUtils {
 	public static String getBiomeName(int biomeID) {
 		return getBiomeName(Biome.getBiome(biomeID, null));
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
- 	public static String getBiomeSource(Biome biome) {
+	public static String getBiomeSource(Biome biome) {
 		String registryEntry = biome.getRegistryName().toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
@@ -98,13 +98,12 @@ public class BiomeUtils {
 			return sourceContainer.get().getModInfo().getDisplayName();
 		}
 		return modid;
- 	}
+	}
 
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
 		final ResourceLocation biomeResourceLocation = ForgeRegistries.BIOMES.getKey(biome);
-		return biomeBlacklist.contains(String.valueOf(BiomeUtils.getIDForBiome(biome)))
-				|| (biomeResourceLocation != null && biomeBlacklist.contains(biomeResourceLocation.toString()));
+		return biomeBlacklist.contains(String.valueOf(BiomeUtils.getIDForBiome(biome))) || (biomeResourceLocation != null && biomeBlacklist.contains(biomeResourceLocation.toString()));
 	}
 
 }

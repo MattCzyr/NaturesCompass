@@ -9,7 +9,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 
 public class PlayerUtils {
-	
+
 	public static boolean canTeleport(EntityPlayer player) {
 		return cheatModeEnabled(player) || isOp(player);
 	}
@@ -22,7 +22,7 @@ public class PlayerUtils {
 
 		return false;
 	}
-	
+
 	public static boolean isOp(EntityPlayer player) {
 		if (player instanceof EntityPlayerMP) {
 			final UserListOpsEntry userEntry = ((EntityPlayerMP) player).getServer().getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());

@@ -22,7 +22,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 public class PacketTeleport {
 
 	public PacketTeleport() {}
-	
+
 	public PacketTeleport(PacketBuffer buf) {}
 
 	public void fromBytes(PacketBuffer buf) {}
@@ -37,17 +37,17 @@ public class PacketTeleport {
 				final EntityPlayer player = ctx.get().getSender();
 				if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player)) {
 					if (natureCompass.getState(stack) == EnumCompassState.FOUND) {
-						final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags> noneOf(SPacketPlayerPosLook.EnumFlags.class);
+						final Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
 						int y = 256;
 						while (player.world.isAirBlock(new BlockPos(x, y - 1, z))) {
 							y--;
 						}
-	
+
 						player.stopRiding();
 						((EntityPlayerMP) player).connection.setPlayerLocation(x, y, z, player.cameraYaw, player.cameraPitch, set);
-	
+
 						if (!player.isElytraFlying()) {
 							player.motionY = 0.0D;
 							player.onGround = true;

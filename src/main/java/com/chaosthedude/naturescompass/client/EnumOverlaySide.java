@@ -2,13 +2,13 @@ package com.chaosthedude.naturescompass.client;
 
 public enum EnumOverlaySide {
 
- 	LEFT, RIGHT;
+	LEFT, RIGHT;
 
- 	public static EnumOverlaySide fromString(String str) {
- 		if (str.equals("RIGHT")) {
- 			return RIGHT;
- 		}
- 		return LEFT;
- 	}
+	public static EnumOverlaySide fromString(String str) {
+		if (str.equals("RIGHT")) {
+			return RIGHT;
+		}
+		return LEFT;
+	}
 
- }
+}

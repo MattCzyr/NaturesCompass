@@ -9,7 +9,7 @@ public class CategoryFillerBlock implements ISortingCategory {
 	public int compare(Biome biome1, Biome biome2) {
 		return I18n.format(biome1.getSurfaceBuilderConfig().getMiddle().getBlock().getTranslationKey()).compareTo(I18n.format(((Biome) biome2).getSurfaceBuilderConfig().getMiddle().getBlock().getTranslationKey()));
 	}
-	
+
 	@Override
 	public Object getValue(Biome biome) {
 		return I18n.format(biome.getSurfaceBuilderConfig().getMiddle().getBlock().getTranslationKey());
