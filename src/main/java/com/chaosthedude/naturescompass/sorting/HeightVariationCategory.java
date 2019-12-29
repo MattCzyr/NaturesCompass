@@ -3,26 +3,26 @@ package com.chaosthedude.naturescompass.sorting;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
 
-public class CategoryRainfall implements ISortingCategory {
+public class HeightVariationCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getDownfall(), biome2.getDownfall());
+		return Float.compare(biome1.getScale(), biome2.getScale());
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return biome.getDownfall();
+		return biome.getScale();
 	}
 
 	@Override
 	public ISortingCategory next() {
-		return new CategoryTopBlock();
+		return new TemperatureCategory();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.rainfall");
+		return I18n.format("string.naturescompass.heightVariation");
 	}
 
 }

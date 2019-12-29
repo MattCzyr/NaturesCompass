@@ -3,7 +3,7 @@ package com.chaosthedude.naturescompass.sorting;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
 
-public class CategoryTopBlock implements ISortingCategory {
+public class TopBlockCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
@@ -17,7 +17,7 @@ public class CategoryTopBlock implements ISortingCategory {
 
 	@Override
 	public ISortingCategory next() {
-		return new CategoryFillerBlock();
+		return new FillerBlockCategory();
 	}
 
 	@Override

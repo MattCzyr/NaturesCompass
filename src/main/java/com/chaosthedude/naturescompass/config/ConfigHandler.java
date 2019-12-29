@@ -3,7 +3,7 @@ package com.chaosthedude.naturescompass.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.chaosthedude.naturescompass.client.EnumOverlaySide;
+import com.chaosthedude.naturescompass.client.OverlaySide;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -51,7 +51,7 @@ public class ConfigHandler {
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue displayWithChatOpen;
 		public final ForgeConfigSpec.BooleanValue fixBiomeNames;
-		public final ForgeConfigSpec.EnumValue<EnumOverlaySide> overlaySide;
+		public final ForgeConfigSpec.EnumValue<OverlaySide> overlaySide;
 		public final ForgeConfigSpec.IntValue overlayLineOffset;
 
 		Client(ForgeConfigSpec.Builder builder) {
@@ -68,7 +68,7 @@ public class ConfigHandler {
 			overlayLineOffset = builder.comment(desc).defineInRange("overlayLineOffset", 1, 0, 50);
 
 			desc = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
-			overlaySide = builder.comment(desc).defineEnum("overlaySide", EnumOverlaySide.LEFT);
+			overlaySide = builder.comment(desc).defineEnum("overlaySide", OverlaySide.LEFT);
 
 			builder.pop();
 		}

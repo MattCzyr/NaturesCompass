@@ -11,24 +11,24 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketSync {
+public class SyncPacket {
 
 	private boolean canTeleport;
 	private List<Biome> allowedBiomes;
 
-	public PacketSync() {}
+	public SyncPacket() {}
 
-	public PacketSync(boolean canTeleport, List<Biome> allowedBiomes) {
+	public SyncPacket(boolean canTeleport, List<Biome> allowedBiomes) {
 		this.canTeleport = canTeleport;
 		this.allowedBiomes = allowedBiomes;
 	}
 
-	public PacketSync(PacketBuffer buf) {
+	public SyncPacket(PacketBuffer buf) {
 		canTeleport = buf.readBoolean();
 		allowedBiomes = new ArrayList<Biome>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(Biome.getBiome(buf.readInt(), null));
+			allowedBiomes.add(BiomeUtils.getBiomeForID(buf.readInt()));
 		}
 	}
 

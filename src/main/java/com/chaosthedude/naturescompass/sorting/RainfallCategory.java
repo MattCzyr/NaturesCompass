@@ -1,30 +1,28 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import com.chaosthedude.naturescompass.util.BiomeUtils;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
 
-public class CategoryName implements ISortingCategory {
+public class RainfallCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return BiomeUtils.getBiomeName(biome1).compareTo(BiomeUtils.getBiomeName(biome2));
+		return Float.compare(biome1.getDownfall(), biome2.getDownfall());
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return null;
+		return biome.getDownfall();
 	}
 
 	@Override
 	public ISortingCategory next() {
-		return new CategorySource();
+		return new TopBlockCategory();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.name");
+		return I18n.format("string.naturescompass.rainfall");
 	}
 
 }

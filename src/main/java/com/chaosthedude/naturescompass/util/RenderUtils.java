@@ -1,12 +1,12 @@
 package com.chaosthedude.naturescompass.util;
 
-import com.chaosthedude.naturescompass.client.EnumOverlaySide;
+import com.chaosthedude.naturescompass.client.OverlaySide;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +28,7 @@ public class RenderUtils {
 
 	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
 		yOffset += lineOffset * 9;
-		if (ConfigHandler.CLIENT.overlaySide.get() == EnumOverlaySide.LEFT) {
+		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
 			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
 			drawStringRight(string, fontRenderer, mc.mainWindow.getScaledWidth() - xOffset - 2, yOffset + 2, color);
@@ -57,7 +57,7 @@ public class RenderUtils {
 		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color4f(red, green, blue, alpha);
 
@@ -68,7 +68,7 @@ public class RenderUtils {
 		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 		GlStateManager.disableBlend();
 	}
 

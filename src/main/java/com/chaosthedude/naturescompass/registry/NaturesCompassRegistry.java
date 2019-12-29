@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.registry;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
+import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -13,7 +13,7 @@ public class NaturesCompassRegistry {
 
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> e) {
-		NaturesCompass.naturesCompass = new ItemNaturesCompass();
+		NaturesCompass.naturesCompass = new NaturesCompassItem();
 		e.getRegistry().register(NaturesCompass.naturesCompass);
 	}
 

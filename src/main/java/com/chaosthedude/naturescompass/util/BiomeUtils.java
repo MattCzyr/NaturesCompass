@@ -7,11 +7,12 @@ import java.util.Optional;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,12 +24,16 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class BiomeUtils {
 
 	public static int getIDForBiome(Biome biome) {
-		return IRegistry.field_212624_m.getId(biome);
+		return Registry.BIOME.getId(biome);
+	}
+
+	public static Biome getBiomeForID(int id) {
+		return Registry.BIOME.getByValue(id);
 	}
 
 	public static List<Biome> getAllowedBiomes() {
 		final List<Biome> biomes = new ArrayList<Biome>();
-		for (Biome biome : IRegistry.field_212624_m) {
+		for (Biome biome : Registry.BIOME) {
 			if (biome != null && !biomeIsBlacklisted(biome)) {
 				biomes.add(biome);
 			}
@@ -37,7 +42,7 @@ public class BiomeUtils {
 		return biomes;
 	}
 
-	public static void searchForBiome(World world, EntityPlayer player, ItemStack stack, Biome biome, BlockPos startPos) {
+	public static void searchForBiome(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
 		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, biome, startPos);
 		worker.start();
 	}
@@ -47,8 +52,12 @@ public class BiomeUtils {
 		return 4;
 	}
 
-	public static int getDistanceToBiome(EntityPlayer player, int x, int z) {
-		return (int) player.getDistance(x, player.posY, z);
+	public static int getDistanceToBiome(PlayerEntity player, int biomeX, int biomeZ) {
+		return getDistanceToBiome(player.getPosition(), biomeX, biomeZ);
+	}
+
+	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
+		return (int) MathHelper.sqrt(startPos.distanceSq(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -83,7 +92,7 @@ public class BiomeUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeName(int biomeID) {
-		return getBiomeName(Biome.getBiome(biomeID, null));
+		return getBiomeName(getBiomeForID(biomeID));
 	}
 
 	@OnlyIn(Dist.CLIENT)

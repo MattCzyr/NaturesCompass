@@ -2,7 +2,7 @@ package com.chaosthedude.naturescompass.network;
 
 import java.util.function.Supplier;
 
-import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
+import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
 import net.minecraft.item.ItemStack;
@@ -11,17 +11,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketCompassSearch {
+public class CompassSearchPacket {
 
 	private int biomeID;
-
 	private int x;
 	private int y;
 	private int z;
 
-	public PacketCompassSearch() {}
+	public CompassSearchPacket() {}
 
-	public PacketCompassSearch(int biomeID, BlockPos pos) {
+	public CompassSearchPacket(int biomeID, BlockPos pos) {
 		this.biomeID = biomeID;
 
 		this.x = pos.getX();
@@ -29,7 +28,7 @@ public class PacketCompassSearch {
 		this.z = pos.getZ();
 	}
 
-	public PacketCompassSearch(PacketBuffer buf) {
+	public CompassSearchPacket(PacketBuffer buf) {
 		biomeID = buf.readInt();
 
 		x = buf.readInt();
@@ -49,7 +48,7 @@ public class PacketCompassSearch {
 		ctx.get().enqueueWork(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
-				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
+				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
 				final World world = ctx.get().getSender().world;
 				natureCompass.searchForBiome(world, ctx.get().getSender(), biomeID, new BlockPos(x, y, z), stack);
 			}

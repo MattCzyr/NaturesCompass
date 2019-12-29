@@ -2,11 +2,11 @@ package com.chaosthedude.naturescompass.util;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.chaosthedude.naturescompass.items.ItemNaturesCompass;
+import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -21,15 +21,15 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public BlockPos startPos;
 	public int samples;
 	public int nextLength;
-	public EnumFacing direction;
+	public Direction direction;
 	public ItemStack stack;
-	public EntityPlayer player;
+	public PlayerEntity player;
 	public int x;
 	public int z;
 	public int length;
 	public boolean finished;
 
-	public BiomeSearchWorker(World world, EntityPlayer player, ItemStack stack, Biome biome, BlockPos startPos) {
+	public BiomeSearchWorker(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
@@ -42,7 +42,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
-		direction = EnumFacing.UP;
+		direction = Direction.UP;
 		finished = false;
 	}
 
@@ -65,13 +65,13 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
-			if (direction == EnumFacing.NORTH) {
+			if (direction == Direction.NORTH) {
 				z -= sampleSpace;
-			} else if (direction == EnumFacing.EAST) {
+			} else if (direction == Direction.EAST) {
 				x += sampleSpace;
-			} else if (direction == EnumFacing.SOUTH) {
+			} else if (direction == Direction.SOUTH) {
 				z += sampleSpace;
-			} else if (direction == EnumFacing.WEST) {
+			} else if (direction == Direction.WEST) {
 				x -= sampleSpace;
 			}
 
@@ -85,11 +85,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			samples++;
 			length += sampleSpace;
 			if (length >= nextLength) {
-				if (direction != EnumFacing.UP) {
+				if (direction != Direction.UP) {
 					nextLength += sampleSpace;
 					direction = direction.rotateY();
 				} else {
-					direction = EnumFacing.NORTH;
+					direction = Direction.NORTH;
 				}
 				length = 0;
 			}
@@ -104,16 +104,16 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private void finish(boolean found) {
 		if (found) {
 			NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-			((ItemNaturesCompass) stack.getItem()).setFound(stack, x, z, samples, player);
+			((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
 		} else {
 			NaturesCompass.logger.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-			((ItemNaturesCompass) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
+			((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
 		}
 		finished = true;
 	}
 
 	private int getRadius() {
-		return (int) startPos.getDistance(x, startPos.getY(), z);
+		return BiomeUtils.getDistanceToBiome(startPos, x, z);
 	}
 
 }

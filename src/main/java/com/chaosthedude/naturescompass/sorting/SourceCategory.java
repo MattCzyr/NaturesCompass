@@ -1,28 +1,30 @@
 package com.chaosthedude.naturescompass.sorting;
 
+import com.chaosthedude.naturescompass.util.BiomeUtils;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
 
-public class CategoryTemperature implements ISortingCategory {
+public class SourceCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getDefaultTemperature(), biome2.getDefaultTemperature());
+		return BiomeUtils.getBiomeSource(biome1).compareTo(BiomeUtils.getBiomeName(biome2));
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return biome.getDefaultTemperature();
+		return null;
 	}
 
 	@Override
 	public ISortingCategory next() {
-		return new CategoryRainfall();
+		return new BaseHeightCategory();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.temperature");
+		return I18n.format("string.naturescompass.source");
 	}
 
 }

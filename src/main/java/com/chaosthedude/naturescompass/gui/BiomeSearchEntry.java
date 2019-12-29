@@ -1,13 +1,13 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.widget.list.ExtendedList.AbstractListEntry;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -15,15 +15,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBiomesEntry> {
+public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 
 	private final Minecraft mc;
-	private final GuiNaturesCompass guiNaturesCompass;
+	private final NaturesCompassScreen guiNaturesCompass;
 	private final Biome biome;
-	private final GuiListBiomes biomesList;
+	private final BiomeSearchList biomesList;
 	private long lastClickTime;
 
-	public GuiListBiomesEntry(GuiListBiomes biomesList, Biome biome) {
+	public BiomeSearchEntry(BiomeSearchList biomesList, Biome biome) {
 		this.biomesList = biomesList;
 		this.biome = biome;
 		guiNaturesCompass = biomesList.getGuiNaturesCompass();
@@ -31,7 +31,7 @@ public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBio
 	}
 
 	@Override
-	public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
+	public void render(int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
 		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitationState = I18n.format("string.naturescompass.snow");
@@ -46,32 +46,35 @@ public class GuiListBiomesEntry extends GuiListExtended.IGuiListEntry<GuiListBio
 			value = I18n.format(biome.getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
-		mc.fontRenderer.drawString(BiomeUtils.getBiomeNameForDisplay(biome), getX() + 1, getY() + 1, 0xffffff);
-		mc.fontRenderer.drawString(title + ": " + value, getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
+		mc.fontRenderer.drawString(BiomeUtils.getBiomeNameForDisplay(biome), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.drawString(title + ": " + value, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
-	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-		biomesList.selectBiome(getIndex());
-		if (Util.milliTime() - lastClickTime < 250L) {
-			searchForBiome();
-			return true;
-		} else {
-			lastClickTime = Util.milliTime();
-			return false;
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (button == 0) {
+			biomesList.selectBiome(this);
+			if (Util.milliTime() - lastClickTime < 250L) {
+				searchForBiome();
+				return true;
+			} else {
+				lastClickTime = Util.milliTime();
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public void searchForBiome() {
-		mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		guiNaturesCompass.searchForBiome(biome);
 	}
 
 	public void viewInfo() {
-		mc.displayGuiScreen(new GuiBiomeInfo(guiNaturesCompass, biome));
+		mc.displayGuiScreen(new BiomeInfoScreen(guiNaturesCompass, biome));
 	}
 
 }

@@ -2,21 +2,22 @@ package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBiomeInfo extends GuiScreen {
+public class BiomeInfoScreen extends Screen {
 
-	private GuiNaturesCompass parentScreen;
+	private NaturesCompassScreen parentScreen;
 	private Biome biome;
-	private GuiButton searchButton;
-	private GuiButton backButton;
+	private Button searchButton;
+	private Button backButton;
 	private String topBlock;
 	private String fillerBlock;
 	private String baseHeight;
@@ -26,12 +27,13 @@ public class GuiBiomeInfo extends GuiScreen {
 	private String rainfall;
 	private String highHumidity;
 
-	public GuiBiomeInfo(GuiNaturesCompass parentScreen, Biome biome) {
+	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
+		super(new StringTextComponent(I18n.format(BiomeUtils.getBiomeNameForDisplay(biome))));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
 		topBlock = biome.getSurfaceBuilderConfig().getTop().getBlock().getNameTextComponent().getFormattedText();
-		fillerBlock = biome.getSurfaceBuilderConfig().getMiddle().getBlock().getNameTextComponent().getFormattedText();
+		fillerBlock = biome.getSurfaceBuilderConfig().getUnder().getBlock().getNameTextComponent().getFormattedText();
 
 		if (biome.getDepth() < -1) {
 			baseHeight = I18n.format("string.naturescompass.veryLow");
@@ -93,58 +95,50 @@ public class GuiBiomeInfo extends GuiScreen {
 	}
 
 	@Override
-	public void initGui() {
+	public void init() {
 		setupButtons();
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		drawCenteredString(fontRenderer, BiomeUtils.getBiomeNameForDisplay(biome), width / 2, 20, 0xffffff);
+		renderBackground();
+		drawCenteredString(font, BiomeUtils.getBiomeNameForDisplay(biome), width / 2, 20, 0xffffff);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
-		drawString(fontRenderer, topBlock, width / 2 - 100, 50, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
+		drawString(font, topBlock, width / 2 - 100, 50, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		drawString(fontRenderer, precipitation, width / 2 - 100, 80, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		drawString(font, precipitation, width / 2 - 100, 80, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.baseHeight"), width / 2 - 100, 100, 0xffffff);
-		drawString(fontRenderer, baseHeight, width / 2 - 100, 110, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.baseHeight"), width / 2 - 100, 100, 0xffffff);
+		drawString(font, baseHeight, width / 2 - 100, 110, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.rainfall"), width / 2 - 100, 130, 0xffffff);
-		drawString(fontRenderer, rainfall, width / 2 - 100, 140, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.rainfall"), width / 2 - 100, 130, 0xffffff);
+		drawString(font, rainfall, width / 2 - 100, 140, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.fillerBlock"), width / 2 + 40, 40, 0xffffff);
-		drawString(fontRenderer, fillerBlock, width / 2 + 40, 50, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.fillerBlock"), width / 2 + 40, 40, 0xffffff);
+		drawString(font, fillerBlock, width / 2 + 40, 50, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.climate"), width / 2 + 40, 70, 0xffffff);
-		drawString(fontRenderer, climate, width / 2 + 40, 80, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.climate"), width / 2 + 40, 70, 0xffffff);
+		drawString(font, climate, width / 2 + 40, 80, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.heightVariation"), width / 2 + 40, 100, 0xffffff);
-		drawString(fontRenderer, heightVariation, width / 2 + 40, 110, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.heightVariation"), width / 2 + 40, 100, 0xffffff);
+		drawString(font, heightVariation, width / 2 + 40, 110, 0x808080);
 
-		drawString(fontRenderer, I18n.format("string.naturescompass.highHumidity"), width / 2 + 40, 130, 0xffffff);
-		drawString(fontRenderer, highHumidity, width / 2 + 40, 140, 0x808080);
+		drawString(font, I18n.format("string.naturescompass.highHumidity"), width / 2 + 40, 130, 0xffffff);
+		drawString(font, highHumidity, width / 2 + 40, 140, 0x808080);
 
 		super.render(mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
 		buttons.clear();
-		backButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("string.naturescompass.back")) {
-			@Override
-			public void onClick(double mouseX, double mouseY) {
-				super.onClick(mouseX, mouseY);
-				mc.displayGuiScreen(parentScreen);
-			}
-		});
-		searchButton = addButton(new GuiTransparentButton(1, width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search")) {
-			@Override
-			public void onClick(double mouseX, double mouseY) {
-				super.onClick(mouseX, mouseY);
-				parentScreen.searchForBiome(biome);
-			}
-		});
+		backButton = addButton(new GuiTransparentButton(10, height - 30, 110, 20, I18n.format("string.naturescompass.back"), (onPress) -> {
+			minecraft.displayGuiScreen(parentScreen);
+		}));
+		searchButton = addButton(new GuiTransparentButton(width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search"), (onPress) -> {
+			parentScreen.searchForBiome(biome);
+		}));
 	}
 
 }

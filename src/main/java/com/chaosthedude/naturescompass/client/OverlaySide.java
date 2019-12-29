@@ -1,10 +1,10 @@
 package com.chaosthedude.naturescompass.client;
 
-public enum EnumOverlaySide {
+public enum OverlaySide {
 
 	LEFT, RIGHT;
 
-	public static EnumOverlaySide fromString(String str) {
+	public static OverlaySide fromString(String str) {
 		if (str.equals("RIGHT")) {
 			return RIGHT;
 		}
