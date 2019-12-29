@@ -36,7 +36,6 @@ public class PacketSync {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
  		for (Biome biome : allowedBiomes) {
- 			System.out.println(BiomeUtils.getBiomeName(biome));
  			buf.writeInt(BiomeUtils.getIDForBiome(biome));
  		}
 	}

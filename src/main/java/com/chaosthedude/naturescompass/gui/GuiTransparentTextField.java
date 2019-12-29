@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.lang.reflect.Field;
-
 import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.gui.FontRenderer;

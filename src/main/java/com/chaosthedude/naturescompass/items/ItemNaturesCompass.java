@@ -246,10 +246,6 @@ public class ItemNaturesCompass extends Item {
 		return -1;
 	}
 
-	public String getBiomeName(ItemStack stack) {
-		return BiomeUtils.getBiomeName(getBiomeID(stack));
-	}
-
 	public int getDistanceToBiome(EntityPlayer player, ItemStack stack) {
 		return (int) player.getDistance(getFoundBiomeX(stack), player.posY, getFoundBiomeZ(stack));
 	}

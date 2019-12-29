@@ -47,13 +47,11 @@ public class PacketCompassSearch {
 
 
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		System.out.println("enqueue");
 		ctx.get().enqueueWork(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
 				final World world = ctx.get().getSender().world;
-				System.out.println("searching");
 				natureCompass.searchForBiome(world, ctx.get().getSender(), biomeID, new BlockPos(x, y, z), stack);
 			}
 		});

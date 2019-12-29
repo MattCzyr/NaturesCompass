@@ -44,8 +44,6 @@ public class BiomeUtils {
 
 	public static int getBiomeSize(World world) {
 		// TODO
-		//final String settings = world.getWorldInfo().getGeneratorOptions();
-		//return ChunkGeneratorSettings.Factory.jsonToFactory(settings).build().biomeSize;
 		return 4;
 	}
 
