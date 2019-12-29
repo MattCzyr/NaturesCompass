@@ -9,7 +9,7 @@ public class SourceCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return BiomeUtils.getBiomeSource(biome1).compareTo(BiomeUtils.getBiomeName(biome2));
+		return BiomeUtils.getBiomeSource(biome1).compareTo(BiomeUtils.getBiomeSource(biome2));
 	}
 
 	@Override

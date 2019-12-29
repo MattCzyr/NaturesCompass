@@ -1,11 +1,16 @@
 --------------------------------------------------
- VERSION: 1.8.0 -  1.12.2
+ VERSION: 1.8.0 -  1.14.4, 1.13.2, 1.12.2
 --------------------------------------------------
 1.12.2:
   FEATURES:
   - Significantly improved biome search efficiency to essentially lag-free performance under normal circumstances
   FIX:
   - Fixed a major flaw in search accuracy present in version 1.7.0
+  - Fixed unresponsive biome list in the main GUI after returning from the biome info GUI
+  - Fixed crash that would occasionally occur when attempting to sort by biome source
+  UPDATES:
+  - Initial release for 1.14.4 (Forge 28.1.109)
+  - Initial release for 1.13.2 (Forge 25.0.219)
 
 
 --------------------------------------------------
