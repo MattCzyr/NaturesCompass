@@ -1,13 +1,12 @@
 package com.chaosthedude.naturescompass.items;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.gui.NaturesCompassScreen;
+import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.RequestSyncPacket;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
@@ -107,7 +106,7 @@ public class NaturesCompassItem extends Item {
 			if (world.isRemote) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				NaturesCompass.network.sendToServer(new RequestSyncPacket());
-				Minecraft.getInstance().displayGuiScreen(new NaturesCompassScreen(world, player, stack, (NaturesCompassItem) stack.getItem(), NaturesCompass.allowedBiomes));
+				GuiWrapper.openGUI(world, player, stack);
 			}
 		} else {
 			setState(player.getHeldItem(hand), null, CompassState.INACTIVE, player);
