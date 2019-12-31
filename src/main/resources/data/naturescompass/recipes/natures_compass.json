@@ -1,0 +1,23 @@
+{
+  "type": "crafting_shaped",
+  "group": "tools",
+  "pattern": [
+    "SLS",
+    "LCL",
+    "SLS"
+  ],
+  "key": {
+    "S": {
+      "tag": "saplings"
+    },
+    "L":{
+      "tag": "logs"
+	},
+	"C":{
+      "item": "minecraft:compass"
+	}
+  },
+  "result": {
+    "item": "naturescompass:naturescompass"
+  }
+}
