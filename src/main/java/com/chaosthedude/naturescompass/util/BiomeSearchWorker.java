@@ -76,7 +76,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			final Biome biomeAtPos = world.getBiomeBody(pos);
+			//final Biome biomeAtPos = world.getBiomeBody(pos);
+			final Biome biomeAtPos = world.func_225523_d_().func_226836_a_(pos);
 			if (biomeAtPos == biome) {
 				finish(true);
 				return false;

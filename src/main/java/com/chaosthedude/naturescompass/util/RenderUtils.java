@@ -3,6 +3,7 @@ package com.chaosthedude.naturescompass.util;
 import com.chaosthedude.naturescompass.client.OverlaySide;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,7 +32,7 @@ public class RenderUtils {
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
 			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
-			drawStringRight(string, fontRenderer, mc.mainWindow.getScaledWidth() - xOffset - 2, yOffset + 2, color);
+			drawStringRight(string, fontRenderer, mc.func_228018_at_().getScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
 
@@ -56,20 +57,20 @@ public class RenderUtils {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture();
-		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color4f(red, green, blue, alpha);
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		RenderSystem.color4f(red, green, blue, alpha);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
-		buffer.pos((double) right, (double) bottom, 0.0D).endVertex();
-		buffer.pos((double) right, (double) top, 0.0D).endVertex();
-		buffer.pos((double) left, (double) top, 0.0D).endVertex();
+		buffer.func_225582_a_((double) left, (double) bottom, 0.0D).endVertex();
+		buffer.func_225582_a_((double) right, (double) bottom, 0.0D).endVertex();
+		buffer.func_225582_a_((double) right, (double) top, 0.0D).endVertex();
+		buffer.func_225582_a_((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.enableTexture();
-		GlStateManager.disableBlend();
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 }

@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -50,7 +50,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 		mc.fontRenderer.drawString(title + ": " + value, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override

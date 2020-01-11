@@ -95,14 +95,14 @@ public class NaturesCompassItem extends Item {
 					pos = world.getSpawnPoint();
 				}
 
-				return Math.atan2((double) pos.getZ() - entity.posZ, (double) pos.getX() - entity.posX);
+				return Math.atan2((double) pos.getZ() - entity.getPositionVector().z, (double) pos.getX() - entity.getPositionVector().x);
 			}
 		});
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		if (!player.isSneaking()) {
+		if (!player.isCrouching()) {
 			if (world.isRemote) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				NaturesCompass.network.sendToServer(new RequestSyncPacket());

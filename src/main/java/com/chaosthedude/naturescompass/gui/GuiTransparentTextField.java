@@ -2,6 +2,7 @@ package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.RenderUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -193,18 +194,18 @@ public class GuiTransparentTextField extends TextFieldWidget {
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture();
-		GlStateManager.enableColorLogicOp();
-		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
+		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.disableTexture();
+		RenderSystem.enableColorLogicOp();
+		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos((double) startX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) startY, 0.0D).endVertex();
-		bufferbuilder.pos((double) startX, (double) startY, 0.0D).endVertex();
+		bufferbuilder.func_225582_a_((double) startX, (double) endY, 0.0D).endVertex();
+		bufferbuilder.func_225582_a_((double) endX, (double) endY, 0.0D).endVertex();
+		bufferbuilder.func_225582_a_((double) endX, (double) startY, 0.0D).endVertex();
+		bufferbuilder.func_225582_a_((double) startX, (double) startY, 0.0D).endVertex();
 		tessellator.draw();
-		GlStateManager.disableColorLogicOp();
-		GlStateManager.enableTexture();
+		RenderSystem.disableColorLogicOp();
+		RenderSystem.enableTexture();
 	}
 
 }
