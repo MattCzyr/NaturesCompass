@@ -26,8 +26,8 @@ public class RenderUtils {
 		fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
-	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
-		yOffset += lineOffset * 9;
+	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relLineOffset) {
+		yOffset += (relLineOffset + ConfigHandler.CLIENT.overlayLineOffset.get()) * 9;
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
 			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
