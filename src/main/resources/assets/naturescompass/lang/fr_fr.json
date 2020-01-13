@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "FRANCE - FRANÇAIS",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Boussole de la nature",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Retour",
+    "string.naturescompass.info": "Informations",
+    "string.naturescompass.startSearch": "Lancer la recherche",
+    "string.naturescompass.selectBiome": "Sélectionner un biome",
+    "string.naturescompass.sortBy": "Trier par ",
+    "string.naturescompass.teleport": "Se téléporter",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Froid",
+    "string.naturescompass.medium": "Tempéré",
+    "string.naturescompass.ocean": "Océanique",
+    "string.naturescompass.warm": "Chaud",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Aucune",
+    "string.naturescompass.veryLow": "Très faible",
+    "string.naturescompass.low": "Faible",
+    "string.naturescompass.average": "Moyenne",
+    "string.naturescompass.high": "Élevée",
+    "string.naturescompass.veryHigh": "Très élevée",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Biome",
+    "string.naturescompass.coordinates": "Coordonnées",
+    "string.naturescompass.distance": "Distance",
+    "string.naturescompass.found": "Trouvé",
+    "string.naturescompass.notFound": "Introuvable",
+    "string.naturescompass.radius": "Rayon",
+    "string.naturescompass.samples": "Échantillons",
+    "string.naturescompass.search": "Rechercher",
+    "string.naturescompass.searching": "Recherche",
+    "string.naturescompass.source": "Source",
+    "string.naturescompass.status": "Statut",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Hauteur de base",
+    "string.naturescompass.climate": "Climat",
+    "string.naturescompass.fillerBlock": "Bloc de profondeur",
+    "string.naturescompass.heightVariation": "Variation de hauteur",
+    "string.naturescompass.highHumidity": "Humidité élevée",
+    "string.naturescompass.name": "Nom",
+    "string.naturescompass.precipitation": "Précipitations",
+    "string.naturescompass.rainfall": "Pluviosité",
+    "string.naturescompass.temperature": "Température",
+    "string.naturescompass.topBlock": "Bloc de surface",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Neige",
+    "string.naturescompass.rain": "Pluie"
+}
