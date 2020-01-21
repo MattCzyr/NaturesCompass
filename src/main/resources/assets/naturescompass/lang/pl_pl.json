@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Plik językowy",
+    "_comment": "POLSKA - POLSKI",
+
+    "_comment": "PRZEDMIOTY",
+    "item.naturescompass.naturescompass": "Kompas Biomów",
+
+    "_comment": "STRINGS - PRZYCISKI",
+    "string.naturescompass.back": "Powrót",
+    "string.naturescompass.info": "Info",
+    "string.naturescompass.startSearch": "Zacznij szukać",
+    "string.naturescompass.selectBiome": "Wybierz Biom",
+    "string.naturescompass.sortBy": "Sortuj Przez",
+    "string.naturescompass.teleport": "Teleportuj się",
+
+    "_comment": "STRINGS - KLIMATY",
+    "string.naturescompass.cold": "Zimny",
+    "string.naturescompass.medium": "Średni",
+    "string.naturescompass.ocean": "Morski",
+    "string.naturescompass.warm": "Ciepły",
+
+    "_comment": "STRINGS - RANGA",
+    "string.naturescompass.none": "Brak",
+    "string.naturescompass.veryLow": "Bardzo słaby",
+    "string.naturescompass.low": "Słaby",
+    "string.naturescompass.average": "Przeciętny",
+    "string.naturescompass.high": "Duży",
+    "string.naturescompass.veryHigh": "Bardzo duży",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Biom",
+    "string.naturescompass.coordinates": "Koordynaty",
+    "string.naturescompass.distance": "Dystans",
+    "string.naturescompass.found": "Znaleziono",
+    "string.naturescompass.notFound": "Nie znaleziono",
+    "string.naturescompass.radius": "Zasięg",
+    "string.naturescompass.samples": "Próbki",
+    "string.naturescompass.search": "Szukaj",
+    "string.naturescompass.searching": "Szukanie",
+    "string.naturescompass.source": "Pochodzenie",
+    "string.naturescompass.status": "Pozycja",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Wysokość podstawy",
+    "string.naturescompass.climate": "Klimat",
+    "string.naturescompass.fillerBlock": "Blok Wlewowy",
+    "string.naturescompass.heightVariation": "Zmiana wysokości",
+    "string.naturescompass.highHumidity": "Wysoka wilgotność",
+    "string.naturescompass.name": "Nazwa",
+    "string.naturescompass.precipitation": "Opady atmosferyczne",
+    "string.naturescompass.rainfall": "Opad deszczu",
+    "string.naturescompass.temperature": "Temperatura",
+    "string.naturescompass.topBlock": "Górny blok",
+
+    "_comment": "STRINGS - Opady Atmosferyczne",
+    "string.naturescompass.snow": "Śnieg",
+    "string.naturescompass.rain": "Deszcz"
+}
