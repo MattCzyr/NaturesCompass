@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "TAIWAN - CHINESE",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Nature's Compass",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "返回",
+    "string.naturescompass.info": "資訊",
+    "string.naturescompass.startSearch": "開始搜索",
+    "string.naturescompass.selectBiome": "選擇生態域",
+    "string.naturescompass.sortBy": "排序",
+    "string.naturescompass.teleport": "傳送",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "寒冷",
+    "string.naturescompass.medium": "適中",
+    "string.naturescompass.ocean": "海洋",
+    "string.naturescompass.warm": "溫暖",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "無",
+    "string.naturescompass.veryLow": "非常低",
+    "string.naturescompass.low": "低",
+    "string.naturescompass.average": "一般",
+    "string.naturescompass.high": "高",
+    "string.naturescompass.veryHigh": "非常高",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "生態域",
+    "string.naturescompass.coordinates": "座標",
+    "string.naturescompass.distance": "距離",
+    "string.naturescompass.found": "已發現",
+    "string.naturescompass.notFound": "未發現",
+    "string.naturescompass.radius": "半徑",
+    "string.naturescompass.samples": "樣本",
+    "string.naturescompass.search": "搜尋",
+    "string.naturescompass.searching": "搜尋中",
+    "string.naturescompass.source": "來源",
+    "string.naturescompass.status": "狀態",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "高度",
+    "string.naturescompass.climate": "氣候",
+    "string.naturescompass.fillerBlock": "地基組成",
+    "string.naturescompass.heightVariation": "高度變化",
+    "string.naturescompass.highHumidity": "濕度高",
+    "string.naturescompass.name": "名稱",
+    "string.naturescompass.precipitation": "降水類型",
+    "string.naturescompass.rainfall": "降水量",
+    "string.naturescompass.temperature": "溫度",
+    "string.naturescompass.topBlock": "平面組成",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "雪",
+    "string.naturescompass.rain": "雨"
+}
