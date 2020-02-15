@@ -5,6 +5,7 @@
   FEATURES:
   - Added French translations
   - Added Polish translations
+  - Added Chinese (Taiwan) translations
 
 
 --------------------------------------------------
