@@ -3,7 +3,7 @@
 --------------------------------------------------
 1.15.2
   UPDATES:
-  - Initial release for 1.15.2 (Forge 
+  - Initial release for 1.15.2 (Forge 31.1.12)
 1.15.1
   FEATURES:
   - Added French translations

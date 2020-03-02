@@ -103,12 +103,14 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	}
 
 	private void finish(boolean found) {
-		if (found) {
-			NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-			((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
-		} else {
-			NaturesCompass.logger.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-			((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
+		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
+			if (found) {
+				NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
+				((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
+			} else {
+				NaturesCompass.logger.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
+				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
+			}
 		}
 		finished = true;
 	}
