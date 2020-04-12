@@ -2,18 +2,18 @@ package com.chaosthedude.naturescompass.util;
 
 public class SearchRadius {
     private int step;
-    private int increment = 10000 / (1 << 4); // 625
+    private int increment = (1 << 7); // 128
 
     public SearchRadius () {
 	this.step = 0;
     }
     
     private SearchRadius (int step) {
-	this.step = Math.max(0,  step) % 5; // 0, 1, 2, 3, 4
+	this.step = Math.max(0,  step) % 7; // cycles through 0 - 6
     }
     
     public int getValue() {
-	return (1 << step) * increment; // max is 16 * 625 == 10000
+	return increment << step; // 128, 256, 512, ..., 8192
     }
 
     public SearchRadius next() {
