@@ -10,6 +10,7 @@ string.naturescompass.info=Info
 string.naturescompass.startSearch=Iniciar Busqueda
 string.naturescompass.selectBiome=Elegir Bioma
 string.naturescompass.sortBy=Ordenar por
+string.naturescompass.searchRadius=Radio de Búsqueda
 string.naturescompass.teleport=Teletransportarse
 
 # STRINGS - CLIMATES

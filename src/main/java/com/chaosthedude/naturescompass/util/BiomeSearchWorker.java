@@ -29,7 +29,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public int length;
 	public boolean finished;
 	
-	public BiomeSearchWorker(World world, EntityPlayer player, ItemStack stack, Biome biome, BlockPos startPos) {
+	public BiomeSearchWorker(World world, EntityPlayer player, ItemStack stack, Biome biome, int radius, BlockPos startPos) {
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
@@ -38,7 +38,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		x = startPos.getX();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
-		maxDistance = ConfigHandler.distanceModifier * BiomeUtils.getBiomeSize(world);
+		maxDistance = radius;
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;

@@ -116,9 +116,9 @@ public class ItemNaturesCompass extends Item {
 		return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
 	}
 
-	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
+	public void searchForBiome(World world, EntityPlayer player, int biomeID, int radius, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeID, player);
-		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), pos);
+		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), radius, pos);
 		worker.start();
 	}
 
