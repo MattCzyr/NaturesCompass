@@ -2,6 +2,7 @@ package com.chaosthedude.naturescompass.util;
 
 import com.chaosthedude.naturescompass.client.OverlaySide;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -19,20 +20,20 @@ public class RenderUtils {
 	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
-	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(string, x, y, color);
+	public static void drawStringLeft(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.func_238405_a_(matrixStack, string, x, y, color);
 	}
 
-	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
+	public static void drawStringRight(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.func_238405_a_(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
-	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relLineOffset) {
+	public static void drawConfiguredStringOnHUD(MatrixStack matrixStack, String string, int xOffset, int yOffset, int color, int relLineOffset) {
 		yOffset += (relLineOffset + ConfigHandler.CLIENT.overlayLineOffset.get()) * 9;
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
-			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
+			drawStringLeft(matrixStack, string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
-			drawStringRight(string, fontRenderer, mc.func_228018_at_().getScaledWidth() - xOffset - 2, yOffset + 2, color);
+			drawStringRight(matrixStack, string, fontRenderer, mc.getMainWindow().getScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
 
@@ -63,10 +64,10 @@ public class RenderUtils {
 		RenderSystem.color4f(red, green, blue, alpha);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.func_225582_a_((double) left, (double) bottom, 0.0D).endVertex();
-		buffer.func_225582_a_((double) right, (double) bottom, 0.0D).endVertex();
-		buffer.func_225582_a_((double) right, (double) top, 0.0D).endVertex();
-		buffer.func_225582_a_((double) left, (double) top, 0.0D).endVertex();
+		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
+		buffer.pos((double) right, (double) bottom, 0.0D).endVertex();
+		buffer.pos((double) right, (double) top, 0.0D).endVertex();
+		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
 		RenderSystem.enableTexture();

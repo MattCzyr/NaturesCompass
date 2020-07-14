@@ -46,11 +46,11 @@ public class TeleportPacket {
 
 						if (!player.isElytraFlying()) {
 							player.setMotion(player.getMotion().getX(), 0, player.getMotion().getZ());
-							player.onGround = true;
+							player.func_230245_c_(true);
 						}
 					}
 				} else {
-					NaturesCompass.logger.warn("Player " + player.getDisplayName().getFormattedText() + " tried to teleport but does not have permission.");
+					NaturesCompass.logger.warn("Player " + player.getDisplayName().getString() + " tried to teleport but does not have permission.");
 				}
 			}
 		});

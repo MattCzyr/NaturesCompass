@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.widget.list.ExtendedList.AbstractListEntry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +33,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void render(int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+	public void func_230432_a_(MatrixStack matrixStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
 		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitationState = I18n.format("string.naturescompass.snow");
@@ -46,15 +48,15 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 			value = I18n.format(biome.getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
-		mc.fontRenderer.drawString(BiomeUtils.getBiomeNameForDisplay(biome), par3 + 1, par2 + 1, 0xffffff);
-		mc.fontRenderer.drawString(title + ": " + value, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState, par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
-		mc.fontRenderer.drawString(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
+		mc.fontRenderer.func_238422_b_(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.func_238422_b_(matrixStack, new StringTextComponent(title + ": " + value), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.func_238422_b_(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.func_238422_b_(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean func_231044_a_(double mouseX, double mouseY, int button) {
 		if (button == 0) {
 			biomesList.selectBiome(this);
 			if (Util.milliTime() - lastClickTime < 250L) {

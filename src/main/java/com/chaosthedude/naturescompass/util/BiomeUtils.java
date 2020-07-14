@@ -53,7 +53,7 @@ public class BiomeUtils {
 	}
 
 	public static int getDistanceToBiome(PlayerEntity player, int biomeX, int biomeZ) {
-		return getDistanceToBiome(player.getPosition(), biomeX, biomeZ);
+		return getDistanceToBiome(player.func_233580_cy_(), biomeX, biomeZ);
 	}
 
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {

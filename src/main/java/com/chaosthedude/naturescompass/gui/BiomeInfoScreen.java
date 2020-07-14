@@ -1,11 +1,13 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,8 +34,8 @@ public class BiomeInfoScreen extends Screen {
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
-		topBlock = biome.getSurfaceBuilderConfig().getTop().getBlock().getNameTextComponent().getFormattedText();
-		fillerBlock = biome.getSurfaceBuilderConfig().getUnder().getBlock().getNameTextComponent().getFormattedText();
+		topBlock = I18n.format(biome.getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey()); // TODO: make sure this works
+		fillerBlock = I18n.format(biome.getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey());
 
 		if (biome.getDepth() < -1) {
 			baseHeight = I18n.format("string.naturescompass.veryLow");
@@ -95,48 +97,48 @@ public class BiomeInfoScreen extends Screen {
 	}
 
 	@Override
-	public void init() {
+	public void func_231023_e_() {
 		setupButtons();
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		renderBackground();
-		drawCenteredString(font, BiomeUtils.getBiomeNameForDisplay(biome), width / 2, 20, 0xffffff);
+	public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		func_230446_a_(matrixStack);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), (field_230708_k_ / 2) - (field_230712_o_.getStringWidth(BiomeUtils.getBiomeNameForDisplay(biome)) / 2), 20, 0xffffff);
 
-		drawString(font, I18n.format("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
-		drawString(font, topBlock, width / 2 - 100, 50, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.topBlock"), field_230708_k_ / 2 - 100, 40, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(topBlock), field_230708_k_ / 2 - 100, 50, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		drawString(font, precipitation, width / 2 - 100, 80, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.precipitation"), field_230708_k_ / 2 - 100, 70, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(precipitation), field_230708_k_ / 2 - 100, 80, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.baseHeight"), width / 2 - 100, 100, 0xffffff);
-		drawString(font, baseHeight, width / 2 - 100, 110, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.baseHeight"), field_230708_k_ / 2 - 100, 100, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(baseHeight), field_230708_k_ / 2 - 100, 110, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.rainfall"), width / 2 - 100, 130, 0xffffff);
-		drawString(font, rainfall, width / 2 - 100, 140, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.rainfall"), field_230708_k_ / 2 - 100, 130, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(rainfall), field_230708_k_ / 2 - 100, 140, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.fillerBlock"), width / 2 + 40, 40, 0xffffff);
-		drawString(font, fillerBlock, width / 2 + 40, 50, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.fillerBlock"), field_230708_k_ / 2 + 40, 40, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(fillerBlock), field_230708_k_ / 2 + 40, 50, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.climate"), width / 2 + 40, 70, 0xffffff);
-		drawString(font, climate, width / 2 + 40, 80, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.climate"), field_230708_k_ / 2 + 40, 70, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(climate), field_230708_k_ / 2 + 40, 80, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.heightVariation"), width / 2 + 40, 100, 0xffffff);
-		drawString(font, heightVariation, width / 2 + 40, 110, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.heightVariation"), field_230708_k_ / 2 + 40, 100, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(heightVariation), field_230708_k_ / 2 + 40, 110, 0x808080);
 
-		drawString(font, I18n.format("string.naturescompass.highHumidity"), width / 2 + 40, 130, 0xffffff);
-		drawString(font, highHumidity, width / 2 + 40, 140, 0x808080);
+		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.highHumidity"), field_230708_k_ / 2 + 40, 130, 0xffffff);
+		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(highHumidity), field_230708_k_ / 2 + 40, 140, 0x808080);
 
-		super.render(mouseX, mouseY, partialTicks);
+		super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
-		buttons.clear();
-		backButton = addButton(new GuiTransparentButton(10, height - 30, 110, 20, I18n.format("string.naturescompass.back"), (onPress) -> {
-			minecraft.displayGuiScreen(parentScreen);
+		field_230710_m_.clear();
+		backButton = func_230480_a_(new TransparentButton(10, field_230709_l_ - 30, 110, 20, new TranslationTextComponent("string.naturescompass.back"), (onPress) -> {
+			field_230706_i_.displayGuiScreen(parentScreen);
 		}));
-		searchButton = addButton(new GuiTransparentButton(width - 120, height - 30, 110, 20, I18n.format("string.naturescompass.search"), (onPress) -> {
+		searchButton = func_230480_a_(new TransparentButton(field_230708_k_ - 120, field_230709_l_ - 30, 110, 20, new TranslationTextComponent("string.naturescompass.search"), (onPress) -> {
 			parentScreen.searchForBiome(biome);
 		}));
 	}

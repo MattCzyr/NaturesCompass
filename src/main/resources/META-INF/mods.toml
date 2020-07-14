@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[32,)"
 issueTrackerURL="https://github.com/MattCzyr/NaturesCompass/issues"
 
 [[mods]]
@@ -15,6 +15,6 @@ issueTrackerURL="https://github.com/MattCzyr/NaturesCompass/issues"
 [[dependencies.naturescompass]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="[32,)"
     ordering="NONE"
     side="BOTH"

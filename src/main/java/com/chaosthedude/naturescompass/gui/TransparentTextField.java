@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.util.RenderUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -10,14 +11,15 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTransparentTextField extends TextFieldWidget {
+public class TransparentTextField extends TextFieldWidget {
 
 	private FontRenderer fontRenderer;
-	private String label;
+	private ITextComponent label;
 	private int labelColor = 0x808080;
 
 	private boolean pseudoIsEnabled = true;
@@ -29,29 +31,29 @@ public class GuiTransparentTextField extends TextFieldWidget {
 	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
 
-	public GuiTransparentTextField(FontRenderer fontRenderer, int x, int y, int width, int height, String label) {
+	public TransparentTextField(FontRenderer fontRenderer, int x, int y, int width, int height, ITextComponent label) {
 		super(fontRenderer, x, y, width, height, label);
 		this.fontRenderer = fontRenderer;
 		this.label = label;
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+	public void func_230431_b_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
+				RenderUtils.drawRect(field_230690_l_, field_230691_m_, field_230690_l_ + field_230688_j_, field_230691_m_ + field_230689_k_, color / 2 << 24);
 			}
-			boolean showLabel = !isFocused() && getText().isEmpty();
+			boolean showLabel = !func_230999_j_() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
-			String text = showLabel ? label : getText();
-			String s = fontRenderer.trimStringToWidth(text.substring(pseudoLineScrollOffset), getWidth());
+			String text = showLabel ? label.getString() : getText();
+			String s = fontRenderer.func_238413_a_(text.substring(pseudoLineScrollOffset), field_230688_j_, false);
 			boolean flag = j >= 0 && j <= s.length();
-			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
-			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
-			int i1 = pseudoEnableBackgroundDrawing ? y + (height - 8) / 2 : y;
+			boolean flag1 = func_230999_j_() && pseudoCursorCounter / 6 % 2 == 0 && flag;
+			int l = pseudoEnableBackgroundDrawing ? field_230690_l_ + 4 : field_230690_l_;
+			int i1 = pseudoEnableBackgroundDrawing ? field_230691_m_ + (field_230689_k_ - 8) / 2 : field_230691_m_;
 			int j1 = l;
 
 			if (k > s.length()) {
@@ -60,28 +62,28 @@ public class GuiTransparentTextField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = fontRenderer.drawStringWithShadow(s1, (float) l, (float) i1, i);
+				j1 = fontRenderer.func_238405_a_(matrixStack, s1, (float) l, (float) i1, i);
 			}
 
 			boolean flag2 = getCursorPosition() < getText().length() || getText().length() >= pseudoMaxStringLength;
 			int k1 = j1;
 
 			if (!flag) {
-				k1 = j > 0 ? l + width : l;
+				k1 = j > 0 ? l + field_230688_j_ : l;
 			} else if (flag2) {
 				k1 = j1 - 1;
 				--j1;
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = fontRenderer.drawStringWithShadow(s.substring(j), (float) j1, (float) i1, i);
+				j1 = fontRenderer.func_238405_a_(matrixStack, s.substring(j), (float) j1, (float) i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
 					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.FONT_HEIGHT, -3092272);
 				} else {
-					fontRenderer.drawStringWithShadow("_", (float) k1, (float) i1, i);
+					fontRenderer.func_238405_a_(matrixStack, "_", (float) k1, (float) i1, i);
 				}
 			}
 
@@ -111,11 +113,11 @@ public class GuiTransparentTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void setFocused(boolean isFocused) {
-		if (isFocused && !isFocused()) {
+	public void func_230996_d_(boolean isFocused) {
+		if (isFocused && !func_230999_j_()) {
 			pseudoCursorCounter = 0;
 		}
-		super.setFocused(isFocused);
+		super.func_230996_d_(isFocused);
 	}
 	
 	@Override
@@ -147,10 +149,10 @@ public class GuiTransparentTextField extends TextFieldWidget {
 	         }
 
 	         int j = getAdjustedWidth();
-	         String s = fontRenderer.trimStringToWidth(getText().substring(this.pseudoLineScrollOffset), j);
+	         String s = fontRenderer.func_238413_a_(getText().substring(this.pseudoLineScrollOffset), j, false);
 	         int k = s.length() + pseudoLineScrollOffset;
 	         if (pseudoSelectionEnd == pseudoLineScrollOffset) {
-	            pseudoLineScrollOffset -= fontRenderer.trimStringToWidth(getText(), j, true).length();
+	            pseudoLineScrollOffset -= fontRenderer.func_238413_a_(getText(), j, true).length();
 	         }
 
 	         if (pseudoSelectionEnd > k) {
@@ -163,7 +165,7 @@ public class GuiTransparentTextField extends TextFieldWidget {
 	      }
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(ITextComponent label) {
 		this.label = label;
 	}
 
@@ -184,12 +186,12 @@ public class GuiTransparentTextField extends TextFieldWidget {
 			endY = j;
 		}
 
-		if (endX > x + width) {
-			endX = x + width;
+		if (endX > field_230690_l_ + field_230688_j_) {
+			endX = field_230690_l_ + field_230688_j_;
 		}
 
-		if (startX > x + width) {
-			startX = x + width;
+		if (startX > field_230690_l_ + field_230688_j_) {
+			startX = field_230690_l_ + field_230688_j_;
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
@@ -199,10 +201,10 @@ public class GuiTransparentTextField extends TextFieldWidget {
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.func_225582_a_((double) startX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.func_225582_a_((double) endX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.func_225582_a_((double) endX, (double) startY, 0.0D).endVertex();
-		bufferbuilder.func_225582_a_((double) startX, (double) startY, 0.0D).endVertex();
+		bufferbuilder.pos((double) startX, (double) endY, 0.0D).endVertex();
+		bufferbuilder.pos((double) endX, (double) endY, 0.0D).endVertex();
+		bufferbuilder.pos((double) endX, (double) startY, 0.0D).endVertex();
+		bufferbuilder.pos((double) startX, (double) startY, 0.0D).endVertex();
 		tessellator.draw();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();

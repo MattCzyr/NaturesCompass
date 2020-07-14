@@ -76,8 +76,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			//final Biome biomeAtPos = world.getBiomeBody(pos);
-			final Biome biomeAtPos = world.func_225523_d_().func_226836_a_(pos);
+			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
 			if (biomeAtPos == biome) {
 				finish(true);
 				return false;
@@ -112,7 +111,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
 			}
 		} else {
-			NaturesCompass.logger.error("Can\'t find a compass for search results");
+			NaturesCompass.logger.error("Invalid compass after search");
 		}
 		finished = true;
 	}
