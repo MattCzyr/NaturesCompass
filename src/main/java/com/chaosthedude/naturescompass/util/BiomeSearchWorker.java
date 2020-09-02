@@ -7,7 +7,10 @@ import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
@@ -18,6 +21,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public final int maxRadius;
 	public World world;
 	public Biome biome;
+	public ResourceLocation biomeKey;
 	public BlockPos startPos;
 	public int samples;
 	public int nextLength;
@@ -44,6 +48,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
+		biomeKey = WorldGenRegistries.field_243657_i.getKey(biome);
 	}
 
 	public void start() {
@@ -77,7 +82,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
 			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			if (biomeAtPos == biome) {
+			ResourceLocation biomeAtPosKey = world.func_241828_r().func_243612_b(Registry.field_239720_u_).getKey(biomeAtPos);
+			if (biomeAtPosKey.equals(biomeKey)) {
 				finish(true);
 				return false;
 			}

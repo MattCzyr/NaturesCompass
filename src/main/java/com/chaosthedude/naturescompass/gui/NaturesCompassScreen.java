@@ -83,7 +83,7 @@ public class NaturesCompassScreen extends Screen {
 		func_230446_a_(matrixStack);
 		selectionList.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
 		searchTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.selectBiome"), 65 - (field_230712_o_.getStringWidth(new TranslationTextComponent("string.naturescompass.selectBiome").getString()) / 2), 15, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.selectBiome"), 65 - (field_230712_o_.getStringWidth(new TranslationTextComponent("string.naturescompass.selectBiome").getString()) / 2), 15, 0xffffff);
 		super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
 	}
 

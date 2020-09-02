@@ -25,7 +25,7 @@ public class BiomeInfoScreen extends Screen {
 	private String baseHeight;
 	private String heightVariation;
 	private String precipitation;
-	private String climate;
+	private String temperature;
 	private String rainfall;
 	private String highHumidity;
 
@@ -34,8 +34,8 @@ public class BiomeInfoScreen extends Screen {
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
-		topBlock = I18n.format(biome.getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey()); // TODO: make sure this works
-		fillerBlock = I18n.format(biome.getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey());
+		topBlock = I18n.format(biome.func_242440_e().func_242502_e().getTop().getBlock().getTranslationKey()); // TODO: make sure this works
+		fillerBlock = I18n.format(biome.func_242440_e().func_242502_e().getUnder().getBlock().getTranslationKey());
 
 		if (biome.getDepth() < -1) {
 			baseHeight = I18n.format("string.naturescompass.veryLow");
@@ -64,15 +64,13 @@ public class BiomeInfoScreen extends Screen {
 		} else {
 			precipitation = I18n.format("string.naturescompass.none");
 		}
-
-		if (biome.getTempCategory() == Biome.TempCategory.COLD) {
-			climate = I18n.format("string.naturescompass.cold");
-		} else if (biome.getTempCategory() == Biome.TempCategory.OCEAN) {
-			climate = I18n.format("string.naturescompass.ocean");
-		} else if (biome.getTempCategory() == Biome.TempCategory.WARM) {
-			climate = I18n.format("string.naturescompass.warm");
+		
+		if (biome.func_242445_k() <= 0.5) {
+			temperature = I18n.format("string.naturescompass.cold");
+		} else if (biome.func_242445_k() <= 1.5) {
+			temperature = I18n.format("string.naturescompass.medium");
 		} else {
-			climate = I18n.format("string.naturescompass.medium");
+			temperature = I18n.format("string.naturescompass.warm");
 		}
 
 		if (biome.getDownfall() <= 0) {
@@ -104,31 +102,31 @@ public class BiomeInfoScreen extends Screen {
 	@Override
 	public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		func_230446_a_(matrixStack);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), (field_230708_k_ / 2) - (field_230712_o_.getStringWidth(BiomeUtils.getBiomeNameForDisplay(biome)) / 2), 20, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), (field_230708_k_ / 2) - (field_230712_o_.getStringWidth(BiomeUtils.getBiomeNameForDisplay(biome)) / 2), 20, 0xffffff);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.topBlock"), field_230708_k_ / 2 - 100, 40, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(topBlock), field_230708_k_ / 2 - 100, 50, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.topBlock"), field_230708_k_ / 2 - 100, 40, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(topBlock), field_230708_k_ / 2 - 100, 50, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.precipitation"), field_230708_k_ / 2 - 100, 70, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(precipitation), field_230708_k_ / 2 - 100, 80, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.precipitation"), field_230708_k_ / 2 - 100, 70, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(precipitation), field_230708_k_ / 2 - 100, 80, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.baseHeight"), field_230708_k_ / 2 - 100, 100, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(baseHeight), field_230708_k_ / 2 - 100, 110, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.baseHeight"), field_230708_k_ / 2 - 100, 100, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(baseHeight), field_230708_k_ / 2 - 100, 110, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.rainfall"), field_230708_k_ / 2 - 100, 130, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(rainfall), field_230708_k_ / 2 - 100, 140, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.rainfall"), field_230708_k_ / 2 - 100, 130, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(rainfall), field_230708_k_ / 2 - 100, 140, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.fillerBlock"), field_230708_k_ / 2 + 40, 40, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(fillerBlock), field_230708_k_ / 2 + 40, 50, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.fillerBlock"), field_230708_k_ / 2 + 40, 40, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(fillerBlock), field_230708_k_ / 2 + 40, 50, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.climate"), field_230708_k_ / 2 + 40, 70, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(climate), field_230708_k_ / 2 + 40, 80, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.temperature"), field_230708_k_ / 2 + 40, 70, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(temperature), field_230708_k_ / 2 + 40, 80, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.heightVariation"), field_230708_k_ / 2 + 40, 100, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(heightVariation), field_230708_k_ / 2 + 40, 110, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.heightVariation"), field_230708_k_ / 2 + 40, 100, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(heightVariation), field_230708_k_ / 2 + 40, 110, 0x808080);
 
-		field_230712_o_.func_238422_b_(matrixStack, new TranslationTextComponent("string.naturescompass.highHumidity"), field_230708_k_ / 2 + 40, 130, 0xffffff);
-		field_230712_o_.func_238422_b_(matrixStack, new StringTextComponent(highHumidity), field_230708_k_ / 2 + 40, 140, 0x808080);
+		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.highHumidity"), field_230708_k_ / 2 + 40, 130, 0xffffff);
+		field_230712_o_.func_243248_b(matrixStack, new StringTextComponent(highHumidity), field_230708_k_ / 2 + 40, 140, 0x808080);
 
 		super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
 	}
