@@ -90,14 +90,11 @@ public class ItemNaturesCompass extends Item {
 
 			@SideOnly(Side.CLIENT)
 			private double getAngle(World world, Entity entity, ItemStack stack) {
-				BlockPos pos;
-				if (getState(stack) == EnumCompassState.FOUND) {
-					pos = new BlockPos(getFoundBiomeX(stack), 0, getFoundBiomeZ(stack));
-				} else {
-					pos = world.getSpawnPoint();
-				}
-
-				return Math.atan2((double) pos.getZ() - entity.posZ, (double) pos.getX() - entity.posX);
+			        double angle = entity.rotationYaw < 360
+			        	? 270.0D
+			        	: -90.0D;
+			        	
+			        return Math.toRadians(angle);
 			}
 		});
 	}
