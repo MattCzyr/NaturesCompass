@@ -137,6 +137,7 @@ public class ItemNaturesCompass extends Item {
 	public void setFound(ItemStack stack, int x, int z, int samples, int searchRadius, EntityPlayer player) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", EnumCompassState.FOUND.getID());
+			// here add a "Hint" to the tag compound
 			stack.getTagCompound().setInteger("FoundX", x);
 			stack.getTagCompound().setInteger("FoundZ", z);
 			stack.getTagCompound().setInteger("SearchRadius", searchRadius);

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
@@ -103,6 +104,33 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	private void finish(boolean found) {
 		if (found) {
+		    	// if we found the biome, but it is outside of 4k blocks
+		    	// then we want to display a hint instead of Found
+		    	// 1. display the direction "You need to go East"
+		    	// 2. get the name of the biome 4k away in that direction
+		    	//    "You need to go East, past the Taiga"
+		        // x and y are world position, not relative to the player
+
+		    	double distanceToTarget = player.getDistance(x, player.posY, z);
+			    
+		    	if (distanceToTarget > 0) {
+		    	    // based on the angle, set the "hint"
+		    	    // this will be passed out to the setFound method
+		    	    double angle = MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(x - player.posX, z - player.posZ))) + 180.0D;
+			    
+		    	    if (-45 <= angle && angle < 45) {
+		    		System.out.println("North");
+		    	    } else if (45 <= angle && angle < 135) {
+		    		System.out.println("West");
+		    	    } else if (135 <= angle && angle < 225) {
+		    		System.out.println("South");
+		    	    } else if (225 <= angle && angle < 315) {
+		    		System.out.println("East");
+		    	    } else if (315 <= angle && angle < 405) {
+		    		System.out.println("North");
+		    	    }
+		    	}
+		    
 			NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
 			((ItemNaturesCompass) stack.getItem()).setFound(stack, x, z, samples, maxDistance, player);
 		} else {
