@@ -112,30 +112,55 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		        // x and y are world position, not relative to the player
 
 		    	double distanceToTarget = player.getDistance(x, player.posY, z);
-			    
-		    	if (distanceToTarget > 0) {
+			String hint = "The biome you seek ";
+			
+		    	if (distanceToTarget > 4096) {
 		    	    // based on the angle, set the "hint"
 		    	    // this will be passed out to the setFound method
 		    	    double angle = MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(x - player.posX, z - player.posZ))) + 180.0D;
 			    
 		    	    if (-45 <= angle && angle < 45) {
-		    		System.out.println("North");
+		    		hint += "lies to the north...";
 		    	    } else if (45 <= angle && angle < 135) {
 		    		System.out.println("West");
+		    		hint += "lies to the west...";
 		    	    } else if (135 <= angle && angle < 225) {
 		    		System.out.println("South");
+		    		hint += "lies to the south...";
 		    	    } else if (225 <= angle && angle < 315) {
 		    		System.out.println("East");
+		    		hint += "lies to the east...";
 		    	    } else if (315 <= angle && angle < 405) {
 		    		System.out.println("North");
+		    		hint += "lies to the north...";
 		    	    }
+		    	    
+		    	    // get the half-way point between player and x, z
+		    	    double halfwayX = (x - player.posX) / 2 + player.posX;
+		    	    double halfwayZ = (z - player.posZ) / 2 + player.posZ;
+		    	    
+		    	    final BlockPos pos = new BlockPos(halfwayX, world.getHeight(), halfwayZ);
+		    	    final Biome biomeAtPos = world.getBiomeForCoordsBody(pos);
+		    	    
+		    	    hint += " beyond the " + biomeAtPos.getBiomeName();
+		    	 
+		    	} else {
+		    	    hint += "is within " + maxDistance + " blocks.";
 		    	}
 		    
 			NaturesCompass.logger.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-			((ItemNaturesCompass) stack.getItem()).setFound(stack, x, z, samples, maxDistance, player);
+			((ItemNaturesCompass) stack.getItem()).setFound(stack, x, z, samples, maxDistance, player, hint);
 		} else {
+		    	String hint = "";
+		    	
+		    	if (maxDistance > 4096) {
+			    hint = "To search for such a place is a fool's errand... it may not even exist!";
+		    	} else {
+			    hint = "The biome you seek is further than " + maxDistance + " blocks away...";
+		    	}
+		    
 			NaturesCompass.logger.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-			((ItemNaturesCompass) stack.getItem()).setNotFound(stack, player, maxDistance, samples);
+			((ItemNaturesCompass) stack.getItem()).setNotFound(stack, player, maxDistance, samples, hint);
 		}
 		finished = true;
 	}

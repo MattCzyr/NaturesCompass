@@ -21,6 +21,10 @@ public class SearchRadius {
     }
     
     public String getLocalizedName() {
-	return Integer.toString(this.getValue());
+	if (this.getValue() > 4096) {
+	    	return "Vast";
+	} else {
+		return Integer.toString(this.getValue());	    
+	}
     }
 }
