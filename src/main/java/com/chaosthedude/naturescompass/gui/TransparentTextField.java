@@ -10,8 +10,10 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,22 +40,22 @@ public class TransparentTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void func_230431_b_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				RenderUtils.drawRect(field_230690_l_, field_230691_m_, field_230690_l_ + field_230688_j_, field_230691_m_ + field_230689_k_, color / 2 << 24);
+				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
 			}
-			boolean showLabel = !func_230999_j_() && getText().isEmpty();
+			boolean showLabel = !isFocused() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
 			String text = showLabel ? label.getString() : getText();
-			String s = fontRenderer.func_238413_a_(text.substring(pseudoLineScrollOffset), field_230688_j_, false);
+			String s = fontRenderer.func_238412_a_(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
-			boolean flag1 = func_230999_j_() && pseudoCursorCounter / 6 % 2 == 0 && flag;
-			int l = pseudoEnableBackgroundDrawing ? field_230690_l_ + 4 : field_230690_l_;
-			int i1 = pseudoEnableBackgroundDrawing ? field_230691_m_ + (field_230689_k_ - 8) / 2 : field_230691_m_;
+			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
+			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
+			int i1 = pseudoEnableBackgroundDrawing ? y + (height - 8) / 2 : y;
 			int j1 = l;
 
 			if (k > s.length()) {
@@ -62,28 +64,28 @@ public class TransparentTextField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = fontRenderer.func_238405_a_(matrixStack, s1, (float) l, (float) i1, i);
+				j1 = fontRenderer.drawStringWithShadow(matrixStack, s1, (float) l, (float) i1, i);
 			}
 
 			boolean flag2 = getCursorPosition() < getText().length() || getText().length() >= pseudoMaxStringLength;
 			int k1 = j1;
 
 			if (!flag) {
-				k1 = j > 0 ? l + field_230688_j_ : l;
+				k1 = j > 0 ? l + width : l;
 			} else if (flag2) {
 				k1 = j1 - 1;
 				--j1;
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = fontRenderer.func_238405_a_(matrixStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = fontRenderer.drawStringWithShadow(matrixStack, s.substring(j), (float) j1, (float) i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
 					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.FONT_HEIGHT, -3092272);
 				} else {
-					fontRenderer.func_238405_a_(matrixStack, "_", (float) k1, (float) i1, i);
+					fontRenderer.drawStringWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
 				}
 			}
 
@@ -113,11 +115,11 @@ public class TransparentTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void func_230996_d_(boolean isFocused) {
-		if (isFocused && !func_230999_j_()) {
+	public void setFocused(boolean isFocused) {
+		if (isFocused && !isFocused()) {
 			pseudoCursorCounter = 0;
 		}
-		super.func_230996_d_(isFocused);
+		super.setFocused(isFocused);
 	}
 	
 	@Override
@@ -186,12 +188,12 @@ public class TransparentTextField extends TextFieldWidget {
 			endY = j;
 		}
 
-		if (endX > field_230690_l_ + field_230688_j_) {
-			endX = field_230690_l_ + field_230688_j_;
+		if (endX > x + width) {
+			endX = x + width;
 		}
 
-		if (startX > field_230690_l_ + field_230688_j_) {
-			startX = field_230690_l_ + field_230688_j_;
+		if (startX > x + width) {
+			startX = x + width;
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();

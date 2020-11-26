@@ -46,7 +46,7 @@ public class TeleportPacket {
 
 						if (!player.isElytraFlying()) {
 							player.setMotion(player.getMotion().getX(), 0, player.getMotion().getZ());
-							player.func_230245_c_(true);
+							player.setOnGround(true);
 						}
 					}
 				} else {

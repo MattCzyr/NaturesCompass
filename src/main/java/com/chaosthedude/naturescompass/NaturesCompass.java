@@ -86,7 +86,7 @@ public class NaturesCompass {
 	public void clientInit(FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		
-		ItemModelsProperties.func_239418_a_(naturesCompass, new ResourceLocation("angle"), new IItemPropertyGetter() {
+		ItemModelsProperties.registerProperty(naturesCompass, new ResourceLocation("angle"), new IItemPropertyGetter() {
 			@OnlyIn(Dist.CLIENT)
 			private double rotation;
 			@OnlyIn(Dist.CLIENT)

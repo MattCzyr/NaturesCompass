@@ -26,16 +26,16 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class BiomeUtils {
 
 	public static int getIDForBiome(Biome biome) {
-		return WorldGenRegistries.field_243657_i.getId(biome);
+		return WorldGenRegistries.BIOME.getId(biome);
 	}
 
 	public static Biome getBiomeForID(int id) {
-		return WorldGenRegistries.field_243657_i.getByValue(id);
+		return WorldGenRegistries.BIOME.getByValue(id);
 	}
 
 	public static List<Biome> getAllowedBiomes() {
 		final List<Biome> biomes = new ArrayList<Biome>();
-		for (Biome biome : WorldGenRegistries.field_243657_i) {
+		for (Biome biome : WorldGenRegistries.BIOME) {
 			if (biome != null && !biomeIsBlacklisted(biome)) {
 				biomes.add(biome);
 			}
@@ -55,7 +55,7 @@ public class BiomeUtils {
 	}
 
 	public static int getDistanceToBiome(PlayerEntity player, int biomeX, int biomeZ) {
-		return getDistanceToBiome(player.func_233580_cy_(), biomeX, biomeZ);
+		return getDistanceToBiome(player.getPosition(), biomeX, biomeZ);
 	}
 
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
@@ -81,7 +81,7 @@ public class BiomeUtils {
 				return fixed;
 			}
 
-			return I18n.format(WorldGenRegistries.field_243657_i.getKey(biome).toString());
+			return I18n.format(WorldGenRegistries.BIOME.getKey(biome).toString());
 		}
 
 		return "";
@@ -89,7 +89,7 @@ public class BiomeUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeName(Biome biome) {
-		return I18n.format(Util.makeTranslationKey("biome", WorldGenRegistries.field_243657_i.getKey(biome)));
+		return I18n.format(Util.makeTranslationKey("biome", WorldGenRegistries.BIOME.getKey(biome)));
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -99,7 +99,7 @@ public class BiomeUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeSource(Biome biome) {
-		String registryEntry = WorldGenRegistries.field_243657_i.getKey(biome).toString();
+		String registryEntry = WorldGenRegistries.BIOME.getKey(biome).toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
@@ -113,7 +113,7 @@ public class BiomeUtils {
 
 	public static boolean biomeIsBlacklisted(Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
-		final ResourceLocation biomeResourceLocation = WorldGenRegistries.field_243657_i.getKey(biome);
+		final ResourceLocation biomeResourceLocation = WorldGenRegistries.BIOME.getKey(biome);
 		return biomeBlacklist.contains(String.valueOf(BiomeUtils.getIDForBiome(biome))) || (biomeResourceLocation != null && biomeBlacklist.contains(biomeResourceLocation.toString()));
 	}
 

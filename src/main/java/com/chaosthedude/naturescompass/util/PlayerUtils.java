@@ -18,7 +18,7 @@ public class PlayerUtils {
 	public static boolean cheatModeEnabled(PlayerEntity player) {
 		final MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
 		if (server != null && server.isSinglePlayer()) {
-			IWorldInfo worldInfo = server.getWorld(player.getEntityWorld().func_234923_W_()).getWorldInfo();
+			IWorldInfo worldInfo = server.getWorld(player.getEntityWorld().getDimensionKey()).getWorldInfo();
 			if (worldInfo instanceof IServerWorldInfo) {
 				System.out.println("Cheat mode enabled: " + ((IServerWorldInfo) worldInfo).areCommandsAllowed());
 				return ((IServerWorldInfo) worldInfo).areCommandsAllowed();

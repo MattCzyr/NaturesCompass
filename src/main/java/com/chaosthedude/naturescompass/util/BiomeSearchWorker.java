@@ -48,7 +48,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = WorldGenRegistries.field_243657_i.getKey(biome);
+		biomeKey = WorldGenRegistries.BIOME.getKey(biome);
 	}
 
 	public void start() {
@@ -82,7 +82,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
 			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			ResourceLocation biomeAtPosKey = world.func_241828_r().func_243612_b(Registry.field_239720_u_).getKey(biomeAtPos);
+			ResourceLocation biomeAtPosKey = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biomeAtPos);
 			if (biomeAtPosKey.equals(biomeKey)) {
 				finish(true);
 				return false;

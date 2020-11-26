@@ -57,40 +57,40 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean func_231043_a_(double scroll1, double scroll2, double scroll3) {
-		return selectionList.func_231043_a_(scroll1, scroll2, scroll3);
+	public boolean mouseScrolled(double scroll1, double scroll2, double scroll3) {
+		return selectionList.mouseScrolled(scroll1, scroll2, scroll3);
 	}
 
 	@Override
-	protected void func_231160_c_() {
-		field_230706_i_.keyboardListener.enableRepeatEvents(true);
+	protected void init() {
+		minecraft.keyboardListener.enableRepeatEvents(true);
 		setupButtons();
 		setupTextFields();
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, field_230706_i_, field_230708_k_ + 110, field_230709_l_, 40, field_230709_l_, 45);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
 		}
-		field_230705_e_.add(selectionList);
+		children.add(selectionList);
 	}
 
 	@Override
-	public void func_231023_e_() {
+	public void tick() {
 		searchTextField.tick();
-		teleportButton.field_230693_o_ = natureCompass.getState(stack) == CompassState.FOUND;
+		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
 	}
 
 	@Override
-	public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		func_230446_a_(matrixStack);
-		selectionList.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
-		searchTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
-		field_230712_o_.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.selectBiome"), 65 - (field_230712_o_.getStringWidth(new TranslationTextComponent("string.naturescompass.selectBiome").getString()) / 2), 15, 0xffffff);
-		super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(stack);
+		selectionList.render(stack, mouseX, mouseY, partialTicks);
+		searchTextField.render(stack, mouseX, mouseY, partialTicks);
+		drawCenteredString(stack, font, I18n.format("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
+		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public boolean func_231046_a_(int par1, int par2, int par3) {
-		boolean ret = super.func_231046_a_(par1, par2, par3);
-		if (searchTextField.func_230999_j_()) {
+	public boolean keyPressed(int par1, int par2, int par3) {
+		boolean ret = super.keyPressed(par1, par2, par3);
+		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;
 		}
@@ -98,9 +98,9 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean func_231042_a_(char typedChar, int keyCode) {
-		boolean ret = super.func_231042_a_(typedChar, keyCode);
-		if (searchTextField.func_230999_j_()) {
+	public boolean charTyped(char typedChar, int keyCode) {
+		boolean ret = super.charTyped(typedChar, keyCode);
+		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;
 		}
@@ -108,25 +108,25 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public void func_231175_as__() {
-		super.func_231175_as__();
-		field_230706_i_.keyboardListener.enableRepeatEvents(false);
+	public void onClose() {
+		super.onClose();
+		minecraft.keyboardListener.enableRepeatEvents(false);
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {
 		boolean enable = entry != null;
-		startSearchButton.field_230693_o_ = enable;
-		infoButton.field_230693_o_ = enable;
+		startSearchButton.active = enable;
+		infoButton.active = enable;
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getIDForBiome(biome), player.func_233580_cy_()));
-		field_230706_i_.displayGuiScreen(null);
+		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getIDForBiome(biome), player.getPosition()));
+		minecraft.displayGuiScreen(null);
 	}
 
 	public void teleport() {
 		NaturesCompass.network.sendToServer(new TeleportPacket());
-		field_230706_i_.displayGuiScreen(null);
+		minecraft.displayGuiScreen(null);
 	}
 
 	public ISortingCategory getSortingCategory() {
@@ -152,38 +152,38 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	private void setupButtons() {
-		field_230710_m_.clear();
-		cancelButton = func_230480_a_(new TransparentButton(10, field_230709_l_ - 30, 110, 20, new TranslationTextComponent("gui.cancel"), (onPress) -> {
-			field_230706_i_.displayGuiScreen(null);
+		buttons.clear();
+		cancelButton = addButton(new TransparentButton(10, height - 30, 110, 20, new TranslationTextComponent("gui.cancel"), (onPress) -> {
+			minecraft.displayGuiScreen(null);
 		}));
-		sortByButton = func_230480_a_(new TransparentButton(10, 90, 110, 20, new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+		sortByButton = addButton(new TransparentButton(10, 90, 110, 20, new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();
-			sortByButton.func_238482_a_(new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+			sortByButton.setMessage(new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 			selectionList.refreshList();
 		}));
-		infoButton = func_230480_a_(new TransparentButton(10, 65, 110, 20, new TranslationTextComponent("string.naturescompass.info"), (onPress) -> {
+		infoButton = addButton(new TransparentButton(10, 65, 110, 20, new TranslationTextComponent("string.naturescompass.info"), (onPress) -> {
 			if (selectionList.hasSelection()) {
-				selectionList.func_230958_g_().viewInfo();
+				selectionList.getSelected().viewInfo();
 			}
 		}));
-		startSearchButton = func_230480_a_(new TransparentButton(10, 40, 110, 20, new TranslationTextComponent("string.naturescompass.startSearch"), (onPress) -> {
+		startSearchButton = addButton(new TransparentButton(10, 40, 110, 20, new TranslationTextComponent("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
-				selectionList.func_230958_g_().searchForBiome();
+				selectionList.getSelected().searchForBiome();
 			}
 		}));
-		teleportButton = func_230480_a_(new TransparentButton(field_230708_k_ - 120, 10, 110, 20, new TranslationTextComponent("string.naturescompass.teleport"), (onPress) -> {
+		teleportButton = addButton(new TransparentButton(width - 120, 10, 110, 20, new TranslationTextComponent("string.naturescompass.teleport"), (onPress) -> {
 			teleport();
 		}));
 
-		startSearchButton.field_230693_o_ = false;
-		infoButton.field_230693_o_ = false;
+		startSearchButton.active = false;
+		infoButton.active = false;
 
-		teleportButton.field_230694_p_ = NaturesCompass.canTeleport;
+		teleportButton.visible = NaturesCompass.canTeleport;
 	}
 
 	private void setupTextFields() {
-		searchTextField = new TransparentTextField(field_230712_o_, 130, 10, 140, 20, new TranslationTextComponent("string.naturescompass.search"));
-		field_230705_e_.add(searchTextField);
+		searchTextField = new TransparentTextField(font, 130, 10, 140, 20, new TranslationTextComponent("string.naturescompass.search"));
+		children.add(searchTextField);
 	}
 
 }

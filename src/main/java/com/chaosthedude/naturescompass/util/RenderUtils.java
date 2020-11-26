@@ -21,11 +21,11 @@ public class RenderUtils {
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawStringLeft(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.func_238405_a_(matrixStack, string, x, y, color);
+		fontRenderer.drawStringWithShadow(matrixStack, string, x, y, color);
 	}
 
 	public static void drawStringRight(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.func_238405_a_(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
+		fontRenderer.drawStringWithShadow(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
 	public static void drawConfiguredStringOnHUD(MatrixStack matrixStack, String string, int xOffset, int yOffset, int color, int relLineOffset) {

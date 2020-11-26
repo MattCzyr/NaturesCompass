@@ -23,70 +23,70 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 	}
 
 	@Override
-	protected int func_230952_d_() {
-		return super.func_230952_d_() + 20;
+	protected int getScrollbarPosition() {
+		return super.getScrollbarPosition() + 20;
 	}
 
 	@Override
-	public int func_230949_c_() {
-		return super.func_230949_c_() + 50;
+	public int getRowWidth() {
+		return super.getRowWidth() + 50;
 	}
 
 	@Override
-	protected boolean func_230957_f_(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < func_231039_at__().size() ? func_231039_at__().get(slotIndex).equals(func_230958_g_()) : false;
+	protected boolean isSelectedItem(int slotIndex) {
+		return slotIndex >= 0 && slotIndex < getEventListeners().size() ? getEventListeners().get(slotIndex).equals(getSelected()) : false;
 	}
 
 	@Override
-	public void func_230430_a_(MatrixStack matrixStack, int par1, int par2, float par3) {
-		int i = func_230952_d_();
-		int k = func_230968_n_();
-		int l = field_230672_i_ + 4 - (int) func_230966_l_();
+	public void render(MatrixStack matrixStack, int par1, int par2, float par3) {
+		int i = getScrollbarPosition();
+		int k = getRowLeft();
+		int l = y0 + 4 - (int) getScrollAmount();
 
-		func_238478_a_(matrixStack, k, l, par1, par2, par3);
+		renderList(matrixStack, k, l, par1, par2, par3);
 	}
 
 	@Override
-	protected void func_238478_a_(MatrixStack matrixStack, int par1, int par2, int par3, int par4, float par5) {
-		int i = func_230965_k_();
+	protected void renderList(MatrixStack matrixStack, int par1, int par2, int par3, int par4, float par5) {
+		int i = getItemCount();
 		for (int j = 0; j < i; ++j) {
-			int k = func_230962_i_(j);
+			int k = getRowTop(j);
 			int l = getRowBottom(j);
-			if (l >= field_230672_i_ && k <= field_230673_j_) {
-				int j1 = this.field_230669_c_ - 4;
-				BiomeSearchEntry e = this.func_230953_d_(j);
-				int k1 = func_230949_c_();
-				if (/*renderSelection*/ true && func_230957_f_(j)) {
-					final int insideLeft = field_230675_l_ + field_230670_d_ / 2 - func_230949_c_() / 2 + 2;
-					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + func_230949_c_() + 4, k + field_230669_c_, 255 / 2 << 24);
+			if (l >= y0 && k <= y1) {
+				int j1 = this.itemHeight - 4;
+				BiomeSearchEntry e = getEntry(j);
+				int k1 = getRowWidth();
+				if (/*renderSelection*/ true && isSelectedItem(j)) {
+					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
+					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
-				int j2 = func_230968_n_();
-				e.func_230432_a_(matrixStack, j, k, j2, k1, j1, par3, par4, func_231047_b_((double) par3, (double) par4) && Objects .equals(func_230933_a_((double) par3, (double) par4), e), par5);
+				int j2 = getRowLeft();
+				e.render(matrixStack, j, k, j2, k1, j1, par3, par4, isMouseOver((double) par3, (double) par4) && Objects .equals(getEntryAtPosition((double) par3, (double) par4), e), par5);
 			}
 		}
 
 	}
 
 	private int getRowBottom(int p_getRowBottom_1_) {
-		return this.func_230962_i_(p_getRowBottom_1_) + this.field_230669_c_;
+		return this.getRowTop(p_getRowBottom_1_) + this.itemHeight;
 	}
 
 	public void refreshList() {
-		func_230963_j_();
+		clearEntries();
 		for (Biome biome : guiNaturesCompass.sortBiomes()) {
-			func_230513_b_(new BiomeSearchEntry(this, biome));
+			addEntry(new BiomeSearchEntry(this, biome));
 		}
 		selectBiome(null);
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {
-		func_241215_a_(entry);
+		setSelected(entry);
 		guiNaturesCompass.selectBiome(entry);
 	}
 
 	public boolean hasSelection() {
-		return func_230958_g_() != null;
+		return getSelected() != null;
 	}
 
 	public NaturesCompassScreen getGuiNaturesCompass() {

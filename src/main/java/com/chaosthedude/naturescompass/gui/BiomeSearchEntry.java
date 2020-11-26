@@ -33,7 +33,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void func_230432_a_(MatrixStack matrixStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+	public void render(MatrixStack matrixStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
 		String precipitationState = I18n.format("string.naturescompass.none");
 		if (biome.getPrecipitation() == RainType.SNOW) {
 			precipitationState = I18n.format("string.naturescompass.snow");
@@ -45,7 +45,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 		Object value = guiNaturesCompass.getSortingCategory().getValue(biome);
 		if (value == null) {
 			title = I18n.format("string.naturescompass.topBlock");
-			value = I18n.format(biome.func_242440_e().func_242502_e().getTop().getBlock().getTranslationKey());
+			value = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
 		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), par3 + 1, par2 + 1, 0xffffff);
@@ -56,7 +56,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 	}
 
 	@Override
-	public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (button == 0) {
 			biomesList.selectBiome(this);
 			if (Util.milliTime() - lastClickTime < 250L) {
