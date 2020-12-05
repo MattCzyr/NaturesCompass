@@ -9,11 +9,13 @@ import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class TeleportPacket {
@@ -36,10 +38,7 @@ public class TeleportPacket {
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						int y = 256;
-						while (player.world.isAirBlock(new BlockPos(x, y - 1, z))) {
-							y--;
-						}
+						final int y = findValidTeleportHeight(player.getEntityWorld(), x, z);
 
 						player.stopRiding();
 						((ServerPlayerEntity) player).connection.setPlayerLocation(x, y, z, player.cameraYaw, player.rotationPitch);
@@ -55,6 +54,29 @@ public class TeleportPacket {
 			}
 		});
 		ctx.get().setPacketHandled(true);
+	}
+	
+	private int findValidTeleportHeight(World world, int x, int z) {
+		int startY = world.getSeaLevel();
+		int upY = startY;
+		int downY = startY;
+		while (!(isValidTeleportPosition(world, new BlockPos(x, upY, z)) || isValidTeleportPosition(world, new BlockPos(x, downY, z))) && (upY < 255 || downY > 1)) {
+			upY++;
+			downY--;
+		}
+		BlockPos upPos = new BlockPos(x, upY, z);
+		BlockPos downPos = new BlockPos(x, downY, z);
+		if (upY < 255 && isValidTeleportPosition(world, upPos)) {
+			return upY;
+		}
+		if (downY > 1 && isValidTeleportPosition(world, downPos)) {
+			return downY;
+		}
+		return 256;
+	}
+	
+	private boolean isValidTeleportPosition(World world, BlockPos pos) {
+		return !world.getBlockState(pos).isSolid() && Block.hasSolidSideOnTop(world, pos.down());
 	}
 
 }
