@@ -82,8 +82,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
 			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			ResourceLocation biomeAtPosKey = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biomeAtPos);
-			if (biomeAtPosKey.equals(biomeKey)) {
+			final ResourceLocation biomeAtPosKey = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biomeAtPos);
+			if (biomeAtPosKey != null && biomeAtPosKey.equals(biomeKey)) {
 				finish(true);
 				return false;
 			}
