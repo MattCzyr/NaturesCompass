@@ -1,4 +1,14 @@
 ------------------------------------------------------------------
+ VERSION: 1.8.6 -  1.16.4
+------------------------------------------------------------------
+1.16.4
+  FIXES:
+  - Fixed compass recipe not unlocking when one of its components is obtained
+  - Fixed player teleporting to nether roof when teleporting to a biome located in the nether
+  - Fixed a crash that occurred infrequently when searching for a biome
+
+
+------------------------------------------------------------------
  VERSION: 1.8.5 -  1.16.4, 1.16.3, 1.16.2, 1.16.1, 1.15.2, 1.14.4, 1.12.2
 ------------------------------------------------------------------
 1.16.4
