@@ -38,7 +38,7 @@ public class ConfigHandler {
 			desc = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 			sampleSpaceModifier = builder.comment(desc).defineInRange("sampleSpaceModifier", 16, 0, 1000000);
 
-			desc = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean) or ID (ex: 0)";
+			desc = "A list of biomes that the compass will not be able to search for. Specify by resource location or numeric ID. Ex: [\"minecraft:desert\", \"minecraft:savanna\"]";
 			biomeBlacklist = builder.comment(desc).define("biomeBlacklist", new ArrayList<String>());
 
 			desc = "The maximum number of samples to be taken when searching for a biome.";
