@@ -1,0 +1,57 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "REPUBLIC OF KOREA - KOREAN",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "자연의 나침반",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "뒤로",
+    "string.naturescompass.info": "정보",
+    "string.naturescompass.startSearch": "검색 시작",
+    "string.naturescompass.selectBiome": "생물군계 선택",
+    "string.naturescompass.sortBy": "분류 기준",
+    "string.naturescompass.teleport": "순간이동",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "추움",
+    "string.naturescompass.medium": "보통",
+    "string.naturescompass.warm": "따뜻함",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "없음",
+    "string.naturescompass.veryLow": "매우 낮음",
+    "string.naturescompass.low": "낮음",
+    "string.naturescompass.average": "평균",
+    "string.naturescompass.high": "높음",
+    "string.naturescompass.veryHigh": "매우 높음",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "생물군계",
+    "string.naturescompass.coordinates": "좌표",
+    "string.naturescompass.distance": "거리",
+    "string.naturescompass.found": "발견됨",
+    "string.naturescompass.notFound": "발견되지 않음",
+    "string.naturescompass.radius": "범위",
+    "string.naturescompass.samples": "샘플",
+    "string.naturescompass.search": "검색",
+    "string.naturescompass.searching": "검색중",
+    "string.naturescompass.source": "소스",
+    "string.naturescompass.status": "상태",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "기반 높이",
+    "string.naturescompass.climate": "기후",
+    "string.naturescompass.fillerBlock": "기반 블록",
+    "string.naturescompass.heightVariation": "높이 변화율",
+    "string.naturescompass.highHumidity": "습도 높음",
+    "string.naturescompass.name": "이름",
+    "string.naturescompass.precipitation": "강수",
+    "string.naturescompass.rainfall": "강수량",
+    "string.naturescompass.temperature": "기온",
+    "string.naturescompass.topBlock": "표면 블록",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "눈",
+    "string.naturescompass.rain": "비"
+}
