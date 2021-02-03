@@ -2,6 +2,8 @@ package com.chaosthedude.naturescompass;
 
 import java.util.List;
 
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +35,8 @@ public class NaturesCompass {
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
 	public static final String VERSION = "1.8.0";
+
+	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -68,6 +72,7 @@ public class NaturesCompass {
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		allowedBiomes = BiomeUtils.getAllowedBiomes();
+		PermissionAPI.registerNode("naturescompass.teleport", DefaultPermissionLevel.OP, "Teleport permission of Nature's Compass");
 	}
 
 }
