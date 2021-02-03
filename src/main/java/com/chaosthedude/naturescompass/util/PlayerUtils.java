@@ -20,7 +20,6 @@ public class PlayerUtils {
 		if (server != null && server.isSinglePlayer()) {
 			IWorldInfo worldInfo = server.getWorld(player.getEntityWorld().getDimensionKey()).getWorldInfo();
 			if (worldInfo instanceof IServerWorldInfo) {
-				System.out.println("Cheat mode enabled: " + ((IServerWorldInfo) worldInfo).areCommandsAllowed());
 				return ((IServerWorldInfo) worldInfo).areCommandsAllowed();
 			}
 		}

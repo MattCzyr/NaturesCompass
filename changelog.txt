@@ -1,6 +1,9 @@
 ------------------------------------------------------------------
- VERSION: 1.8.6 -  1.16.4
+ VERSION: 1.8.6 -  1.16.5, 1.16.4
 ------------------------------------------------------------------
+1.16.5
+  UPDATES:
+  - Initial release for 1.16.5 (Forge 36.0.14)
 1.16.4
   FIXES:
   - Fixed compass recipe not unlocking when one of its components is obtained
