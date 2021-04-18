@@ -1,0 +1,57 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "JAPAN - JAPANESE",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "自然のコンパス",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "戻る",
+    "string.naturescompass.info": "情報",
+    "string.naturescompass.startSearch": "検索する",
+    "string.naturescompass.selectBiome": "バイオームを選ぶ",
+    "string.naturescompass.sortBy": "並び替え",
+    "string.naturescompass.teleport": "テレポート",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "寒い",
+    "string.naturescompass.medium": "普通",
+    "string.naturescompass.warm": "暖かい",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "なし",
+    "string.naturescompass.veryLow": "とても低い",
+    "string.naturescompass.low": "低い",
+    "string.naturescompass.average": "平均",
+    "string.naturescompass.high": "高い",
+    "string.naturescompass.veryHigh": "とても高い",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "バイオーム",
+    "string.naturescompass.coordinates": "座標",
+    "string.naturescompass.distance": "距離",
+    "string.naturescompass.found": "発見済み",
+    "string.naturescompass.notFound": "未発見",
+    "string.naturescompass.radius": "半径",
+    "string.naturescompass.samples": "サンプル",
+    "string.naturescompass.search": "検索",
+    "string.naturescompass.searching": "検索中",
+    "string.naturescompass.source": "ソース",
+    "string.naturescompass.status": "ステータス",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "基準の高度",
+    "string.naturescompass.climate": "気候",
+    "string.naturescompass.fillerBlock": "繋ぎのブロック",
+    "string.naturescompass.heightVariation": "高度の変化",
+    "string.naturescompass.highHumidity": "高湿度",
+    "string.naturescompass.name": "名前",
+    "string.naturescompass.precipitation": "降水",
+    "string.naturescompass.rainfall": "降水量",
+    "string.naturescompass.temperature": "気温",
+    "string.naturescompass.topBlock": "表面のブロック",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "雪",
+    "string.naturescompass.rain": "雨"
+}
