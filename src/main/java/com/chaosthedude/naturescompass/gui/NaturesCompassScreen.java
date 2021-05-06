@@ -120,7 +120,7 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getIDForBiome(biome), player.getPosition()));
+		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(biome), player.getPosition()));
 		minecraft.displayGuiScreen(null);
 	}
 

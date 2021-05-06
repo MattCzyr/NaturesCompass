@@ -10,10 +10,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
@@ -48,7 +48,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = WorldGenRegistries.BIOME.getKey(biome);
+		biomeKey = ForgeRegistries.BIOMES.getKey(biome);
 	}
 
 	public void start() {

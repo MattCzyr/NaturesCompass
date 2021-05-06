@@ -8,6 +8,7 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -28,7 +29,7 @@ public class SyncPacket {
 		allowedBiomes = new ArrayList<Biome>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(BiomeUtils.getBiomeForID(buf.readInt()));
+			allowedBiomes.add(BiomeUtils.getBiomeForKey(new ResourceLocation(buf.readString())));
 		}
 	}
 
@@ -36,7 +37,7 @@ public class SyncPacket {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
 		for (Biome biome : allowedBiomes) {
-			buf.writeInt(BiomeUtils.getIDForBiome(biome));
+			buf.writeResourceLocation(BiomeUtils.getKeyForBiome(biome));
 		}
 	}
 

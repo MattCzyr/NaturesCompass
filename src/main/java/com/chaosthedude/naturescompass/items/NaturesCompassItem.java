@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -41,9 +42,9 @@ public class NaturesCompassItem extends Item {
 		return new ActionResult<ItemStack>(ActionResultType.PASS, player.getHeldItem(hand));
 	}
 
-	public void searchForBiome(World world, PlayerEntity player, int biomeID, BlockPos pos, ItemStack stack) {
-		setSearching(stack, biomeID, player);
-		BiomeUtils.searchForBiome(world, player, stack, BiomeUtils.getBiomeForID(biomeID), pos);
+	public void searchForBiome(World world, PlayerEntity player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
+		setSearching(stack, biomeKey, player);
+		BiomeUtils.searchForBiome(world, player, stack, BiomeUtils.getBiomeForKey(biomeKey), pos);
 	}
 
 	public boolean isActive(ItemStack stack) {
@@ -54,9 +55,9 @@ public class NaturesCompassItem extends Item {
 		return false;
 	}
 
-	public void setSearching(ItemStack stack, int biomeID, PlayerEntity player) {
+	public void setSearching(ItemStack stack, ResourceLocation biomeKey, PlayerEntity player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("BiomeID", biomeID);
+			stack.getTag().putString("BiomeKey", biomeKey.toString());
 			stack.getTag().putInt("State", CompassState.SEARCHING.getID());
 		}
 	}
@@ -102,9 +103,9 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public void setBiomeID(ItemStack stack, int biomeID, PlayerEntity player) {
+	public void setBiomeKey(ItemStack stack, ResourceLocation biomeKey, PlayerEntity player) {
 		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("BiomeID", biomeID);
+			stack.getTag().putString("BiomeKey", biomeKey.toString());
 		}
 	}
 
@@ -144,12 +145,12 @@ public class NaturesCompassItem extends Item {
 		return 0;
 	}
 
-	public int getBiomeID(ItemStack stack) {
+	public ResourceLocation getBiomeKey(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTag().getInt("BiomeID");
+			return new ResourceLocation(stack.getTag().getString("BiomeKey"));
 		}
 
-		return -1;
+		return new ResourceLocation("");
 	}
 
 	public int getSearchRadius(ItemStack stack) {
