@@ -34,7 +34,7 @@ public class BiomeUtils {
 	public static List<Biome> getAllowedBiomes() {
 		final List<Biome> biomes = new ArrayList<Biome>();
 		for (Biome biome : ForgeRegistries.BIOMES) {
-			if (biome != null && !biomeIsBlacklisted(biome)) {
+			if (biome != null && getBiomeForKey(biome.getRegistryName()) != null && !biomeIsBlacklisted(biome)) {
 				biomes.add(biome);
 			}
 		}
@@ -78,8 +78,9 @@ public class BiomeUtils {
 
 				return fixed;
 			}
-
-			return I18n.format(getKeyForBiome(biome).toString());
+			if (getKeyForBiome(biome) != null) {
+				return I18n.format(getKeyForBiome(biome).toString());
+			}
 		}
 
 		return "";
@@ -97,6 +98,9 @@ public class BiomeUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeSource(Biome biome) {
+		if (getKeyForBiome(biome) == null) {
+			return "";
+		}
 		String registryEntry = getKeyForBiome(biome).toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
