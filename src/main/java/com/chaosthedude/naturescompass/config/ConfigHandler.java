@@ -23,6 +23,8 @@ public class ConfigHandler {
 		public final ForgeConfigSpec.BooleanValue displayCoordinates;
 		public final ForgeConfigSpec.IntValue radiusModifier;
 		public final ForgeConfigSpec.IntValue sampleSpaceModifier;
+		public final ForgeConfigSpec.IntValue	sampleStepMaximum;
+		public final ForgeConfigSpec.DoubleValue sampleMomentumModifier;
 		public final ForgeConfigSpec.ConfigValue<List<String>> biomeBlacklist;
 		public final ForgeConfigSpec.IntValue maxSamples;
 
@@ -41,6 +43,12 @@ public class ConfigHandler {
 
 			desc = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 			sampleSpaceModifier = builder.comment(desc).defineInRange("sampleSpaceModifier", 16, 0, 1000000);
+			
+			desc = "The maximum value of a step taken during the biome search.";
+			sampleStepMaximum = builder.comment(desc).defineInRange("sampleStepMaximum", 256, 0, 1000000);
+
+			desc = "Changing this to a non-zero value spaces out samples across the same biome. Doing so may speed up searches at the cost of missing small biomes.";
+			sampleMomentumModifier = builder.comment(desc).defineInRange("sampleMomentumModifier", 0, 0, 1.0);
 
 			desc = "A list of biomes that the compass will not be able to search for, specified by resource location. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: [\"minecraft:savanna\", \"minecraft:desert\", \"minecraft:*ocean*\"]";
 			biomeBlacklist = builder.comment(desc).define("biomeBlacklist", new ArrayList<String>());

@@ -18,13 +18,17 @@ import net.minecraftforge.common.WorldWorkerManager;
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	public final int sampleSpace;
+	public final int maxStep;
 	public final int maxSamples;
 	public final int maxRadius;
+	public final double sampleMomentum;
 	public Level level;
 	public Biome biome;
 	public ResourceLocation biomeKey;
+	public ResourceLocation lastBiomeKey;
 	public BlockPos startPos;
 	public int samples;
+	public int lastStep;
 	public int nextLength;
 	public Direction direction;
 	public ItemStack stack;
@@ -44,8 +48,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		x = startPos.getX();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(level);
+		maxStep =  ConfigHandler.GENERAL.sampleStepMaximum.get();
 		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
 		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(level);
+		sampleMomentum = ConfigHandler.GENERAL.sampleMomentumModifier.get();
+		lastStep = 0;
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
@@ -74,14 +81,25 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
-			if (direction == Direction.NORTH) {
-				z -= sampleSpace;
-			} else if (direction == Direction.EAST) {
-				x += sampleSpace;
-			} else if (direction == Direction.SOUTH) {
-				z += sampleSpace;
-			} else if (direction == Direction.WEST) {
-				x -= sampleSpace;
+			final int step = Math.min(maxStep, sampleSpace + (int)(lastStep * sampleMomentum));
+		  int stepsRemaining = step;
+			while (stepsRemaining > 0) {
+				final int unseenLength = nextLength - length;
+				final int segment = Math.min(unseenLength, stepsRemaining);
+				if (direction == Direction.NORTH) {
+					z -= segment;
+				} else if (direction == Direction.EAST) {
+					x += segment;
+				} else if (direction == Direction.SOUTH) {
+					z += segment;
+				} else if (direction == Direction.WEST) {
+					x -= segment;
+				}
+				length += segment;
+				if (length >= nextLength) {
+					rotate();
+				}
+				stepsRemaining -= segment;
 			}
 
 			final BlockPos pos = new BlockPos(x, level.getHeight(), z);
@@ -90,19 +108,13 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 				finish(true);
 				return false;
+			} else if (biomeAtPosKey != lastBiomeKey) {
+				lastBiomeKey = biomeAtPosKey;
+				lastStep = 0;
 			}
 
 			samples++;
-			length += sampleSpace;
-			if (length >= nextLength) {
-				if (direction != Direction.UP) {
-					nextLength += sampleSpace;
-					direction = direction.getClockWise();
-				} else {
-					direction = Direction.NORTH;
-				}
-				length = 0;
-			}
+			lastStep = step;
 			int radius = getRadius();
 			if (radius > 500 && radius / 500 > lastRadiusThreshold) {
 				if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
@@ -118,6 +130,16 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		return false;
 	}
 
+	private void rotate() {
+		if (direction != Direction.UP) {
+			nextLength += sampleSpace;
+			direction = direction.rotateY();
+		} else {
+			direction = Direction.NORTH;
+		}
+		length = 0;
+	}
+	
 	private void finish(boolean found) {
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
 			if (found) {
