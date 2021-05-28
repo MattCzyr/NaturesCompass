@@ -21,6 +21,7 @@ public class ConfigHandler {
 	public static String[] biomeBlacklist = {};
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
+	public static double sampleMomentumModifier = 0.0;
 	public static int maxSamples = 50000;
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
@@ -47,6 +48,9 @@ public class ConfigHandler {
 
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
+
+		comment = "Changing this to a non-zero value spaces out samples across the same biome. Doing so may speed up searches at the cost of missing small biomes.";
+		sampleMomentumModifier = loadDouble(Configuration.CATEGORY_GENERAL, "naturescompass.sampleMomentumModifier", comment, sampleMomentumModifier);
 
 		comment = "A list of biomes that the compass will not be able to search for. Specify by resource location (ex: minecraft:ocean) or ID (ex: 0)";
 		biomeBlacklist = loadStringArray(Configuration.CATEGORY_GENERAL, "naturescompass.biomeBlacklist", comment, biomeBlacklist);
@@ -76,6 +80,18 @@ public class ConfigHandler {
 		prop.setComment(comment);
 		int val = prop.getInt(def);
 		if (val < 0) {
+			val = def;
+			prop.set(def);
+		}
+
+		return val;
+	}
+
+	public static double loadDouble(String category, String name, String comment, double def) {
+		final Property prop = config.get(category, name, def);
+		prop.setComment(comment);
+		double val = prop.getDouble(def);
+		if (val < 0.0) {
 			val = def;
 			prop.set(def);
 		}

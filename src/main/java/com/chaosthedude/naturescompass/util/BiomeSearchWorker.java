@@ -16,10 +16,13 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	public final int sampleSpace;
 	public final int maxDistance;
+	public final double sampleMomentum;
 	public World world;
 	public Biome biome;
+	public Biome lastBiome;
 	public BlockPos startPos;
 	public int samples;
+	public int lastStep;
 	public int nextLength;
 	public EnumFacing direction;
 	public ItemStack stack;
@@ -39,6 +42,9 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
 		maxDistance = ConfigHandler.distanceModifier * BiomeUtils.getBiomeSize(world);
+		sampleMomentum = ConfigHandler.sampleMomentumModifier;
+		lastBiome = biome;
+		lastStep = 0;
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
@@ -65,14 +71,15 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
+			final int step = Math.min(nextLength - length, sampleSpace + (int)(lastStep * sampleMomentum));
 			if (direction == EnumFacing.NORTH) {
-				z -= sampleSpace;
+				z -= step;
 			} else if (direction == EnumFacing.EAST) {
-				x += sampleSpace;
+				x += step;
 			} else if (direction == EnumFacing.SOUTH) {
-				z += sampleSpace;
+				z += step;
 			} else if (direction == EnumFacing.WEST) {
-				x -= sampleSpace;
+				x -= step;
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
@@ -80,10 +87,14 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (biomeAtPos == biome) {
 				finish(true);
 				return false;
+			} else if (biomeAtPos != lastBiome) {
+				lastBiome = biomeAtPos;
+				lastStep = 0;
 			}
 
 			samples++;
-			length += sampleSpace;
+			length += step;
+			lastStep = step;
 			if (length >= nextLength) {
 				if (direction != EnumFacing.UP) {
 					nextLength += sampleSpace;
@@ -92,6 +103,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 					direction = EnumFacing.NORTH;
 				}
 				length = 0;
+				lastStep = 0;
 			}
 		}
 		if (hasWork()) {
