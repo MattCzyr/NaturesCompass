@@ -3,6 +3,7 @@ package com.chaosthedude.naturescompass.gui;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -30,7 +31,7 @@ public class BiomeInfoScreen extends Screen {
 	private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
-		super(new StringTextComponent(I18n.format(BiomeUtils.getBiomeNameForDisplay(biome))));
+		super(new StringTextComponent(I18n.format(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome))));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
@@ -102,7 +103,7 @@ public class BiomeInfoScreen extends Screen {
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
-		font.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), (width / 2) - (font.getStringWidth(BiomeUtils.getBiomeNameForDisplay(biome)) / 2), 20, 0xffffff);
+		font.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)), (width / 2) - (font.getStringWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff);
 
 		font.func_243248_b(matrixStack, new TranslationTextComponent("string.naturescompass.topBlock"), width / 2 - 100, 40, 0xffffff);
 		font.func_243248_b(matrixStack, new StringTextComponent(topBlock), width / 2 - 100, 50, 0x808080);

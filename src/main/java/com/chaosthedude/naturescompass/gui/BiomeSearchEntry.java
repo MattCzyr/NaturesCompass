@@ -48,10 +48,10 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 			value = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
-		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(biome)), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(guiNaturesCompass.world, biome)), par3 + 1, par2 + 1, 0xffffff);
 		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(title + ": " + value), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
-		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(biome)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
+		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(guiNaturesCompass.world, biome)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 

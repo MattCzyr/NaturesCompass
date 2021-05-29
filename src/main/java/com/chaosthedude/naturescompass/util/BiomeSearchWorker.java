@@ -9,11 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
@@ -48,7 +46,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = ForgeRegistries.BIOMES.getKey(biome);
+		biomeKey = BiomeUtils.getKeyForBiome(world, biome);
 	}
 
 	public void start() {
@@ -82,7 +80,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
 			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			final ResourceLocation biomeAtPosKey = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biomeAtPos);
+			final ResourceLocation biomeAtPosKey = BiomeUtils.getKeyForBiome(world, biomeAtPos);
 			if (biomeAtPosKey != null && biomeAtPosKey.equals(biomeKey)) {
 				finish(true);
 				return false;

@@ -1,5 +1,7 @@
 package com.chaosthedude.naturescompass.items;
 
+import java.util.Optional;
+
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.RequestSyncPacket;
@@ -17,6 +19,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 public class NaturesCompassItem extends Item {
 
@@ -44,7 +47,10 @@ public class NaturesCompassItem extends Item {
 
 	public void searchForBiome(World world, PlayerEntity player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeKey, player);
-		BiomeUtils.searchForBiome(world, player, stack, BiomeUtils.getBiomeForKey(biomeKey), pos);
+		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(world, biomeKey);
+		if (optionalBiome.isPresent()) {
+			BiomeUtils.searchForBiome(world, player, stack, optionalBiome.get(), pos);
+		}
 	}
 
 	public boolean isActive(ItemStack stack) {

@@ -2,7 +2,10 @@ package com.chaosthedude.naturescompass.sorting;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class TopBlockCategory implements ISortingCategory {
 
 	@Override

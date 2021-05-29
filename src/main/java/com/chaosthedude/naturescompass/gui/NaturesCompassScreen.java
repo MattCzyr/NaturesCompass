@@ -3,6 +3,7 @@ package com.chaosthedude.naturescompass.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
@@ -19,6 +20,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -29,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class NaturesCompassScreen extends Screen {
 
-	private World world;
+	public World world;
 	private PlayerEntity player;
 	private List<Biome> allowedBiomes;
 	private List<Biome> biomesMatchingSearch;
@@ -44,16 +46,17 @@ public class NaturesCompassScreen extends Screen {
 	private BiomeSearchList selectionList;
 	private ISortingCategory sortingCategory;
 
-	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<Biome> allowedBiomes) {
+	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<ResourceLocation> allowedBiomes) {
 		super(new StringTextComponent(I18n.format("string.naturescompass.selectBiome")));
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
 		this.natureCompass = natureCompass;
-		this.allowedBiomes = allowedBiomes;
+		this.allowedBiomes = new ArrayList<Biome>();
+		loadAllowedBiomes(allowedBiomes);
 
 		sortingCategory = new NameCategory();
-		biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
+		biomesMatchingSearch = new ArrayList<Biome>(this.allowedBiomes);
 	}
 
 	@Override
@@ -76,6 +79,15 @@ public class NaturesCompassScreen extends Screen {
 	public void tick() {
 		searchTextField.tick();
 		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
+		
+		// Check if the allowed biome list has synced
+		if (allowedBiomes.size() != NaturesCompass.allowedBiomes.size()) {
+			children.remove(selectionList);
+			loadAllowedBiomes(NaturesCompass.allowedBiomes);
+			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			children.add(selectionList);
+		}
 	}
 
 	@Override
@@ -120,7 +132,7 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(biome), player.getPosition()));
+		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(minecraft.world, biome), player.getPosition()));
 		minecraft.displayGuiScreen(null);
 	}
 
@@ -136,7 +148,7 @@ public class NaturesCompassScreen extends Screen {
 	public void processSearchTerm() {
 		biomesMatchingSearch = new ArrayList<Biome>();
 		for (Biome biome : allowedBiomes) {
-			if (BiomeUtils.getBiomeNameForDisplay(biome).toLowerCase().contains(searchTextField.getText().toLowerCase())) {
+			if (BiomeUtils.getBiomeNameForDisplay(minecraft.world, biome).toLowerCase().contains(searchTextField.getText().toLowerCase())) {
 				biomesMatchingSearch.add(biome);
 			}
 		}
@@ -184,6 +196,16 @@ public class NaturesCompassScreen extends Screen {
 	private void setupTextFields() {
 		searchTextField = new TransparentTextField(font, 130, 10, 140, 20, new TranslationTextComponent("string.naturescompass.search"));
 		children.add(searchTextField);
+	}
+	
+	private void loadAllowedBiomes(List<ResourceLocation> allowedBiomeKeys) {
+		this.allowedBiomes = new ArrayList<Biome>();
+		for (ResourceLocation biomeKey : allowedBiomeKeys) {
+			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(world, biomeKey);
+			if (optionalBiome.isPresent()) {
+				this.allowedBiomes.add(optionalBiome.get());
+			}
+		}
 	}
 
 }

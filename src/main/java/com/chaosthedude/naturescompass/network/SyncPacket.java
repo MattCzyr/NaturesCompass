@@ -5,39 +5,37 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class SyncPacket {
 
 	private boolean canTeleport;
-	private List<Biome> allowedBiomes;
+	private List<ResourceLocation> allowedBiomes;
 
 	public SyncPacket() {}
 
-	public SyncPacket(boolean canTeleport, List<Biome> allowedBiomes) {
+	public SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes) {
 		this.canTeleport = canTeleport;
 		this.allowedBiomes = allowedBiomes;
 	}
 
 	public SyncPacket(PacketBuffer buf) {
 		canTeleport = buf.readBoolean();
-		allowedBiomes = new ArrayList<Biome>();
+		allowedBiomes = new ArrayList<ResourceLocation>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(BiomeUtils.getBiomeForKey(new ResourceLocation(buf.readString())));
+			allowedBiomes.add(new ResourceLocation(buf.readString()));
 		}
 	}
 
 	public void toBytes(PacketBuffer buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
-		for (Biome biome : allowedBiomes) {
-			buf.writeResourceLocation(BiomeUtils.getKeyForBiome(biome));
+		for (ResourceLocation biome : allowedBiomes) {
+			buf.writeResourceLocation(biome);
 		}
 	}
 

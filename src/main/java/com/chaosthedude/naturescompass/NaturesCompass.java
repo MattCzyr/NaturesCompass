@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,7 +13,6 @@ import com.chaosthedude.naturescompass.network.CompassSearchPacket;
 import com.chaosthedude.naturescompass.network.RequestSyncPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
-import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
 
 import net.minecraft.client.world.ClientWorld;
@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -52,7 +51,7 @@ public class NaturesCompass {
 	public static NaturesCompassItem naturesCompass;
 
 	public static boolean canTeleport;
-	public static List<Biome> allowedBiomes;
+	public static List<ResourceLocation> allowedBiomes;
 
 	public static NaturesCompass instance;
 
@@ -79,7 +78,7 @@ public class NaturesCompass {
 		// Client packet
 		network.registerMessage(3, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
-		allowedBiomes = BiomeUtils.getAllowedBiomes();
+		allowedBiomes = new ArrayList<ResourceLocation>(); // BiomeUtils.getAllowedBiomes();
 	}
 	
 	@OnlyIn(Dist.CLIENT)
