@@ -22,7 +22,7 @@ public class ConfigHandler {
 		public final ForgeConfigSpec.BooleanValue allowTeleport;
 		public final ForgeConfigSpec.IntValue radiusModifier;
 		public final ForgeConfigSpec.IntValue sampleSpaceModifier;
-		public final ForgeConfigSpec.IntValue	sampleStepMaximum;
+		public final ForgeConfigSpec.IntValue sampleStepMaximum;
 		public final ForgeConfigSpec.DoubleValue sampleMomentumModifier;
 		public final ForgeConfigSpec.ConfigValue<List<String>> biomeBlacklist;
 		public final ForgeConfigSpec.IntValue maxSamples;
