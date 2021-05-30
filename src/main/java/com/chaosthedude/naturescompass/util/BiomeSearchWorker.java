@@ -71,15 +71,25 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
-			final int step = Math.min(nextLength - length, sampleSpace + (int)(lastStep * sampleMomentum));
-			if (direction == EnumFacing.NORTH) {
-				z -= step;
-			} else if (direction == EnumFacing.EAST) {
-				x += step;
-			} else if (direction == EnumFacing.SOUTH) {
-				z += step;
-			} else if (direction == EnumFacing.WEST) {
-				x -= step;
+			final int step = sampleSpace + (int)(lastStep * sampleMomentum);
+		  int stepsRemaining = step;
+			while (stepsRemaining > 0) {
+				final int unseenLength = nextLength - length;
+				final int segment = Math.min(unseenLength, stepsRemaining);
+				if (direction == EnumFacing.NORTH) {
+					z -= segment;
+				} else if (direction == EnumFacing.EAST) {
+					x += segment;
+				} else if (direction == EnumFacing.SOUTH) {
+					z += segment;
+				} else if (direction == EnumFacing.WEST) {
+					x -= segment;
+				}
+				length += segment;
+				if (length >= nextLength) {
+					rotate();
+				}
+				stepsRemaining -= segment;
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
@@ -93,24 +103,23 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			samples++;
-			length += step;
 			lastStep = step;
-			if (length >= nextLength) {
-				if (direction != EnumFacing.UP) {
-					nextLength += sampleSpace;
-					direction = direction.rotateY();
-				} else {
-					direction = EnumFacing.NORTH;
-				}
-				length = 0;
-				lastStep = 0;
-			}
 		}
 		if (hasWork()) {
 			return true;
 		}
 		finish(false);
 		return false;
+	}
+
+	private void rotate() {
+		if (direction != EnumFacing.UP) {
+			nextLength += sampleSpace;
+			direction = direction.rotateY();
+		} else {
+			direction = EnumFacing.NORTH;
+		}
+		length = 0;
 	}
 	
 	private void finish(boolean found) {
