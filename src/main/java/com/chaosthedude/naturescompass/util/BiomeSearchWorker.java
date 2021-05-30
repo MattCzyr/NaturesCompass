@@ -74,7 +74,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public boolean doWork() {
 		if (hasWork()) {
 			final int step = Math.min(maxStep, sampleSpace + (int)(lastStep * sampleMomentum));
-		  int stepsRemaining = step;
+			int stepsRemaining = step;
 			while (stepsRemaining > 0) {
 				final int unseenLength = nextLength - length;
 				final int segment = Math.min(unseenLength, stepsRemaining);
