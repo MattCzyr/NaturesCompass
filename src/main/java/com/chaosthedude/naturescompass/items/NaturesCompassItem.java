@@ -44,6 +44,14 @@ public class NaturesCompassItem extends Item {
 
 		return new ActionResult<ItemStack>(ActionResultType.PASS, player.getHeldItem(hand));
 	}
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		if (getState(oldStack) == getState(newStack)) {
+			return false;
+		}
+		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+	}
 
 	public void searchForBiome(World world, PlayerEntity player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeKey, player);

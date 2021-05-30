@@ -30,6 +30,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public int z;
 	public int length;
 	public boolean finished;
+	public int lastRadiusThreshold;
 
 	public BiomeSearchWorker(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
 		this.world = world;
@@ -47,6 +48,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		direction = Direction.UP;
 		finished = false;
 		biomeKey = BiomeUtils.getKeyForBiome(world, biome);
+		lastRadiusThreshold = 0;
 	}
 
 	public void start() {
@@ -97,6 +99,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				}
 				length = 0;
 			}
+			int radius = getRadius();
+			if (radius > 500 && radius / 500 > lastRadiusThreshold) {
+				((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
+				lastRadiusThreshold = radius / 500;
+			}
 		}
 		if (hasWork()) {
 			return true;
@@ -112,7 +119,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
 			} else {
 				NaturesCompass.logger.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, getRadius(), samples);
+				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, roundRadius(getRadius(), 500), samples);
 			}
 		} else {
 			NaturesCompass.logger.error("Invalid compass after search");
@@ -122,6 +129,10 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	private int getRadius() {
 		return BiomeUtils.getDistanceToBiome(startPos, x, z);
+	}
+	
+	private int roundRadius(int radius, int roundTo) {
+		return ((int) radius / roundTo) * roundTo;
 	}
 
 }
