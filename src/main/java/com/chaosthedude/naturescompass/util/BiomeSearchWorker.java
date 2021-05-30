@@ -15,6 +15,7 @@ import net.minecraftforge.common.WorldWorkerManager;
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	public final int sampleSpace;
+	public final int maxStep;
 	public final int maxDistance;
 	public final double sampleMomentum;
 	public World world;
@@ -41,6 +42,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		x = startPos.getX();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
+		maxStep = ConfigHandler.sampleStepMaximum;
 		maxDistance = ConfigHandler.distanceModifier * BiomeUtils.getBiomeSize(world);
 		sampleMomentum = ConfigHandler.sampleMomentumModifier;
 		lastBiome = biome;
@@ -71,7 +73,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
-			final int step = sampleSpace + (int)(lastStep * sampleMomentum);
+			final int step = Math.min(maxStep, sampleSpace + (int)(lastStep * sampleMomentum));
 		  int stepsRemaining = step;
 			while (stepsRemaining > 0) {
 				final int unseenLength = nextLength - length;

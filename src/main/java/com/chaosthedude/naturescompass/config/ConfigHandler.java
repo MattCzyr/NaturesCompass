@@ -21,6 +21,7 @@ public class ConfigHandler {
 	public static String[] biomeBlacklist = {};
 	public static int distanceModifier = 2500;
 	public static int sampleSpaceModifier = 16;
+	public static int sampleStepMaximum = sampleSpaceModifier * 8;
 	public static double sampleMomentumModifier = 0.0;
 	public static int maxSamples = 50000;
 	public static boolean displayWithChatOpen = true;
@@ -48,6 +49,9 @@ public class ConfigHandler {
 
 		comment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 		sampleSpaceModifier = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleSpaceModifier", comment, sampleSpaceModifier);
+
+		comment = "The maximum value of a step taken during the biome search.";
+		sampleStepMaximum = loadInt(Configuration.CATEGORY_GENERAL, "naturescompass.sampleStepMaximum", comment, sampleStepMaximum);
 
 		comment = "Changing this to a non-zero value spaces out samples across the same biome. Doing so may speed up searches at the cost of missing small biomes.";
 		sampleMomentumModifier = loadDouble(Configuration.CATEGORY_GENERAL, "naturescompass.sampleMomentumModifier", comment, sampleMomentumModifier);
