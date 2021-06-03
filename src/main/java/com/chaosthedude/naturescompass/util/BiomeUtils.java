@@ -134,7 +134,30 @@ public class BiomeUtils {
 
 	public static boolean biomeIsBlacklisted(World world, Biome biome) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
-		return biomeBlacklist.contains(getKeyForBiome(world, biome).toString());
+		for (String biomeKey : biomeBlacklist) {
+			if (getKeyForBiome(world, biome).toString().matches(convertToRegex(biomeKey))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static String convertToRegex(String glob) {
+		String regex = "^";
+		for (char i = 0; i < glob.length(); i++) {
+			char c = glob.charAt(i);
+			if (c == '*') {
+				regex += ".*";
+			} else if (c == '?') {
+				regex += ".";
+			} else if (c == '.') {
+				regex += "\\.";
+			} else {
+				regex += c;
+			}
+		}
+		regex += "$";
+		return regex;
 	}
 
 }
