@@ -1,4 +1,18 @@
 ------------------------------------------------------------------
+ VERSION: 1.9.0 - 1.16.5
+------------------------------------------------------------------
+1.16.5
+  FEATURES:
+  - Added new information to the compass HUD while searching for a biome that indicates the radius that has been searched so far
+  - Added support for datapack biomes
+  - Added a permission that can be given to players to allow them to teleport to a biome without being opped or in creative mode (naturescompass.teleport)
+  - Added Japanese translations
+  FIXES:
+  - Fixed a crash that occurred occasionally when scrolling through the biome list in the compass GUI
+  - Fixed some Chinese translations
+
+
+------------------------------------------------------------------
  VERSION: 1.8.6 -  1.16.5, 1.16.4
 ------------------------------------------------------------------
 1.16.5

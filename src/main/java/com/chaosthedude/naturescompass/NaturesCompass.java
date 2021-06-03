@@ -45,7 +45,7 @@ public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.8.6";
+	public static final String VERSION = "1.9.0";
 	
 	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 
@@ -82,7 +82,7 @@ public class NaturesCompass {
 		// Client packet
 		network.registerMessage(3, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
-		allowedBiomes = new ArrayList<ResourceLocation>(); // BiomeUtils.getAllowedBiomes();
+		allowedBiomes = new ArrayList<ResourceLocation>();
 		
 		PermissionAPI.registerNode(TELEPORT_PERMISSION, DefaultPermissionLevel.OP, "Teleport permission of Nature's Compass");
 	}
