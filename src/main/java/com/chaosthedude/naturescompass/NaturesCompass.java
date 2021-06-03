@@ -37,6 +37,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @Mod(NaturesCompass.MODID)
 public class NaturesCompass {
@@ -44,6 +46,8 @@ public class NaturesCompass {
 	public static final String MODID = "naturescompass";
 	public static final String NAME = "Nature's Compass";
 	public static final String VERSION = "1.8.6";
+	
+	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -79,6 +83,8 @@ public class NaturesCompass {
 		network.registerMessage(3, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
 		allowedBiomes = new ArrayList<ResourceLocation>(); // BiomeUtils.getAllowedBiomes();
+		
+		PermissionAPI.registerNode(TELEPORT_PERMISSION, DefaultPermissionLevel.OP, "Teleport permission of Nature's Compass");
 	}
 	
 	@OnlyIn(Dist.CLIENT)

@@ -1,5 +1,7 @@
 package com.chaosthedude.naturescompass.util;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -8,11 +10,12 @@ import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public class PlayerUtils {
 
 	public static boolean canTeleport(PlayerEntity player) {
-		return cheatModeEnabled(player) || isOp(player);
+		return cheatModeEnabled(player) || isOp(player) || hasPermission(player);
 	}
 
 	public static boolean cheatModeEnabled(PlayerEntity player) {
@@ -34,6 +37,10 @@ public class PlayerUtils {
 		}
 
 		return false;
+	}
+
+	public static boolean hasPermission(PlayerEntity player) {
+		return PermissionAPI.hasPermission(player, NaturesCompass.TELEPORT_PERMISSION);
 	}
 
 }
