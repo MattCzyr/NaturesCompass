@@ -15,11 +15,15 @@ import net.minecraftforge.common.WorldWorkerManager;
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	
 	public final int sampleSpace;
+	public final int maxStep;
 	public final int maxDistance;
+	public final double sampleMomentum;
 	public World world;
 	public Biome biome;
+	public Biome lastBiome;
 	public BlockPos startPos;
 	public int samples;
+	public int lastStep;
 	public int nextLength;
 	public EnumFacing direction;
 	public ItemStack stack;
@@ -38,7 +42,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		x = startPos.getX();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
+		maxStep = ConfigHandler.sampleStepMaximum;
 		maxDistance = ConfigHandler.distanceModifier * BiomeUtils.getBiomeSize(world);
+		sampleMomentum = ConfigHandler.sampleMomentumModifier;
+		lastBiome = biome;
+		lastStep = 0;
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
@@ -65,14 +73,25 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	@Override
 	public boolean doWork() {
 		if (hasWork()) {
-			if (direction == EnumFacing.NORTH) {
-				z -= sampleSpace;
-			} else if (direction == EnumFacing.EAST) {
-				x += sampleSpace;
-			} else if (direction == EnumFacing.SOUTH) {
-				z += sampleSpace;
-			} else if (direction == EnumFacing.WEST) {
-				x -= sampleSpace;
+			final int step = Math.min(maxStep, sampleSpace + (int)(lastStep * sampleMomentum));
+			int stepsRemaining = step;
+			while (stepsRemaining > 0) {
+				final int unseenLength = nextLength - length;
+				final int segment = Math.min(unseenLength, stepsRemaining);
+				if (direction == EnumFacing.NORTH) {
+					z -= segment;
+				} else if (direction == EnumFacing.EAST) {
+					x += segment;
+				} else if (direction == EnumFacing.SOUTH) {
+					z += segment;
+				} else if (direction == EnumFacing.WEST) {
+					x -= segment;
+				}
+				length += segment;
+				if (length >= nextLength) {
+					rotate();
+				}
+				stepsRemaining -= segment;
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
@@ -80,25 +99,29 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (biomeAtPos == biome) {
 				finish(true);
 				return false;
+			} else if (biomeAtPos != lastBiome) {
+				lastBiome = biomeAtPos;
+				lastStep = 0;
 			}
 
 			samples++;
-			length += sampleSpace;
-			if (length >= nextLength) {
-				if (direction != EnumFacing.UP) {
-					nextLength += sampleSpace;
-					direction = direction.rotateY();
-				} else {
-					direction = EnumFacing.NORTH;
-				}
-				length = 0;
-			}
+			lastStep = step;
 		}
 		if (hasWork()) {
 			return true;
 		}
 		finish(false);
 		return false;
+	}
+
+	private void rotate() {
+		if (direction != EnumFacing.UP) {
+			nextLength += sampleSpace;
+			direction = direction.rotateY();
+		} else {
+			direction = EnumFacing.NORTH;
+		}
+		length = 0;
 	}
 	
 	private void finish(boolean found) {
