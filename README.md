@@ -1,10 +1,10 @@
 # Nature's Compass
 
-Nature's Compass is a Minecraft mod that allows you to search for a biome's location anywhere in the world and view information about it.
+Nature's Compass is a Minecraft mod that allows you to search for a biome's location anywhere in the world and view information about it. It is the sister mod of [Explorer's Compass](https://github.com/MattCzyr/ExplorersCompass), which allows you to search for structures.
 
 ## Download
 
-Downloads, installation instructions, and more information can be found on [Curse](https://minecraft.curseforge.com/projects/natures-compass).
+Downloads, installation instructions, and more information can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/natures-compass).
 
 ## Develop
 
