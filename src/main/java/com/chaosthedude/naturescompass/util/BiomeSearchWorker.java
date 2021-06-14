@@ -101,7 +101,9 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 			int radius = getRadius();
 			if (radius > 500 && radius / 500 > lastRadiusThreshold) {
-				((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
+				if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
+					((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
+				}
 				lastRadiusThreshold = radius / 500;
 			}
 		}
