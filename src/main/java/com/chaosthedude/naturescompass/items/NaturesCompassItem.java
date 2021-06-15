@@ -142,6 +142,12 @@ public class NaturesCompassItem extends Item {
 
 		return null;
 	}
+	
+	public void setDisplayCoordinates(ItemStack stack, boolean displayPosition) {
+ 		if (ItemUtils.verifyNBT(stack)) {
+ 			stack.getTag().putBoolean("DisplayCoordinates", displayPosition);
+ 		}
+ 	}
 
 	public int getFoundBiomeX(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
@@ -186,5 +192,13 @@ public class NaturesCompassItem extends Item {
 	public int getDistanceToBiome(PlayerEntity player, ItemStack stack) {
 		return BiomeUtils.getDistanceToBiome(player, getFoundBiomeX(stack), getFoundBiomeZ(stack));
 	}
+	
+	public boolean shouldDisplayCoordinates(ItemStack stack) {
+ 		if (ItemUtils.verifyNBT(stack) && stack.getTag().contains("DisplayCoordinates")) {
+ 			return stack.getTag().getBoolean("DisplayCoordinates");
+ 		}
+
+ 		return true;
+ 	}
 
 }

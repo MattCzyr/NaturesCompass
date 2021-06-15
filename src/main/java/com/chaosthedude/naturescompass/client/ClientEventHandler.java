@@ -48,11 +48,13 @@ public class ClientEventHandler {
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, BiomeUtils.getBiomeName(mc.world, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
 
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.coordinates"), 5, 5, 0xFFFFFF, 6);
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, compass.getFoundBiomeX(stack) + ", " + compass.getFoundBiomeZ(stack), 5, 5, 0xAAAAAA, 7);
-
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.distance"), 5, 5, 0xFFFFFF, 9);
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xAAAAAA, 10);
+					if (compass.shouldDisplayCoordinates(stack)) {
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.coordinates"), 5, 5, 0xFFFFFF, 6);
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, compass.getFoundBiomeX(stack) + ", " + compass.getFoundBiomeZ(stack), 5, 5, 0xAAAAAA, 7);
+	
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.distance"), 5, 5, 0xFFFFFF, 9);
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xAAAAAA, 10);
+					}
 				} else if (compass.getState(stack) == CompassState.NOT_FOUND) {
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.naturescompass.notFound"), 5, 5, 0xAAAAAA, 1);
