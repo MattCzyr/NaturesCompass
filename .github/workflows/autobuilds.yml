@@ -26,7 +26,7 @@ jobs:
           find -type f -path './build/libs/*' -name '*sources*' -delete
       - uses: actions/upload-artifact@v2
         with:
-          name: Agricraft Build
+          name: NaturesCompass Build
           path: build/libs/*
   release:
     name: Create pubilc releases
