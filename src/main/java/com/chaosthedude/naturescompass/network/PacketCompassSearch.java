@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketCompassSearch implements IMessage {
 
 	private int biomeID;
+	private int radius;
 
 	private int x;
 	private int y;
@@ -22,8 +23,9 @@ public class PacketCompassSearch implements IMessage {
 	public PacketCompassSearch() {
 	}
 
-	public PacketCompassSearch(int biomeID, BlockPos pos) {
+	public PacketCompassSearch(int biomeID, int radius, BlockPos pos) {
 		this.biomeID = biomeID;
+		this.radius = radius;
 
 		this.x = pos.getX();
 		this.y = pos.getY();
@@ -33,6 +35,7 @@ public class PacketCompassSearch implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		biomeID = buf.readInt();
+		radius = buf.readInt();
 
 		x = buf.readInt();
 		y = buf.readInt();
@@ -42,6 +45,7 @@ public class PacketCompassSearch implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(biomeID);
+		buf.writeInt(radius);
 
 		buf.writeInt(x);
 		buf.writeInt(y);
@@ -55,7 +59,7 @@ public class PacketCompassSearch implements IMessage {
 			if (!stack.isEmpty()) {
 				final ItemNaturesCompass natureCompass = (ItemNaturesCompass) stack.getItem();
 				final World world = ctx.getServerHandler().player.world;
-				natureCompass.searchForBiome(world, ctx.getServerHandler().player, packet.biomeID, new BlockPos(packet.x, packet.y, packet.z), stack);
+				natureCompass.searchForBiome(world, ctx.getServerHandler().player, packet.biomeID, packet.radius, new BlockPos(packet.x, packet.y, packet.z), stack);
 			}
 
 			return null;

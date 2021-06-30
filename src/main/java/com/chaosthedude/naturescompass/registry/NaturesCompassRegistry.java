@@ -2,6 +2,7 @@ package com.chaosthedude.naturescompass.registry;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;

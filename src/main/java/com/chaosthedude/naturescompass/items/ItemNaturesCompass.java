@@ -90,14 +90,11 @@ public class ItemNaturesCompass extends Item {
 
 			@SideOnly(Side.CLIENT)
 			private double getAngle(World world, Entity entity, ItemStack stack) {
-				BlockPos pos;
-				if (getState(stack) == EnumCompassState.FOUND) {
-					pos = new BlockPos(getFoundBiomeX(stack), 0, getFoundBiomeZ(stack));
-				} else {
-					pos = world.getSpawnPoint();
-				}
-
-				return Math.atan2((double) pos.getZ() - entity.posZ, (double) pos.getX() - entity.posX);
+			        double angle = entity.rotationYaw < 360
+			        	? 270.0D
+			        	: -90.0D;
+			        	
+			        return Math.toRadians(angle);
 			}
 		});
 	}
@@ -116,9 +113,9 @@ public class ItemNaturesCompass extends Item {
 		return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
 	}
 
-	public void searchForBiome(World world, EntityPlayer player, int biomeID, BlockPos pos, ItemStack stack) {
+	public void searchForBiome(World world, EntityPlayer player, int biomeID, int radius, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeID, player);
-		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), pos);
+		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, Biome.getBiome(biomeID), radius, pos);
 		worker.start();
 	}
 
@@ -137,18 +134,21 @@ public class ItemNaturesCompass extends Item {
 		}
 	}
 
-	public void setFound(ItemStack stack, int x, int z, int samples, EntityPlayer player) {
+	public void setFound(ItemStack stack, int x, int z, int samples, int searchRadius, EntityPlayer player, String hint) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", EnumCompassState.FOUND.getID());
+			stack.getTagCompound().setString("Hint", hint);
 			stack.getTagCompound().setInteger("FoundX", x);
 			stack.getTagCompound().setInteger("FoundZ", z);
+			stack.getTagCompound().setInteger("SearchRadius", searchRadius);
 			stack.getTagCompound().setInteger("Samples", samples);
 		} 
 	}
 
-	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius, int samples) {
+	public void setNotFound(ItemStack stack, EntityPlayer player, int searchRadius, int samples, String hint) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTagCompound().setInteger("State", EnumCompassState.NOT_FOUND.getID());
+			stack.getTagCompound().setString("Hint", hint);
 			stack.getTagCompound().setInteger("SearchRadius", searchRadius);
 			stack.getTagCompound().setInteger("Samples", samples);
 		}
@@ -210,6 +210,14 @@ public class ItemNaturesCompass extends Item {
 		}
 
 		return 0;
+	}
+	
+	public String getHint(ItemStack stack) {
+	    if (ItemUtils.verifyNBT(stack)) {
+		return stack.getTagCompound().getString("Hint");
+	    }
+	    
+	    return "";
 	}
 
 	public int getFoundBiomeZ(ItemStack stack) {

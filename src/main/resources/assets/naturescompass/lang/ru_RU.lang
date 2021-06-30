@@ -10,6 +10,7 @@ string.naturescompass.info=Информация
 string.naturescompass.startSearch=Начать поиск
 string.naturescompass.selectBiome=Выбрать биом
 string.naturescompass.sortBy=Сорт. по
+string.naturescompass.searchRadius=Радиус поиска
 string.naturescompass.teleport=Телепортироваться
 
 # STRINGS - CLIMATES

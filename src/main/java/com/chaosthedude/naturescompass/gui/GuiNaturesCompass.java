@@ -15,6 +15,7 @@ import com.chaosthedude.naturescompass.sorting.CategoryName;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.EnumCompassState;
+import com.chaosthedude.naturescompass.util.SearchRadius;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -39,10 +40,11 @@ public class GuiNaturesCompass extends GuiScreen {
 	private GuiButton teleportButton;
 	private GuiButton infoButton;
 	private GuiButton cancelButton;
-	private GuiButton sortByButton;
+	private GuiButton searchRadiusButton;	
 	private GuiTransparentTextField searchTextField;
 	private GuiListBiomes selectionList;
 	private ISortingCategory sortingCategory;
+	private SearchRadius searchRadius;
 
 	public GuiNaturesCompass(World world, EntityPlayer player, ItemStack stack, ItemNaturesCompass natureCompass, List<Biome> allowedBiomes) {
 		this.world = world;
@@ -52,6 +54,7 @@ public class GuiNaturesCompass extends GuiScreen {
 		this.allowedBiomes = allowedBiomes;
 
 		sortingCategory = new CategoryName();
+		searchRadius = new SearchRadius();
 		biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
 	}
 
@@ -89,10 +92,9 @@ public class GuiNaturesCompass extends GuiScreen {
 				teleport();
 			} else if (button == infoButton) {
 				biomesEntry.viewInfo();
-			} else if (button == sortByButton) {
-				sortingCategory = sortingCategory.next();
-				sortByButton.displayString = I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName();
-				selectionList.refreshList();
+			} else if (button == searchRadiusButton) {
+			    	searchRadius = searchRadius.next();
+				searchRadiusButton.displayString = I18n.format("string.naturescompass.searchRadius") + ": " + searchRadius.getLocalizedName();
 			} else if (button == cancelButton) {
 				mc.displayGuiScreen(null);
 			}
@@ -147,7 +149,7 @@ public class GuiNaturesCompass extends GuiScreen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new PacketCompassSearch(Biome.getIdForBiome(biome), player.getPosition()));
+		NaturesCompass.network.sendToServer(new PacketCompassSearch(Biome.getIdForBiome(biome), searchRadius.getValue(), player.getPosition()));
 		mc.displayGuiScreen(null);
 	}
 
@@ -181,10 +183,10 @@ public class GuiNaturesCompass extends GuiScreen {
 	private void setupButtons() {
 		buttonList.clear();
 		cancelButton = addButton(new GuiTransparentButton(0, 10, height - 30, 110, 20, I18n.format("gui.cancel")));
-		sortByButton = addButton(new GuiTransparentButton(1, 10, 90, 110, 20, I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
-		infoButton = addButton(new GuiTransparentButton(2, 10, 65, 110, 20, I18n.format("string.naturescompass.info")));
-		startSearchButton = addButton(new GuiTransparentButton(3, 10, 40, 110, 20, I18n.format("string.naturescompass.startSearch")));
+		infoButton = addButton(new GuiTransparentButton(2, 10, 90, 110, 20, I18n.format("string.naturescompass.info")));
+		startSearchButton = addButton(new GuiTransparentButton(3, 10, 65, 110, 20, I18n.format("string.naturescompass.startSearch")));
 		teleportButton = addButton(new GuiTransparentButton(4, width - 120, 10, 110, 20, I18n.format("string.naturescompass.teleport")));
+		searchRadiusButton = addButton(new GuiTransparentButton(5, 10, 40, 110, 20, I18n.format("string.naturescompass.searchRadius") + ": " + searchRadius.getLocalizedName()));
 
 		startSearchButton.enabled = false;
 		infoButton.enabled = false;

@@ -32,25 +32,26 @@ public class ClientEventHandler {
 			if (stack != null && stack.getItem() instanceof ItemNaturesCompass) {
 				final ItemNaturesCompass compass = (ItemNaturesCompass) stack.getItem();
 				if (compass.getState(stack) == EnumCompassState.SEARCHING) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("You focus on the compass..."), 5, 5, 0xFFFFFF, 0);
+					/*
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.searching"), 5, 5, 0xAAAAAA, 1);
 
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
 					RenderUtils.drawConfiguredStringOnHUD(BiomeUtils.getBiomeName(compass.getBiomeID(stack)), 5, 5, 0xAAAAAA, 4);
+					*/
 				} else if (compass.getState(stack) == EnumCompassState.FOUND) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.found"), 5, 5, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format(compass.getHint(stack)), 5, 5, 0xFFFFFF, 0);
 
+					/* removing the biome / radius from the hud for the time being
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
 					RenderUtils.drawConfiguredStringOnHUD(BiomeUtils.getBiomeName(compass.getBiomeID(stack)), 5, 5, 0xAAAAAA, 4);
 
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.coordinates"), 5, 5, 0xFFFFFF, 6);
-					RenderUtils.drawConfiguredStringOnHUD(compass.getFoundBiomeX(stack) + ", " + compass.getFoundBiomeZ(stack), 5, 5, 0xAAAAAA, 7);
-
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.distance"), 5, 5, 0xFFFFFF, 9);
-					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xAAAAAA, 10);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
+					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
+					*/
 				} else if (compass.getState(stack) == EnumCompassState.NOT_FOUND) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format(compass.getHint(stack)), 5, 5, 0xFFFFFF, 0);
+					/* removing this for now just to see
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.notFound"), 5, 5, 0xAAAAAA, 1);
 
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
@@ -58,9 +59,7 @@ public class ClientEventHandler {
 
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
 					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
-
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.naturescompass.samples"), 5, 5, 0xFFFFFF, 9);
-					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(compass.getSamples(stack)), 5, 5, 0xAAAAAA, 10);
+					*/
 				}
 			}
 		}
