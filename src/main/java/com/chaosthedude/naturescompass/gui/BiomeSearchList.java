@@ -14,11 +14,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
-	private final NaturesCompassScreen guiNaturesCompass;
+	private final NaturesCompassScreen parentScreen;
 
 	public BiomeSearchList(NaturesCompassScreen guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
-		this.guiNaturesCompass = guiNaturesCompass;
+		this.parentScreen = guiNaturesCompass;
 		refreshList();
 	}
 
@@ -74,7 +74,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	public void refreshList() {
 		clearEntries();
-		for (Biome biome : guiNaturesCompass.sortBiomes()) {
+		for (Biome biome : parentScreen.sortBiomes()) {
 			addEntry(new BiomeSearchEntry(this, biome));
 		}
 		selectBiome(null);
@@ -82,7 +82,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	public void selectBiome(BiomeSearchEntry entry) {
 		setSelected(entry);
-		guiNaturesCompass.selectBiome(entry);
+		parentScreen.selectBiome(entry);
 	}
 
 	public boolean hasSelection() {
@@ -90,7 +90,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 	}
 
 	public NaturesCompassScreen getGuiNaturesCompass() {
-		return guiNaturesCompass;
+		return parentScreen;
 	}
 
 }

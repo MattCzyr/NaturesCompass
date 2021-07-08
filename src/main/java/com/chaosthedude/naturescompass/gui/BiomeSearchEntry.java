@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 
 	private final Minecraft mc;
-	private final NaturesCompassScreen guiNaturesCompass;
+	private final NaturesCompassScreen parentScreen;
 	private final Biome biome;
 	private final BiomeSearchList biomesList;
 	private long lastClickTime;
@@ -28,7 +28,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 	public BiomeSearchEntry(BiomeSearchList biomesList, Biome biome) {
 		this.biomesList = biomesList;
 		this.biome = biome;
-		guiNaturesCompass = biomesList.getGuiNaturesCompass();
+		parentScreen = biomesList.getGuiNaturesCompass();
 		mc = Minecraft.getInstance();
 	}
 
@@ -41,17 +41,17 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 			precipitationState = I18n.format("string.naturescompass.rain");
 		}
 
-		String title = guiNaturesCompass.getSortingCategory().getLocalizedName();
-		Object value = guiNaturesCompass.getSortingCategory().getValue(biome);
+		String title = parentScreen.getSortingCategory().getLocalizedName();
+		Object value = parentScreen.getSortingCategory().getValue(biome);
 		if (value == null) {
 			title = I18n.format("string.naturescompass.topBlock");
 			value = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		}
 
-		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(guiNaturesCompass.world, biome)), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)), par3 + 1, par2 + 1, 0xffffff);
 		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(title + ": " + value), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.precipitation") + ": " + precipitationState), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
-		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(guiNaturesCompass.world, biome)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
+		mc.fontRenderer.func_243248_b(matrixStack, new StringTextComponent(I18n.format("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 25, 0x808080);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
@@ -72,11 +72,11 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 
 	public void searchForBiome() {
 		mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-		guiNaturesCompass.searchForBiome(biome);
+		parentScreen.searchForBiome(biome);
 	}
 
 	public void viewInfo() {
-		mc.displayGuiScreen(new BiomeInfoScreen(guiNaturesCompass, biome));
+		mc.displayGuiScreen(new BiomeInfoScreen(parentScreen, biome));
 	}
 
 }

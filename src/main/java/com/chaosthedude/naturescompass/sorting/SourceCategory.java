@@ -10,10 +10,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SourceCategory implements ISortingCategory {
+	
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		Minecraft mc = Minecraft.getInstance();
 		if (mc.world != null) {
 			return BiomeUtils.getBiomeSource(mc.world, biome1).compareTo(BiomeUtils.getBiomeSource(mc.world, biome2));
 		}

@@ -7,10 +7,11 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.biome.Biome;
 
 public class NameCategory implements ISortingCategory {
+	
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		Minecraft mc = Minecraft.getInstance();
 		if (mc.world != null) {
 			return BiomeUtils.getBiomeName(mc.world, biome1).compareTo(BiomeUtils.getBiomeName(mc.world, biome2));
 		}

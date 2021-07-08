@@ -49,7 +49,7 @@ public class TeleportPacket {
 						}
 					}
 				} else {
-					NaturesCompass.logger.warn("Player " + player.getDisplayName().getString() + " tried to teleport but does not have permission.");
+					NaturesCompass.LOGGER.warn("Player " + player.getDisplayName().getString() + " tried to teleport but does not have permission.");
 				}
 			}
 		});

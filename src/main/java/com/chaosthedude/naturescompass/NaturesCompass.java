@@ -49,7 +49,7 @@ public class NaturesCompass {
 	
 	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 
-	public static final Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;

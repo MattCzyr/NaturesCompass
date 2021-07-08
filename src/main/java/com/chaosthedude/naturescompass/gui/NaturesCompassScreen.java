@@ -132,7 +132,7 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(minecraft.world, biome), player.getPosition()));
+		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(world, biome), player.getPosition()));
 		minecraft.displayGuiScreen(null);
 	}
 
@@ -148,7 +148,7 @@ public class NaturesCompassScreen extends Screen {
 	public void processSearchTerm() {
 		biomesMatchingSearch = new ArrayList<Biome>();
 		for (Biome biome : allowedBiomes) {
-			if (BiomeUtils.getBiomeNameForDisplay(minecraft.world, biome).toLowerCase().contains(searchTextField.getText().toLowerCase())) {
+			if (BiomeUtils.getBiomeNameForDisplay(world, biome).toLowerCase().contains(searchTextField.getText().toLowerCase())) {
 				biomesMatchingSearch.add(biome);
 			}
 		}

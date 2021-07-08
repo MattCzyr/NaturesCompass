@@ -38,16 +38,19 @@ public class BiomeUtils {
 		return getBiomeRegistry(world).getOptional(key);
 	}
 
-	public static List<Biome> getAllowedBiomes(World world) {
-		final List<Biome> biomes = new ArrayList<Biome>();
+	public static List<ResourceLocation> getAllowedBiomeKeys(World world) {
+		final List<ResourceLocation> biomeKeys = new ArrayList<ResourceLocation>();
 		for (Map.Entry<RegistryKey<Biome>, Biome> entry : getBiomeRegistry(world).getEntries()) {
 			Biome biome = entry.getValue();
-			if (biome != null && getKeyForBiome(world, biome) != null && !biomeIsBlacklisted(world, biome)) {
-				biomes.add(biome);
+			if (biome != null) {
+				ResourceLocation biomeKey = getKeyForBiome(world, biome);
+				if (biome != null && biomeKey != null && !biomeKeyIsBlacklisted(world, biomeKey)) {
+					biomeKeys.add(biomeKey);
+				}
 			}
 		}
 
-		return biomes;
+		return biomeKeys;
 	}
 
 	public static void searchForBiome(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
@@ -132,10 +135,10 @@ public class BiomeUtils {
 		return modid;
 	}
 
-	public static boolean biomeIsBlacklisted(World world, Biome biome) {
+	public static boolean biomeKeyIsBlacklisted(World world, ResourceLocation biomeKey) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
-		for (String biomeKey : biomeBlacklist) {
-			if (getKeyForBiome(world, biome).toString().matches(convertToRegex(biomeKey))) {
+		for (String key : biomeBlacklist) {
+			if (biomeKey.toString().matches(convertToRegex(key))) {
 				return true;
 			}
 		}
