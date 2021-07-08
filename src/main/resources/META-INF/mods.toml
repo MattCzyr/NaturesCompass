@@ -8,6 +8,7 @@ license="CC BY-NC-SA 4.0"
     version="${file.jarVersion}"
     displayName="Nature's Compass"
     displayURL="https://github.com/MattCzyr/NaturesCompass"
+    logoFile="logo.png"
     authors="ChaosTheDude"
     description='''
     Search for a biome and get information about it.

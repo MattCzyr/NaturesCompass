@@ -1,15 +1,19 @@
 package com.chaosthedude.naturescompass.items;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
-import com.chaosthedude.naturescompass.network.RequestSyncPacket;
+import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
+import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -20,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.network.NetworkDirection;
 
 public class NaturesCompassItem extends Item {
 
@@ -35,8 +40,12 @@ public class NaturesCompassItem extends Item {
 		if (!player.isCrouching()) {
 			if (world.isRemote) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
-				NaturesCompass.network.sendToServer(new RequestSyncPacket());
 				GuiWrapper.openGUI(world, player, stack);
+			} else {
+				final ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player);
+				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(world);
+				NaturesCompass.network.sendTo(new SyncPacket(canTeleport, allowedBiomeKeys), serverPlayer.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 			}
 		} else {
 			setState(player.getHeldItem(hand), null, CompassState.INACTIVE, player);
