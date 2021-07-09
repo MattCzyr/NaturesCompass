@@ -16,6 +16,7 @@ import net.minecraftforge.common.WorldWorkerManager;
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	public final int sampleSpace;
+	public final int maxSamples;
 	public final int maxRadius;
 	public World world;
 	public Biome biome;
@@ -41,6 +42,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		x = startPos.getX();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(world);
+		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
 		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(world);
 		nextLength = sampleSpace;
 		length = 0;
@@ -54,7 +56,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public void start() {
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
 			if (maxRadius > 0 && sampleSpace > 0) {
-				NaturesCompass.LOGGER.info("Starting search: " + sampleSpace + " sample space, " + maxRadius + " max radius");
+				NaturesCompass.LOGGER.info("Starting search: " + sampleSpace + " sample space, " + maxSamples + " max samples, " + maxRadius + " max radius");
 				WorldWorkerManager.addWorker(this);
 			} else {
 				finish(false);
@@ -64,7 +66,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	@Override
 	public boolean hasWork() {
-		return !finished && getRadius() <= maxRadius && samples <= ConfigHandler.GENERAL.maxSamples.get();
+		return !finished && getRadius() <= maxRadius && samples <= maxSamples;
 	}
 
 	@Override
