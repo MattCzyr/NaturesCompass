@@ -2,49 +2,41 @@ package com.chaosthedude.naturescompass.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
-public class SyncPacket {
+public class SyncPacket extends PacketByteBuf {
 
-	private boolean canTeleport;
-	private List<ResourceLocation> allowedBiomes;
+	public static final Identifier ID = new Identifier(NaturesCompass.MODID, "sync");
 
-	public SyncPacket() {}
-
-	public SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes) {
-		this.canTeleport = canTeleport;
-		this.allowedBiomes = allowedBiomes;
+	public SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs) {
+		super(Unpooled.buffer());
+		writeBoolean(canTeleport);
+		writeInt(allowedBiomeIDs.size());
+		for (Identifier biomeID : allowedBiomeIDs) {
+			writeIdentifier(biomeID);
+		}
 	}
 
-	public SyncPacket(PacketBuffer buf) {
-		canTeleport = buf.readBoolean();
-		allowedBiomes = new ArrayList<ResourceLocation>();
+    public static void apply(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+		final boolean canTeleport = buf.readBoolean();
+		final List<Identifier> allowedBiomeIDs = new ArrayList<Identifier>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(new ResourceLocation(buf.readString()));
+			allowedBiomeIDs.add(buf.readIdentifier());
 		}
-	}
-
-	public void toBytes(PacketBuffer buf) {
-		buf.writeBoolean(canTeleport);
-		buf.writeInt(allowedBiomes.size());
-		for (ResourceLocation biome : allowedBiomes) {
-			buf.writeResourceLocation(biome);
-		}
-	}
-
-	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			NaturesCompass.canTeleport = canTeleport;
-			NaturesCompass.allowedBiomes = allowedBiomes;
+		
+		client.execute(() -> {
+	        NaturesCompass.canTeleport = canTeleport;
+	        NaturesCompass.allowedBiomes = allowedBiomeIDs;
 		});
-		ctx.get().setPacketHandled(true);
 	}
 
 }

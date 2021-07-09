@@ -1,55 +1,55 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.chaosthedude.naturescompass.utils.RenderUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.FontRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class TransparentTextField extends TextFieldWidget {
 
-	private FontRenderer fontRenderer;
-	private ITextComponent label;
+	private TextRenderer textRenderer;
+	private Text label;
 	private int labelColor = 0x808080;
 
-	private boolean pseudoIsEnabled = true;
+	private boolean pseudoEditable = true;
 	private boolean pseudoEnableBackgroundDrawing = true;
-	private int pseudoMaxStringLength = 32;
+	private int pseudoMaxLength = 32;
 	private int pseudoLineScrollOffset;
-	private int pseudoEnabledColor = 14737632;
-	private int pseudoDisabledColor = 7368816;
+	private int pseudoEditableColor = 14737632;
+	private int pseudoUneditableColor = 7368816;
 	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
 
-	public TransparentTextField(FontRenderer fontRenderer, int x, int y, int width, int height, ITextComponent label) {
-		super(fontRenderer, x, y, width, height, label);
-		this.fontRenderer = fontRenderer;
+	public TransparentTextField(TextRenderer textRenderer, int x, int y, int width, int height, Text label) {
+		super(textRenderer, x, y, width, height, label);
+		this.textRenderer = textRenderer;
 		this.label = label;
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (getVisible()) {
+		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
 				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
-            int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
-			int j = getCursorPosition() - pseudoLineScrollOffset;
+            int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
+			int j = getCursor() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
 			String text = showLabel ? label.getString() : getText();
-			String s = fontRenderer.func_238412_a_(text.substring(pseudoLineScrollOffset), getWidth());
+			String s = textRenderer.trimToWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
 			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
 			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
@@ -62,10 +62,10 @@ public class TransparentTextField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = fontRenderer.drawStringWithShadow(matrixStack, s1, (float) l, (float) i1, i);
+				j1 = textRenderer.drawWithShadow(matrixStack, s1, (float) l, (float) i1, i);
 			}
 
-			boolean flag2 = getCursorPosition() < getText().length() || getText().length() >= pseudoMaxStringLength;
+			boolean flag2 = getCursor() < getText().length() || getText().length() >= pseudoMaxLength;
 			int k1 = j1;
 
 			if (!flag) {
@@ -76,40 +76,40 @@ public class TransparentTextField extends TextFieldWidget {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = fontRenderer.drawStringWithShadow(matrixStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = textRenderer.drawWithShadow(matrixStack, s.substring(j), (float) j1, (float) i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.FONT_HEIGHT, -3092272);
+					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
 				} else {
-					fontRenderer.drawStringWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
+					textRenderer.drawWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
 				}
 			}
 
 			if (k != j) {
-				int l1 = l + fontRenderer.getStringWidth(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + fontRenderer.FONT_HEIGHT);
+				int l1 = l + textRenderer.getWidth(s.substring(0, k));
+				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
 			}
 		}
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
-		pseudoIsEnabled = enabled;
+	public void setEditable(boolean editable) {
+		super.setEditable(editable);
+		pseudoEditable = editable;
 	}
 
 	@Override
-	public void setTextColor(int color) {
-		super.setTextColor(color);
-		pseudoEnabledColor = color;
+	public void setEditableColor(int color) {
+		super.setEditableColor(color);
+		pseudoEditableColor = color;
 	}
 
 	@Override
-	public void setDisabledTextColour(int color) {
-		super.setDisabledTextColour(color);
-		pseudoDisabledColor = color;
+	public void setUneditableColor(int color) {
+		super.setUneditableColor(color);
+		pseudoUneditableColor = color;
 	}
 
 	@Override
@@ -121,15 +121,15 @@ public class TransparentTextField extends TextFieldWidget {
 	}
 	
 	@Override
-	public void setEnableBackgroundDrawing(boolean enableBackgroundDrawing) {
-		super.setEnableBackgroundDrawing(enableBackgroundDrawing);
-		pseudoEnableBackgroundDrawing = enableBackgroundDrawing;
+	public void setDrawsBackground(boolean drawsBackground) {
+		super.setDrawsBackground(drawsBackground);
+		pseudoEnableBackgroundDrawing = drawsBackground;
 	}
 	
 	@Override
-	public void setMaxStringLength(int length) {
-		super.setMaxStringLength(length);
-		pseudoMaxStringLength = length;
+	public void setMaxLength(int length) {
+		super.setMaxLength(length);
+		pseudoMaxLength = length;
 	}
 	
 	@Override
@@ -139,20 +139,20 @@ public class TransparentTextField extends TextFieldWidget {
 	}
 	
 	@Override
-	public void setSelectionPos(int position) {
-		super.setSelectionPos(position);
+	public void setSelectionEnd(int position) {
+		super.setSelectionEnd(position);
 		int i = getText().length();
 	      pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
-	      if (fontRenderer != null) {
+	      if (textRenderer != null) {
 	         if (pseudoLineScrollOffset > i) {
 	            pseudoLineScrollOffset = i;
 	         }
 
-	         int j = getAdjustedWidth();
-	         String s = fontRenderer.func_238413_a_(getText().substring(this.pseudoLineScrollOffset), j, false);
+	         int j = getInnerWidth();
+	         String s = textRenderer.trimToWidth(getText().substring(pseudoLineScrollOffset), j, false);
 	         int k = s.length() + pseudoLineScrollOffset;
 	         if (pseudoSelectionEnd == pseudoLineScrollOffset) {
-	            pseudoLineScrollOffset -= fontRenderer.func_238413_a_(getText(), j, true).length();
+	            pseudoLineScrollOffset -= textRenderer.trimToWidth(getText(), j, true).length();
 	         }
 
 	         if (pseudoSelectionEnd > k) {
@@ -165,7 +165,7 @@ public class TransparentTextField extends TextFieldWidget {
 	      }
 	}
 
-	public void setLabel(ITextComponent label) {
+	public void setLabel(Text label) {
 		this.label = label;
 	}
 
@@ -200,11 +200,11 @@ public class TransparentTextField extends TextFieldWidget {
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos((double) startX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) startY, 0.0D).endVertex();
-		bufferbuilder.pos((double) startX, (double) startY, 0.0D).endVertex();
+		bufferbuilder.begin(7, VertexFormats.POSITION);
+		bufferbuilder.vertex((double) startX, (double) endY, 0.0D).next();
+		bufferbuilder.vertex((double) endX, (double) endY, 0.0D).next();
+		bufferbuilder.vertex((double) endX, (double) startY, 0.0D).next();
+		bufferbuilder.vertex((double) startX, (double) startY, 0.0D).next();
 		tessellator.draw();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();

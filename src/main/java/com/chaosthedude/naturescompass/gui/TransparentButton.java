@@ -1,25 +1,25 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.chaosthedude.naturescompass.utils.RenderUtils;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
-@OnlyIn(Dist.CLIENT)
-public class TransparentButton extends Button {
+@Environment(EnvType.CLIENT)
+public class TransparentButton extends ButtonWidget {
 
-	public TransparentButton(int x, int y, int width, int height, ITextComponent label, IPressable onPress) {
+	public TransparentButton(int x, int y, int width, int height, Text label, PressAction onPress) {
 		super(x, y, width, height, label, onPress);
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
-			Minecraft mc = Minecraft.getInstance();
+			MinecraftClient mc = MinecraftClient.getInstance();
 			float state = 2;
 			if (!active) {
 				state = 5;
@@ -27,10 +27,10 @@ public class TransparentButton extends Button {
 				state = 4;
 			}
 			final float f = state / 2 * 0.9F + 0.1F;
-			final int color = (int) (255.0F * f);
+			final int color = (int) (255.0F * f);	
 
 			RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
-			drawCenteredString(matrixStack, mc.fontRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
+			drawCenteredText(matrixStack, mc.textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
 		}
 	}
 

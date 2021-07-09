@@ -1,21 +1,21 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import net.minecraft.client.resources.I18n;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class FillerBlockCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return I18n.format(biome1.getGenerationSettings().getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey()).compareTo(I18n.format(biome2.getGenerationSettings().getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey()));
+		return I18n.translate(biome1.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock().getTranslationKey()).compareTo(I18n.translate(biome2.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock().getTranslationKey()));
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey());
+		return I18n.translate(biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock().getTranslationKey());
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class FillerBlockCategory implements ISortingCategory {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.fillerBlock");
+		return I18n.translate("string.naturescompass.fillerBlock");
 	}
 
 }

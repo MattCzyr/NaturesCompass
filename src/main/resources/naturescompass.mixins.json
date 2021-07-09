@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "com.chaosthedude.naturescompass.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ServerMixin"
+  ],
+  "client": [
+    "HUDMixin",
+    "HeldItemRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

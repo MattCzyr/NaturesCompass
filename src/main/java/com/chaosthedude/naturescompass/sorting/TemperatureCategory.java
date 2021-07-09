@@ -1,11 +1,11 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import net.minecraft.client.resources.I18n;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class TemperatureCategory implements ISortingCategory {
 
 	@Override
@@ -25,7 +25,7 @@ public class TemperatureCategory implements ISortingCategory {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.temperature");
+		return I18n.translate("string.naturescompass.temperature");
 	}
 
 }
