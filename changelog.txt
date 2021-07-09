@@ -1,4 +1,14 @@
 ------------------------------------------------------------------
+ VERSION: 1.9.1 - 1.16.5
+------------------------------------------------------------------
+1.16.5
+  FEATURES:
+  - Added a config option to determine whether players are able to view the coordinates and distance to a located biome
+  - Optimized the syncing of the biome list with clients opening the compass GUI
+  FIXES:
+  - Fixed a crash that occurred infrequently on servers while searching for a biome
+
+------------------------------------------------------------------
  VERSION: 1.9.0 - 1.16.5
 ------------------------------------------------------------------
 1.16.5
