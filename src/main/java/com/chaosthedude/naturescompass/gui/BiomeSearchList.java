@@ -2,29 +2,30 @@ package com.chaosthedude.naturescompass.gui;
 
 import java.util.Objects;
 
-import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.chaosthedude.naturescompass.utils.RenderUtils;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.list.ExtendedList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
+@Environment(EnvType.CLIENT)
+public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 
-	private final NaturesCompassScreen parentScreen;
+	private final NaturesCompassScreen guiNaturesCompass;
 
-	public BiomeSearchList(NaturesCompassScreen guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
+	public BiomeSearchList(NaturesCompassScreen guiNaturesCompass, MinecraftClient mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
-		this.parentScreen = guiNaturesCompass;
+		this.guiNaturesCompass = guiNaturesCompass;
 		refreshList();
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
-		return super.getScrollbarPosition() + 20;
+	protected int getScrollbarPositionX() {
+		return super.getScrollbarPositionX() + 20;
 	}
 
 	@Override
@@ -33,31 +34,31 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 	}
 
 	@Override
-	protected boolean isSelectedItem(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < getEventListeners().size() ? getEventListeners().get(slotIndex).equals(getSelected()) : false;
+	protected boolean isSelectedEntry(int slotIndex) {
+		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelectedOrNull()) : false;
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int par1, int par2, float par3) {
-		int i = getScrollbarPosition();
+		int i = getScrollbarPositionX();
 		int k = getRowLeft();
-		int l = y0 + 4 - (int) getScrollAmount();
+		int l = top + 4 - (int) getScrollAmount();
 
 		renderList(matrixStack, k, l, par1, par2, par3);
 	}
 
 	@Override
 	protected void renderList(MatrixStack matrixStack, int par1, int par2, int par3, int par4, float par5) {
-		int i = getItemCount();
+		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
-			if (l >= y0 && k <= y1) {
+			if (l >= top && k <= bottom) {
 				int j1 = this.itemHeight - 4;
 				BiomeSearchEntry e = getEntry(j);
 				int k1 = getRowWidth();
-				if (/*renderSelection*/ true && isSelectedItem(j)) {
-					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
+				if (/*renderSelection*/ true && isSelectedEntry(j)) {
+					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
 					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
@@ -74,7 +75,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	public void refreshList() {
 		clearEntries();
-		for (Biome biome : parentScreen.sortBiomes()) {
+		for (Biome biome : guiNaturesCompass.sortBiomes()) {
 			addEntry(new BiomeSearchEntry(this, biome));
 		}
 		selectBiome(null);
@@ -82,15 +83,21 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	public void selectBiome(BiomeSearchEntry entry) {
 		setSelected(entry);
-		parentScreen.selectBiome(entry);
+		guiNaturesCompass.selectBiome(entry);
 	}
 
 	public boolean hasSelection() {
-		return getSelected() != null;
+		return getSelectedOrNull() != null;
 	}
 
 	public NaturesCompassScreen getGuiNaturesCompass() {
-		return parentScreen;
+		return guiNaturesCompass;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

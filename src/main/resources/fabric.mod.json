@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "naturescompass",
+  "version": "${version}",
+
+  "name": "Nature's Compass",
+  "description": "Search for a biome and get information about it.",
+  "authors": [
+    "ChaosTheDude"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/natures-compass",
+    "sources": "https://github.com/MattCzyr/NaturesCompass"
+  },
+
+  "license": "CC BY-NC-SA 4.0",
+  "icon": "assets/naturescompass/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.chaosthedude.naturescompass.NaturesCompass"
+    ],
+    "client": [
+      "com.chaosthedude.naturescompass.NaturesCompassClient"
+    ]
+  },
+  "mixins": [
+    "naturescompass.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "explorerscompass": "*"
+  }
+}

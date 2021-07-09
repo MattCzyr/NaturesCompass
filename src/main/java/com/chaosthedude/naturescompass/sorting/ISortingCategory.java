@@ -2,11 +2,11 @@ package com.chaosthedude.naturescompass.sorting;
 
 import java.util.Comparator;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface ISortingCategory extends Comparator<Biome> {
 
 	@Override

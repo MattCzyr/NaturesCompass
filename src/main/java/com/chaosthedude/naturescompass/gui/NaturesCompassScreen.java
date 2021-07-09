@@ -7,28 +7,29 @@ import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.CompassSearchPacket;
+import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISortingCategory;
 import com.chaosthedude.naturescompass.sorting.NameCategory;
-import com.chaosthedude.naturescompass.util.BiomeUtils;
-import com.chaosthedude.naturescompass.util.CompassState;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.chaosthedude.naturescompass.utils.CompassState;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class NaturesCompassScreen extends Screen {
 
 	public World world;
@@ -37,17 +38,17 @@ public class NaturesCompassScreen extends Screen {
 	private List<Biome> biomesMatchingSearch;
 	private ItemStack stack;
 	private NaturesCompassItem natureCompass;
-	private Button startSearchButton;
-	private Button teleportButton;
-	private Button infoButton;
-	private Button cancelButton;
-	private Button sortByButton;
+	private ButtonWidget startSearchButton;
+	private ButtonWidget teleportButton;
+	private ButtonWidget infoButton;
+	private ButtonWidget cancelButton;
+	private ButtonWidget sortByButton;
 	private TransparentTextField searchTextField;
 	private BiomeSearchList selectionList;
 	private ISortingCategory sortingCategory;
 
-	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<ResourceLocation> allowedBiomes) {
-		super(new StringTextComponent(I18n.format("string.naturescompass.selectBiome")));
+	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<Identifier> allowedBiomes) {
+		super(new TranslatableText("string.naturescompass.selectBiome"));
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
@@ -66,13 +67,14 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	protected void init() {
-		minecraft.keyboardListener.enableRepeatEvents(true);
+		client.keyboard.setRepeatEvents(true);
+		clearChildren();
 		setupButtons();
 		setupTextFields();
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, client, width + 110, height, 40, height, 45);
 		}
-		children.add(selectionList);
+		addDrawableChild(selectionList);
 	}
 
 	@Override
@@ -82,20 +84,18 @@ public class NaturesCompassScreen extends Screen {
 		
 		// Check if the allowed biome list has synced
 		if (allowedBiomes.size() != NaturesCompass.allowedBiomes.size()) {
-			children.remove(selectionList);
+			remove(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
-			children.add(selectionList);
+			selectionList = new BiomeSearchList(this, client, width + 110, height, 40, height, 45);
+			addDrawableChild(selectionList);
 		}
 	}
 
 	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
-		selectionList.render(stack, mouseX, mouseY, partialTicks);
-		searchTextField.render(stack, mouseX, mouseY, partialTicks);
-		drawCenteredString(stack, font, I18n.format("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
+		drawCenteredText(stack, textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
@@ -122,7 +122,7 @@ public class NaturesCompassScreen extends Screen {
 	@Override
 	public void onClose() {
 		super.onClose();
-		minecraft.keyboardListener.enableRepeatEvents(false);
+		client.keyboard.setRepeatEvents(false);
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {
@@ -132,13 +132,13 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(world, biome), player.getPosition()));
-		minecraft.displayGuiScreen(null);
+		ClientPlayNetworking.send(SearchPacket.ID, new SearchPacket(BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
+		client.openScreen(null);
 	}
 
 	public void teleport() {
-		NaturesCompass.network.sendToServer(new TeleportPacket());
-		minecraft.displayGuiScreen(null);
+		ClientPlayNetworking.send(TeleportPacket.ID, new TeleportPacket());
+		client.openScreen(null);
 	}
 
 	public ISortingCategory getSortingCategory() {
@@ -164,26 +164,25 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	private void setupButtons() {
-		buttons.clear();
-		cancelButton = addButton(new TransparentButton(10, height - 30, 110, 20, new TranslationTextComponent("gui.cancel"), (onPress) -> {
-			minecraft.displayGuiScreen(null);
+		cancelButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, new TranslatableText("gui.cancel"), (onPress) -> {
+			client.openScreen(null);
 		}));
-		sortByButton = addButton(new TransparentButton(10, 90, 110, 20, new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+		sortByButton = addDrawableChild(new TransparentButton(10, 90, 110, 20, new LiteralText(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();
-			sortByButton.setMessage(new StringTextComponent(I18n.format("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+			sortByButton.setMessage(new LiteralText(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 			selectionList.refreshList();
 		}));
-		infoButton = addButton(new TransparentButton(10, 65, 110, 20, new TranslationTextComponent("string.naturescompass.info"), (onPress) -> {
+		infoButton = addDrawableChild(new TransparentButton(10, 65, 110, 20, new TranslatableText("string.naturescompass.info"), (onPress) -> {
 			if (selectionList.hasSelection()) {
-				selectionList.getSelected().viewInfo();
+				selectionList.getSelectedOrNull().viewInfo();
 			}
 		}));
-		startSearchButton = addButton(new TransparentButton(10, 40, 110, 20, new TranslationTextComponent("string.naturescompass.startSearch"), (onPress) -> {
+		startSearchButton = addDrawableChild(new TransparentButton(10, 40, 110, 20, new TranslatableText("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
-				selectionList.getSelected().searchForBiome();
+				selectionList.getSelectedOrNull().searchForBiome();
 			}
 		}));
-		teleportButton = addButton(new TransparentButton(width - 120, 10, 110, 20, new TranslationTextComponent("string.naturescompass.teleport"), (onPress) -> {
+		teleportButton = addDrawableChild(new TransparentButton(width - 120, 10, 110, 20, new TranslatableText("string.naturescompass.teleport"), (onPress) -> {
 			teleport();
 		}));
 
@@ -194,18 +193,18 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	private void setupTextFields() {
-		searchTextField = new TransparentTextField(font, 130, 10, 140, 20, new TranslationTextComponent("string.naturescompass.search"));
-		children.add(searchTextField);
+		searchTextField = new TransparentTextField(textRenderer, 130, 10, 140, 20, new TranslatableText("string.naturescompass.search"));
+		addDrawableChild(searchTextField);
 	}
 	
-	private void loadAllowedBiomes(List<ResourceLocation> allowedBiomeKeys) {
-		this.allowedBiomes = new ArrayList<Biome>();
-		for (ResourceLocation biomeKey : allowedBiomeKeys) {
-			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(world, biomeKey);
-			if (optionalBiome.isPresent()) {
-				this.allowedBiomes.add(optionalBiome.get());
-			}
-		}
-	}
+	private void loadAllowedBiomes(List<Identifier> allowedBiomeIDs) {
+ 		this.allowedBiomes = new ArrayList<Biome>();
+ 		for (Identifier biomeID : allowedBiomeIDs) {
+ 			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeID);
+ 			if (optionalBiome.isPresent()) {
+ 				this.allowedBiomes.add(optionalBiome.get());
+ 			}
+ 		}
+ 	}
 
 }

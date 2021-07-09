@@ -1,17 +1,17 @@
-package com.chaosthedude.naturescompass.util;
+package com.chaosthedude.naturescompass.workers;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
@@ -20,7 +20,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public final int maxRadius;
 	public World world;
 	public Biome biome;
-	public ResourceLocation biomeKey;
+	public Identifier biomeKey;
 	public BlockPos startPos;
 	public int samples;
 	public int nextLength;
@@ -41,20 +41,20 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(world);
-		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
-		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(world);
+		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
+		maxSamples = NaturesCompassConfig.maxSamples;
+		maxRadius = NaturesCompassConfig.radiusModifier * BiomeUtils.getBiomeSize(world);
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = BiomeUtils.getKeyForBiome(world, biome);
+		biomeKey = BiomeUtils.getIdentifierForBiome(world, biome);
 		lastRadiusThreshold = 0;
 	}
 
 	public void start() {
-		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
+		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
 			if (maxRadius > 0 && sampleSpace > 0) {
 				NaturesCompass.LOGGER.info("Starting search: " + sampleSpace + " sample space, " + maxSamples + " max samples, " + maxRadius + " max radius");
 				WorldWorkerManager.addWorker(this);
@@ -83,9 +83,9 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			final ResourceLocation biomeAtPosKey = BiomeUtils.getKeyForBiome(world, biomeAtPos);
-			if (biomeAtPosKey != null && biomeAtPosKey.equals(biomeKey)) {
+			final Biome biomeAtPos = world.getBiomeAccess().getBiome(pos);
+			final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
+			if (biomeAtPosID != null && biomeAtPosID.equals(biomeKey)) {
 				finish(true);
 				return false;
 			}
@@ -95,19 +95,19 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (length >= nextLength) {
 				if (direction != Direction.UP) {
 					nextLength += sampleSpace;
-					direction = direction.rotateY();
+					direction = direction.rotateYClockwise();
 				} else {
 					direction = Direction.NORTH;
 				}
 				length = 0;
 			}
 			int radius = getRadius();
-			if (radius > 500 && radius / 500 > lastRadiusThreshold) {
-				if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-					((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
-				}
-				lastRadiusThreshold = radius / 500;
-			}
+ 			if (radius > 500 && radius / 500 > lastRadiusThreshold) {
+ 				if (!stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
+ 					((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
+ 				}
+ 				lastRadiusThreshold = radius / 500;
+ 			}
 		}
 		if (hasWork()) {
 			return true;
@@ -117,11 +117,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	}
 
 	private void finish(boolean found) {
-		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
+		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
 			if (found) {
 				NaturesCompass.LOGGER.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
 				((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
-				((NaturesCompassItem) stack.getItem()).setDisplayCoordinates(stack, ConfigHandler.GENERAL.displayCoordinates.get());
+				((NaturesCompassItem) stack.getItem()).setDisplayCoordinates(stack, NaturesCompassConfig.displayCoordinates);
 			} else {
 				NaturesCompass.LOGGER.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
 				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, roundRadius(getRadius(), 500), samples);
@@ -137,7 +137,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	}
 	
 	private int roundRadius(int radius, int roundTo) {
-		return ((int) radius / roundTo) * roundTo;
-	}
+ 		return ((int) radius / roundTo) * roundTo;
+ 	}
 
 }
