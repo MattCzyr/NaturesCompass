@@ -47,7 +47,7 @@ public class NaturesCompassScreen extends Screen {
 	private ISortingCategory sortingCategory;
 
 	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<ResourceLocation> allowedBiomes) {
-		super(new StringTextComponent(I18n.format("string.naturescompass.selectBiome")));
+		super(new TranslationTextComponent("string.naturescompass.selectBiome"));
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
@@ -100,8 +100,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int par1, int par2, int par3) {
-		boolean ret = super.keyPressed(par1, par2, par3);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
 		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;

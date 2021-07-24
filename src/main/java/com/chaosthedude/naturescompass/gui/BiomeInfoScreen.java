@@ -30,11 +30,11 @@ public class BiomeInfoScreen extends Screen {
 	private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
-		super(new StringTextComponent(I18n.format(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome))));
+		super(new TranslationTextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
-		topBlock = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey()); // TODO: make sure this works
+		topBlock = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock().getTranslationKey());
 		fillerBlock = I18n.format(biome.getGenerationSettings().getSurfaceBuilderConfig().getUnder().getBlock().getTranslationKey());
 
 		if (biome.getDepth() < -1) {

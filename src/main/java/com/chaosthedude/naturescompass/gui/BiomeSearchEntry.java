@@ -28,7 +28,7 @@ public class BiomeSearchEntry extends AbstractListEntry<BiomeSearchEntry> {
 	public BiomeSearchEntry(BiomeSearchList biomesList, Biome biome) {
 		this.biomesList = biomesList;
 		this.biome = biome;
-		parentScreen = biomesList.getGuiNaturesCompass();
+		parentScreen = biomesList.getParentScreen();
 		mc = Minecraft.getInstance();
 	}
 

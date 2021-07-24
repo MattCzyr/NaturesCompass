@@ -16,9 +16,9 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	private final NaturesCompassScreen parentScreen;
 
-	public BiomeSearchList(NaturesCompassScreen guiNaturesCompass, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
+	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
-		this.parentScreen = guiNaturesCompass;
+		this.parentScreen = parentScreen;
 		refreshList();
 	}
 
@@ -38,38 +38,35 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int par1, int par2, float par3) {
-		int i = getScrollbarPosition();
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		int k = getRowLeft();
 		int l = y0 + 4 - (int) getScrollAmount();
-
-		renderList(matrixStack, k, l, par1, par2, par3);
+		renderList(matrixStack, k, l, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(MatrixStack matrixStack, int par1, int par2, int par3, int par4, float par5) {
-		int i = getItemCount();
-		for (int j = 0; j < i; ++j) {
+	protected void renderList(MatrixStack matrixStack, int par1, int par2, int mouseX, int mouseY, float partialTicks) {
+		for (int j = 0; j < getItemCount(); ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
 			if (l >= y0 && k <= y1) {
 				int j1 = this.itemHeight - 4;
 				BiomeSearchEntry e = getEntry(j);
 				int k1 = getRowWidth();
-				if (/*renderSelection*/ true && isSelectedItem(j)) {
+				if (isSelectedItem(j)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
 					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = getRowLeft();
-				e.render(matrixStack, j, k, j2, k1, j1, par3, par4, isMouseOver((double) par3, (double) par4) && Objects .equals(getEntryAtPosition((double) par3, (double) par4), e), par5);
+				e.render(matrixStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 
 	}
 
-	private int getRowBottom(int p_getRowBottom_1_) {
-		return this.getRowTop(p_getRowBottom_1_) + this.itemHeight;
+	private int getRowBottom(int itemIndex) {
+		return getRowTop(itemIndex) + itemHeight;
 	}
 
 	public void refreshList() {
@@ -89,7 +86,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 		return getSelected() != null;
 	}
 
-	public NaturesCompassScreen getGuiNaturesCompass() {
+	public NaturesCompassScreen getParentScreen() {
 		return parentScreen;
 	}
 
