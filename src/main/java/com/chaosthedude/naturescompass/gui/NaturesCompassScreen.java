@@ -78,8 +78,9 @@ public class NaturesCompassScreen extends Screen {
 		searchTextField.tick();
 		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
 		
-		// Check if the allowed biome list has synced
+		// Check if the sync packet has been received
 		if (allowedBiomes.size() != NaturesCompass.allowedBiomes.size()) {
+			teleportButton.visible = NaturesCompass.canTeleport;
 			removeWidget(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
