@@ -62,7 +62,7 @@ public class NaturesCompass {
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		});
 		
