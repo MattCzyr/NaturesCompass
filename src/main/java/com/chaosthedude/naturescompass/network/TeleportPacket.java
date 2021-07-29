@@ -9,42 +9,42 @@ import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class TeleportPacket {
 
 	public TeleportPacket() {}
 
-	public TeleportPacket(PacketBuffer buf) {}
+	public TeleportPacket(FriendlyByteBuf buf) {}
 
-	public void fromBytes(PacketBuffer buf) {}
+	public void fromBytes(FriendlyByteBuf buf) {}
 
-	public void toBytes(PacketBuffer buf) {}
+	public void toBytes(FriendlyByteBuf buf) {}
 
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final PlayerEntity player = ctx.get().getSender();
+				final Player player = ctx.get().getSender();
 				if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player)) {
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						final int y = findValidTeleportHeight(player.getEntityWorld(), x, z);
+						final int y = findValidTeleportHeight(player.level, x, z);
 
 						player.stopRiding();
-						((ServerPlayerEntity) player).connection.setPlayerLocation(x, y, z, player.cameraYaw, player.rotationPitch);
+						((ServerPlayer) player).connection.teleport(x, y, z, player.getYRot(), player.getXRot());
 
-						if (!player.isElytraFlying()) {
-							player.setMotion(player.getMotion().getX(), 0, player.getMotion().getZ());
+						if (!player.isFallFlying()) {
+							player.setDeltaMovement(player.getDeltaMovement().x(), 0, player.getDeltaMovement().z());
 							player.setOnGround(true);
 						}
 					}
@@ -56,27 +56,27 @@ public class TeleportPacket {
 		ctx.get().setPacketHandled(true);
 	}
 	
-	private int findValidTeleportHeight(World world, int x, int z) {
-		int startY = world.getSeaLevel();
+	private int findValidTeleportHeight(Level level, int x, int z) {
+		int startY = level.getSeaLevel();
 		int upY = startY;
 		int downY = startY;
-		while (!(isValidTeleportPosition(world, new BlockPos(x, upY, z)) || isValidTeleportPosition(world, new BlockPos(x, downY, z))) && (upY < 255 || downY > 1)) {
+		while (!(isValidTeleportPosition(level, new BlockPos(x, upY, z)) || isValidTeleportPosition(level, new BlockPos(x, downY, z))) && (upY < 255 || downY > 1)) {
 			upY++;
 			downY--;
 		}
 		BlockPos upPos = new BlockPos(x, upY, z);
 		BlockPos downPos = new BlockPos(x, downY, z);
-		if (upY < 255 && isValidTeleportPosition(world, upPos)) {
+		if (upY < 255 && isValidTeleportPosition(level, upPos)) {
 			return upY;
 		}
-		if (downY > 1 && isValidTeleportPosition(world, downPos)) {
+		if (downY > 1 && isValidTeleportPosition(level, downPos)) {
 			return downY;
 		}
 		return 256;
 	}
 	
-	private boolean isValidTeleportPosition(World world, BlockPos pos) {
-		return !world.getBlockState(pos).isSolid() && Block.hasSolidSideOnTop(world, pos.down());
+	private boolean isValidTeleportPosition(Level level, BlockPos pos) {
+		return !level.getBlockState(pos).canOcclude() && Block.canSupportRigidBlock(level, pos.below());
 	}
 
 }

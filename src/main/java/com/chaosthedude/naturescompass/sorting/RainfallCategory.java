@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +25,7 @@ public class RainfallCategory implements ISortingCategory {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.rainfall");
+		return I18n.get("string.naturescompass.rainfall");
 	}
 
 }

@@ -7,17 +7,17 @@ import java.util.Optional;
 
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.Util;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModContainer;
@@ -26,26 +26,28 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class BiomeUtils {
 	
-	public static MutableRegistry<Biome> getBiomeRegistry(World world) {
-		return world.func_241828_r().getRegistry(ForgeRegistries.Keys.BIOMES);
+	public static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
+		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
 	}
 
-	public static ResourceLocation getKeyForBiome(World world, Biome biome) {
-		return getBiomeRegistry(world).getKey(biome);
+	public static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
+		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
 	}
 
-	public static Optional<Biome> getBiomeForKey(World world, ResourceLocation key) {
-		return getBiomeRegistry(world).getOptional(key);
+	public static Optional<Biome> getBiomeForKey(Level level, ResourceLocation key) {
+		return getBiomeRegistry(level).isPresent() ? getBiomeRegistry(level).get().getOptional(key) : Optional.empty();
 	}
 
-	public static List<ResourceLocation> getAllowedBiomeKeys(World world) {
+	public static List<ResourceLocation> getAllowedBiomeKeys(Level level) {
 		final List<ResourceLocation> biomeKeys = new ArrayList<ResourceLocation>();
-		for (Map.Entry<RegistryKey<Biome>, Biome> entry : getBiomeRegistry(world).getEntries()) {
-			Biome biome = entry.getValue();
-			if (biome != null) {
-				ResourceLocation biomeKey = getKeyForBiome(world, biome);
-				if (biome != null && biomeKey != null && !biomeKeyIsBlacklisted(world, biomeKey)) {
-					biomeKeys.add(biomeKey);
+		if (getBiomeRegistry(level).isPresent()) {
+			for (Map.Entry<ResourceKey<Biome>, Biome> entry : getBiomeRegistry(level).get().entrySet()) {
+				Biome biome = entry.getValue();
+				if (biome != null) {
+					Optional<ResourceLocation> optionalBiomeKey = getKeyForBiome(level, biome);
+					if (biome != null && optionalBiomeKey.isPresent() && !biomeKeyIsBlacklisted(level, optionalBiomeKey.get())) {
+						biomeKeys.add(optionalBiomeKey.get());
+					}
 				}
 			}
 		}
@@ -53,37 +55,37 @@ public class BiomeUtils {
 		return biomeKeys;
 	}
 
-	public static void searchForBiome(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
-		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, biome, startPos);
+	public static void searchForBiome(Level level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
+		BiomeSearchWorker worker = new BiomeSearchWorker(level, player, stack, biome, startPos);
 		worker.start();
 	}
 
-	public static int getBiomeSize(World world) {
+	public static int getBiomeSize(Level world) {
 		// TODO
 		return 4;
 	}
 
-	public static int getDistanceToBiome(PlayerEntity player, int biomeX, int biomeZ) {
-		return getDistanceToBiome(player.getPosition(), biomeX, biomeZ);
+	public static int getDistanceToBiome(Player player, int biomeX, int biomeZ) {
+		return getDistanceToBiome(player.blockPosition(), biomeX, biomeZ);
 	}
 
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
-		return (int) MathHelper.sqrt(startPos.distanceSq(new BlockPos(biomeX, startPos.getY(), biomeZ)));
+		return (int) Mth.sqrt((float) startPos.distSqr(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeNameForDisplay(World world, ResourceLocation biome) {
-		if (getBiomeForKey(world, biome).isPresent()) {
-			return getBiomeNameForDisplay(world, getBiomeForKey(world, biome).get());
+	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
+		if (getBiomeForKey(level, biome).isPresent()) {
+			return getBiomeNameForDisplay(level, getBiomeForKey(level, biome).get());
 		}
 		return "";
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeNameForDisplay(World world, Biome biome) {
+	public static String getBiomeNameForDisplay(Level level, Biome biome) {
 		if (biome != null) {
 			if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
-				final String original = getBiomeName(world, biome);
+				final String original = getBiomeName(level, biome);
 				String fixed = "";
 				char pre = ' ';
 				for (int i = 0; i < original.length(); i++) {
@@ -97,8 +99,8 @@ public class BiomeUtils {
 
 				return fixed;
 			}
-			if (getKeyForBiome(world, biome) != null) {
-				return I18n.format(getKeyForBiome(world, biome).toString());
+			if (getKeyForBiome(level, biome) != null) {
+				return I18n.get(getKeyForBiome(level, biome).toString());
 			}
 		}
 
@@ -106,24 +108,24 @@ public class BiomeUtils {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeName(World world, Biome biome) {
-		return I18n.format(Util.makeTranslationKey("biome", getKeyForBiome(world, biome)));
+	public static String getBiomeName(Level level, Biome biome) {
+		return getKeyForBiome(level, biome).isPresent() ? I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(level, biome).get())) : "";
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeName(World world, ResourceLocation key) {
-		if (getBiomeForKey(world, key).isPresent()) {
-			return getBiomeName(world, getBiomeForKey(world, key).get());
+	public static String getBiomeName(Level level, ResourceLocation key) {
+		if (getBiomeForKey(level, key).isPresent()) {
+			return getBiomeName(level, getBiomeForKey(level, key).get());
 		}
 		return "";
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeSource(World world, Biome biome) {
-		if (getKeyForBiome(world, biome) == null) {
+	public static String getBiomeSource(Level level, Biome biome) {
+		if (getKeyForBiome(level, biome) == null) {
 			return "";
 		}
-		String registryEntry = getKeyForBiome(world, biome).toString();
+		String registryEntry = getKeyForBiome(level, biome).toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
@@ -135,7 +137,7 @@ public class BiomeUtils {
 		return modid;
 	}
 
-	public static boolean biomeKeyIsBlacklisted(World world, ResourceLocation biomeKey) {
+	public static boolean biomeKeyIsBlacklisted(Level level, ResourceLocation biomeKey) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
 		for (String key : biomeBlacklist) {
 			if (biomeKey.toString().matches(convertToRegex(key))) {

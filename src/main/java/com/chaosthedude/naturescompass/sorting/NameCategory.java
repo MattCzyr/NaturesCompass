@@ -3,8 +3,8 @@ package com.chaosthedude.naturescompass.sorting;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.biome.Biome;
 
 public class NameCategory implements ISortingCategory {
 	
@@ -12,8 +12,8 @@ public class NameCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		if (mc.world != null) {
-			return BiomeUtils.getBiomeName(mc.world, biome1).compareTo(BiomeUtils.getBiomeName(mc.world, biome2));
+		if (mc.level != null) {
+			return BiomeUtils.getBiomeName(mc.level, biome1).compareTo(BiomeUtils.getBiomeName(mc.level, biome2));
 		}
 		return 0;
 	}
@@ -30,7 +30,7 @@ public class NameCategory implements ISortingCategory {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.name");
+		return I18n.get("string.naturescompass.name");
 	}
 
 }

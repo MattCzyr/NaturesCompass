@@ -3,16 +3,16 @@ package com.chaosthedude.naturescompass.gui;
 import java.util.Objects;
 
 import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.list.ExtendedList;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
+public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	private final NaturesCompassScreen parentScreen;
 
@@ -34,18 +34,18 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 
 	@Override
 	protected boolean isSelectedItem(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < getEventListeners().size() ? getEventListeners().get(slotIndex).equals(getSelected()) : false;
+		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelected()) : false;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		int k = getRowLeft();
 		int l = y0 + 4 - (int) getScrollAmount();
-		renderList(matrixStack, k, l, mouseX, mouseY, partialTicks);
+		renderList(poseStack, k, l, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(MatrixStack matrixStack, int par1, int par2, int mouseX, int mouseY, float partialTicks) {
+	protected void renderList(PoseStack poseStack, int par1, int par2, int mouseX, int mouseY, float partialTicks) {
 		for (int j = 0; j < getItemCount(); ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
@@ -59,7 +59,7 @@ public class BiomeSearchList extends ExtendedList<BiomeSearchEntry> {
 				}
 
 				int j2 = getRowLeft();
-				e.render(matrixStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				e.render(poseStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 

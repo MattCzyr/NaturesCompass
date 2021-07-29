@@ -2,7 +2,7 @@ package com.chaosthedude.naturescompass.sorting;
 
 import java.util.Comparator;
 
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -1,16 +1,18 @@
 package com.chaosthedude.naturescompass.util;
 
+import java.util.Optional;
+
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
@@ -18,7 +20,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public final int sampleSpace;
 	public final int maxSamples;
 	public final int maxRadius;
-	public World world;
+	public Level level;
 	public Biome biome;
 	public ResourceLocation biomeKey;
 	public BlockPos startPos;
@@ -26,30 +28,30 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public int nextLength;
 	public Direction direction;
 	public ItemStack stack;
-	public PlayerEntity player;
+	public Player player;
 	public int x;
 	public int z;
 	public int length;
 	public boolean finished;
 	public int lastRadiusThreshold;
 
-	public BiomeSearchWorker(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
-		this.world = world;
+	public BiomeSearchWorker(Level level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
+		this.level = level;
 		this.player = player;
 		this.stack = stack;
 		this.biome = biome;
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(world);
+		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(level);
 		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
-		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(world);
+		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(level);
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = BiomeUtils.getKeyForBiome(world, biome);
+		biomeKey = BiomeUtils.getKeyForBiome(level, biome).isPresent() ? BiomeUtils.getKeyForBiome(level, biome).get() : null;
 		lastRadiusThreshold = 0;
 	}
 
@@ -66,7 +68,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	@Override
 	public boolean hasWork() {
-		return !finished && getRadius() <= maxRadius && samples <= maxSamples;
+		return biomeKey != null && !finished && getRadius() <= maxRadius && samples <= maxSamples;
 	}
 
 	@Override
@@ -82,10 +84,10 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				x -= sampleSpace;
 			}
 
-			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			final Biome biomeAtPos = world.getBiomeManager().getBiome(pos);
-			final ResourceLocation biomeAtPosKey = BiomeUtils.getKeyForBiome(world, biomeAtPos);
-			if (biomeAtPosKey != null && biomeAtPosKey.equals(biomeKey)) {
+			final BlockPos pos = new BlockPos(x, level.getHeight(), z);
+			final Biome biomeAtPos = level.getBiomeManager().getBiome(pos);
+			final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
+			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 				finish(true);
 				return false;
 			}
@@ -95,7 +97,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (length >= nextLength) {
 				if (direction != Direction.UP) {
 					nextLength += sampleSpace;
-					direction = direction.rotateY();
+					direction = direction.getClockWise();
 				} else {
 					direction = Direction.NORTH;
 				}

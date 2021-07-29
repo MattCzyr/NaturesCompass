@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -10,12 +10,12 @@ public class TemperatureCategory implements ISortingCategory {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getTemperature(), biome2.getTemperature());
+		return Float.compare(biome1.getBaseTemperature(), biome2.getBaseTemperature());
 	}
 
 	@Override
 	public Object getValue(Biome biome) {
-		return biome.getTemperature();
+		return biome.getBaseTemperature();
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class TemperatureCategory implements ISortingCategory {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.format("string.naturescompass.temperature");
+		return I18n.get("string.naturescompass.temperature");
 	}
 
 }
