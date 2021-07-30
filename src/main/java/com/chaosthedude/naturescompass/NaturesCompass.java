@@ -10,21 +10,21 @@ import com.chaosthedude.naturescompass.client.ClientEventHandler;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.CompassSearchPacket;
-import com.chaosthedude.naturescompass.network.RequestSyncPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.util.CompassState;
 
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,8 +35,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -49,7 +49,7 @@ public class NaturesCompass {
 	
 	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 
-	public static final Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;
@@ -63,7 +63,7 @@ public class NaturesCompass {
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		});
 		
@@ -77,10 +77,9 @@ public class NaturesCompass {
 		// Server packets
 		network.registerMessage(0, CompassSearchPacket.class, CompassSearchPacket::toBytes, CompassSearchPacket::new, CompassSearchPacket::handle);
 		network.registerMessage(1, TeleportPacket.class, TeleportPacket::toBytes, TeleportPacket::new, TeleportPacket::handle);
-		network.registerMessage(2, RequestSyncPacket.class, RequestSyncPacket::toBytes, RequestSyncPacket::new, RequestSyncPacket::handle);
 
 		// Client packet
-		network.registerMessage(3, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
+		network.registerMessage(2, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
 		allowedBiomes = new ArrayList<ResourceLocation>();
 		
@@ -91,7 +90,7 @@ public class NaturesCompass {
 	public void clientInit(FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		
-		ItemModelsProperties.registerProperty(naturesCompass, new ResourceLocation("angle"), new IItemPropertyGetter() {
+		ItemProperties.register(naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
 			@OnlyIn(Dist.CLIENT)
 			private double rotation;
 			@OnlyIn(Dist.CLIENT)
@@ -101,17 +100,17 @@ public class NaturesCompass {
 
 			@OnlyIn(Dist.CLIENT)
 			@Override
-			public float call(ItemStack stack, ClientWorld world, LivingEntity entityLiving) {
-				if (entityLiving == null && !stack.isOnItemFrame()) {
+			public float unclampedCall(ItemStack stack, ClientLevel world, LivingEntity entityLiving, int seed) {
+				if (entityLiving == null && !stack.isFramed()) {
 					return 0.0F;
 				} else {
 					final boolean entityExists = entityLiving != null;
-					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getItemFrame());
-					if (world == null && entity.world instanceof ClientWorld) {
-						world = (ClientWorld) entity.world;
+					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
+					if (world == null && entity.level instanceof ClientLevel) {
+						world = (ClientLevel) entity.level;
 					}
 
-					double rotation = entityExists ? (double) entity.rotationYaw : getFrameRotation((ItemFrameEntity) entity);
+					double rotation = entityExists ? (double) entity.getYRot() : getFrameRotation((ItemFrame) entity);
 					rotation = rotation % 360.0D;
 					double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
 
@@ -120,17 +119,17 @@ public class NaturesCompass {
 					}
 
 					final float f = (float) (adjusted / (Math.PI * 2D));
-					return MathHelper.positiveModulo(f, 1.0F);
+					return Mth.positiveModulo(f, 1.0F);
 				}
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double wobble(ClientWorld world, double amount) {
+			private double wobble(ClientLevel world, double amount) {
 				if (world.getGameTime() != lastUpdateTick) {
 					lastUpdateTick = world.getGameTime();
 					double d0 = amount - rotation;
 					d0 = d0 % (Math.PI * 2D);
-					d0 = MathHelper.clamp(d0, -1.0D, 1.0D);
+					d0 = Mth.clamp(d0, -1.0D, 1.0D);
 					rota += d0 * 0.1D;
 					rota *= 0.8D;
 					rotation += rota;
@@ -140,21 +139,23 @@ public class NaturesCompass {
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double getFrameRotation(ItemFrameEntity itemFrame) {
-				return (double) MathHelper.wrapDegrees(180 + itemFrame.getHorizontalFacing().getHorizontalIndex() * 90);
+			private double getFrameRotation(ItemFrame itemFrame) {
+				Direction direction = itemFrame.getDirection();
+	            int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
+	            return (double)Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
 			}
 
 			@OnlyIn(Dist.CLIENT)
-			private double getAngle(ClientWorld world, Entity entity, ItemStack stack) {
+			private double getAngle(ClientLevel world, Entity entity, ItemStack stack) {
 				if (stack.getItem() == naturesCompass) {
 					NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
 					BlockPos pos;
 					if (compassItem.getState(stack) == CompassState.FOUND) {
 						pos = new BlockPos(compassItem.getFoundBiomeX(stack), 0, compassItem.getFoundBiomeZ(stack));
 					} else {
-						pos = world.func_239140_u_();
+						pos = world.getSharedSpawnPos();
 					}
-					return Math.atan2((double) pos.getZ() - entity.getPositionVec().z, (double) pos.getX() - entity.getPositionVec().x);
+					return Math.atan2((double) pos.getZ() - entity.position().z(), (double) pos.getX() - entity.position().x());
 				}
 				return 0.0D;
 			}

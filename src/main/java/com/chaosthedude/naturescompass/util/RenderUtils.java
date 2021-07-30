@@ -2,15 +2,16 @@ package com.chaosthedude.naturescompass.util;
 
 import com.chaosthedude.naturescompass.client.OverlaySide;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.gui.Font;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,22 +19,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderUtils {
 
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static final FontRenderer fontRenderer = mc.fontRenderer;
+	private static final Font font = mc.font;
 
-	public static void drawStringLeft(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(matrixStack, string, x, y, color);
+	public static void drawStringLeft(PoseStack poseStack, String string, Font fontRenderer, int x, int y, int color) {
+		fontRenderer.drawShadow(poseStack, string, x, y, color);
 	}
 
-	public static void drawStringRight(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
+	public static void drawStringRight(PoseStack poseStack, String string, Font fontRenderer, int x, int y, int color) {
+		fontRenderer.drawShadow(poseStack, string, x - fontRenderer.width(string), y, color);
 	}
 
-	public static void drawConfiguredStringOnHUD(MatrixStack matrixStack, String string, int xOffset, int yOffset, int color, int relLineOffset) {
+	public static void drawConfiguredStringOnHUD(PoseStack poseStack, String string, int xOffset, int yOffset, int color, int relLineOffset) {
 		yOffset += (relLineOffset + ConfigHandler.CLIENT.overlayLineOffset.get()) * 9;
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
-			drawStringLeft(matrixStack, string, fontRenderer, xOffset + 2, yOffset + 2, color);
+			drawStringLeft(poseStack, string, font, xOffset + 2, yOffset + 2, color);
 		} else {
-			drawStringRight(matrixStack, string, fontRenderer, mc.getMainWindow().getScaledWidth() - xOffset - 2, yOffset + 2, color);
+			drawStringRight(poseStack, string, font, mc.getWindow().getGuiScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
 
@@ -55,20 +56,20 @@ public class RenderUtils {
 		final float blue = (float) (color & 255) / 255.0F;
 		final float alpha = (float) (color >> 24 & 255) / 255.0F;
 
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder buffer = tessellator.getBuffer();
+		final Tesselator tesselator = Tesselator.getInstance();
+		final BufferBuilder buffer = tesselator.getBuilder();
 
 		RenderSystem.enableBlend();
 		RenderSystem.disableTexture();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		RenderSystem.color4f(red, green, blue, alpha);
+		RenderSystem.setShaderColor(red, green, blue, alpha);
 
-		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
-		buffer.pos((double) right, (double) bottom, 0.0D).endVertex();
-		buffer.pos((double) right, (double) top, 0.0D).endVertex();
-		buffer.pos((double) left, (double) top, 0.0D).endVertex();
-		tessellator.draw();
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		buffer.vertex((double) left, (double) bottom, 0.0D).endVertex();
+		buffer.vertex((double) right, (double) bottom, 0.0D).endVertex();
+		buffer.vertex((double) right, (double) top, 0.0D).endVertex();
+		buffer.vertex((double) left, (double) top, 0.0D).endVertex();
+		tesselator.end();
 
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();

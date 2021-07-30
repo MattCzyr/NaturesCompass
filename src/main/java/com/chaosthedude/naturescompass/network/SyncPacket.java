@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class SyncPacket {
 
@@ -22,16 +22,16 @@ public class SyncPacket {
 		this.allowedBiomes = allowedBiomes;
 	}
 
-	public SyncPacket(PacketBuffer buf) {
+	public SyncPacket(FriendlyByteBuf buf) {
 		canTeleport = buf.readBoolean();
 		allowedBiomes = new ArrayList<ResourceLocation>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			allowedBiomes.add(new ResourceLocation(buf.readString()));
+			allowedBiomes.add(new ResourceLocation(buf.readUtf()));
 		}
 	}
 
-	public void toBytes(PacketBuffer buf) {
+	public void toBytes(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
 		for (ResourceLocation biome : allowedBiomes) {
