@@ -24,7 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.network.NetworkDirection;
 
 public class NaturesCompassItem extends Item {
 
@@ -43,7 +43,7 @@ public class NaturesCompassItem extends Item {
 				GuiWrapper.openGUI(level, player, stack);
 			} else {
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
-				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player);
+				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
 				NaturesCompass.network.sendTo(new SyncPacket(canTeleport, allowedBiomeKeys), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			}

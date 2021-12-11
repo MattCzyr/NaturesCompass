@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class TeleportPacket {
 
@@ -33,15 +33,15 @@ public class TeleportPacket {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final Player player = ctx.get().getSender();
-				if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player)) {
+				final ServerPlayer player = ctx.get().getSender();
+				if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player.getServer(), player)) {
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
 						final int y = findValidTeleportHeight(player.level, x, z);
 
 						player.stopRiding();
-						((ServerPlayer) player).connection.teleport(x, y, z, player.getYRot(), player.getXRot());
+						player.connection.teleport(x, y, z, player.getYRot(), player.getXRot());
 
 						if (!player.isFallFlying()) {
 							player.setDeltaMovement(player.getDeltaMovement().x(), 0, player.getDeltaMovement().z());

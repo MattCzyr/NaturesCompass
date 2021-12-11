@@ -6,21 +6,21 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TemperatureCategory implements ISortingCategory {
+public class TemperatureSorting implements ISorting<Float> {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getBaseTemperature(), biome2.getBaseTemperature());
+		return getValue(biome1).compareTo(getValue(biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
+	public Float getValue(Biome biome) {
 		return biome.getBaseTemperature();
 	}
 
 	@Override
-	public ISortingCategory next() {
-		return new RainfallCategory();
+	public ISorting<?> next() {
+		return new NameSorting();
 	}
 
 	@Override

@@ -7,14 +7,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public interface ISortingCategory extends Comparator<Biome> {
+public interface ISorting<T> extends Comparator<Biome> {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2);
 
-	public Object getValue(Biome biome);
+	public T getValue(Biome biome);
 
-	public ISortingCategory next();
+	public ISorting<?> next();
 
 	public String getLocalizedName();
 

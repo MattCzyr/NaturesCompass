@@ -28,6 +28,7 @@
 
     "_comment": "STRINGS - GUI",
     "string.naturescompass.biome": "Biom",
+    "string.naturescompass.category": "Kategorie",
     "string.naturescompass.coordinates": "Koordinaten",
     "string.naturescompass.distance": "Distanz",
     "string.naturescompass.found": "Gefunden",

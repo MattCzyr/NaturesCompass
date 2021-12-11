@@ -6,26 +6,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.biome.Biome;
 
-public class NameCategory implements ISortingCategory {
+public class NameSorting implements ISorting<String> {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
+		return getValue(biome1).compareTo(getValue(biome2));
+	}
+
+	@Override
+	public String getValue(Biome biome) {
 		if (mc.level != null) {
-			return BiomeUtils.getBiomeName(mc.level, biome1).compareTo(BiomeUtils.getBiomeName(mc.level, biome2));
+			return BiomeUtils.getBiomeName(mc.level, biome);
 		}
-		return 0;
+		return "";
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
-		return null;
-	}
-
-	@Override
-	public ISortingCategory next() {
-		return new SourceCategory();
+	public ISorting<?> next() {
+		return new SourceSorting();
 	}
 
 	@Override

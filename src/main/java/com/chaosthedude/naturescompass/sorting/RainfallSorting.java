@@ -6,26 +6,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BaseHeightCategory implements ISortingCategory {
+public class RainfallSorting implements ISorting<Float> {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getDepth(), biome2.getDepth());
+		return getValue(biome1).compareTo(getValue(biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
-		return biome.getDepth();
+	public Float getValue(Biome biome) {
+		return biome.getDownfall();
 	}
 
 	@Override
-	public ISortingCategory next() {
-		return new HeightVariationCategory();
+	public ISorting<?> next() {
+		return new TemperatureSorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.get("string.naturescompass.baseHeight");
+		return I18n.get("string.naturescompass.rainfall");
 	}
 
 }

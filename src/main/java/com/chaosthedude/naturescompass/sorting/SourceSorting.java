@@ -9,26 +9,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SourceCategory implements ISortingCategory {
+public class SourceSorting implements ISorting<String> {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		if (mc.level != null) {
-			return BiomeUtils.getBiomeSource(mc.level, biome1).compareTo(BiomeUtils.getBiomeSource(mc.level, biome2));
-		}
-		return 0;
+		return getValue(biome1).compareTo(getValue(biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
+	public String getValue(Biome biome) {
+		if (mc.level != null) {
+			return BiomeUtils.getBiomeSource(mc.level, biome);
+		}
 		return null;
 	}
 
 	@Override
-	public ISortingCategory next() {
-		return new BaseHeightCategory();
+	public ISorting<?> next() {
+		return new CategorySorting();
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 
 import net.minecraft.Util;
@@ -74,6 +76,21 @@ public class BiomeUtils {
 	}
 	
 	@OnlyIn(Dist.CLIENT)
+	public static String getBiomeCategoryName(Level level, Biome biome) {
+		String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(biome.getBiomeCategory().getName()));
+		String translatedBiomeKey = I18n.get(biomeKey);
+		if (!biomeKey.equals(translatedBiomeKey)) {
+			return translatedBiomeKey;
+		}
+		String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(biome.getBiomeCategory().getName()));
+		String translatedCategoryKey = I18n.get(categoryKey);
+		if (!categoryKey.equals(translatedCategoryKey)) {
+			return translatedCategoryKey;
+		}
+		return WordUtils.capitalize(biome.getBiomeCategory().getName().replace('_', ' '));
+	}
+	
+	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
 		if (getBiomeForKey(level, biome).isPresent()) {
 			return getBiomeNameForDisplay(level, getBiomeForKey(level, biome).get());
@@ -96,14 +113,12 @@ public class BiomeUtils {
 					fixed = fixed + String.valueOf(c);
 					pre = c;
 				}
-
 				return fixed;
 			}
 			if (getKeyForBiome(level, biome) != null) {
 				return I18n.get(getKeyForBiome(level, biome).toString());
 			}
 		}
-
 		return "";
 	}
 
@@ -122,11 +137,10 @@ public class BiomeUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeSource(Level level, Biome biome) {
-		if (getKeyForBiome(level, biome) == null) {
+		if (getKeyForBiome(level, biome).isEmpty()) {
 			return "";
 		}
-		String registryEntry = getKeyForBiome(level, biome).toString();
-		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
+		String modid = getKeyForBiome(level, biome).get().getNamespace();
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
 		}

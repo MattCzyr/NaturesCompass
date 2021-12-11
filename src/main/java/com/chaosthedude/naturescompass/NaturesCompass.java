@@ -35,8 +35,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -44,8 +44,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
-	public static final String NAME = "Nature's Compass";
-	public static final String VERSION = "1.9.0";
 	
 	public static final String TELEPORT_PERMISSION = "naturescompass.teleport";
 

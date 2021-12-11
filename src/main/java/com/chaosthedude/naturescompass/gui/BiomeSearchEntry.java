@@ -1,5 +1,8 @@
 package com.chaosthedude.naturescompass.gui;
 
+import com.chaosthedude.naturescompass.sorting.CategorySorting;
+import com.chaosthedude.naturescompass.sorting.NameSorting;
+import com.chaosthedude.naturescompass.sorting.SourceSorting;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -35,24 +38,22 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 
 	@Override
 	public void render(PoseStack poseStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		String precipitationState = I18n.get("string.naturescompass.none");
-		if (biome.getPrecipitation() == Precipitation.SNOW) {
-			precipitationState = I18n.get("string.naturescompass.snow");
-		} else if (biome.getPrecipitation() == Precipitation.RAIN) {
-			precipitationState = I18n.get("string.naturescompass.rain");
-		}
-
 		String title = parentScreen.getSortingCategory().getLocalizedName();
 		Object value = parentScreen.getSortingCategory().getValue(biome);
-		if (value == null) {
-			title = I18n.get("string.naturescompass.topBlock");
-			value = I18n.get(biome.getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial().getBlock().getDescriptionId());
+		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof CategorySorting) {
+			title = I18n.get("string.naturescompass.precipitation");
+			value = I18n.get("string.naturescompass.none");
+			if (biome.getPrecipitation() == Precipitation.SNOW) {
+				value = I18n.get("string.naturescompass.snow");
+			} else if (biome.getPrecipitation() == Precipitation.RAIN) {
+				value = I18n.get("string.naturescompass.rain");
+			}
 		}
 
-		mc.font.draw(poseStack, new TextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)), par3 + 1, par2 + 1, 0xffffff);
+		mc.font.draw(poseStack, new TextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), par3 + 1, par2 + 1, 0xffffff);
 		mc.font.draw(poseStack, new TextComponent(title + ": " + value), par3 + 1, par2 + mc.font.lineHeight + 3, 0x808080);
-		mc.font.draw(poseStack, new TextComponent(I18n.get("string.naturescompass.precipitation") + ": " + precipitationState), par3 + 1, par2 + mc.font.lineHeight + 14, 0x808080);
-		mc.font.draw(poseStack, new TextComponent(I18n.get("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), par3 + 1, par2 + mc.font.lineHeight + 25, 0x808080);
+		mc.font.draw(poseStack, new TextComponent(I18n.get("string.naturescompass.category") + ": " + BiomeUtils.getBiomeCategoryName(parentScreen.level, biome)), par3 + 1, par2 + mc.font.lineHeight + 14, 0x808080);
+		mc.font.draw(poseStack, new TextComponent(I18n.get("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(parentScreen.level, biome)), par3 + 1, par2 + mc.font.lineHeight + 25, 0x808080);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
@@ -82,7 +83,7 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 
 	@Override
 	public Component getNarration() {
-		return new TextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome));
+		return new TextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome));
 	}
 
 }
