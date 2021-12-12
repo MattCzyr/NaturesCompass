@@ -1,9 +1,13 @@
 ------------------------------------------------------------------
- FORGE: 1.9.3 - 1.18
+ FORGE: 1.9.3 - 1.18.1, 1.18
 ------------------------------------------------------------------
-1.17.1
+1.18.1, 1.18
   FEATURES:
   - Replaced some obsolete info and sorting categories with biome category info in the compass GUI
+1.18.1
+  UPDATES:
+  - Initial release for Forge 1.18.1
+1.18
   UPDATES:
   - Initial release for Forge 1.18
 
