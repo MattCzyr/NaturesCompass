@@ -34,7 +34,7 @@ public class BiomeInfoScreen extends Screen {
 		
 		source = BiomeUtils.getBiomeSource(parentScreen.level, biome);
 		
-		category = biome.getBiomeCategory().getName();
+		category = BiomeUtils.getBiomeCategoryName(parentScreen.level, biome);
 
 		if (biome.getPrecipitation() == Precipitation.SNOW) {
 			precipitation = I18n.get("string.naturescompass.snow");
@@ -86,17 +86,17 @@ public class BiomeInfoScreen extends Screen {
 		font.draw(poseStack, new TranslatableComponent("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
 		font.draw(poseStack, new TextComponent(source), width / 2 - 100, 50, 0x808080);
 
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.category"), width / 2 + 40, 70, 0xffffff);
-		font.draw(poseStack, new TextComponent(category), width / 2 - 100, 80, 0x808080);
+		font.draw(poseStack, new TranslatableComponent("string.naturescompass.category"), width / 2 + 40, 40, 0xffffff);
+		font.draw(poseStack, new TextComponent(category), width / 2 + 40, 50, 0x808080);
 
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.precipitation"), width / 2 - 100, 40, 0xffffff);
-		font.draw(poseStack, new TextComponent(precipitation), width / 2 + 40, 50, 0x808080);
+		font.draw(poseStack, new TranslatableComponent("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		font.draw(poseStack, new TextComponent(precipitation), width / 2 - 100, 80, 0x808080);
 		
 		font.draw(poseStack, new TranslatableComponent("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
 		font.draw(poseStack, new TextComponent(rainfall), width / 2 + 40, 80, 0x808080);
 		
 		font.draw(poseStack, new TranslatableComponent("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
-		font.draw(poseStack, new TextComponent(temperature), width / 2 + 40, 110, 0x808080);
+		font.draw(poseStack, new TextComponent(temperature), width / 2 - 100, 110, 0x808080);
 		
 		font.draw(poseStack, new TranslatableComponent("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
 		font.draw(poseStack, new TextComponent(highHumidity), width / 2 + 40, 110, 0x808080);
