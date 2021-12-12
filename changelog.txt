@@ -4,6 +4,8 @@
 1.17.1
   FEATURES:
   - Replaced some obsolete info and sorting categories with biome category info in the compass GUI
+  - Added German translations
+  - Corrected Russian translations
   UPDATES:
   - Initial release for Forge 1.18
 
