@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Language File",
+    "_comment": "BRAZIL - BRAZILIAN PORTUGUESE",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Bússola da natureza",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Voltar",
+    "string.naturescompass.info": "Informações",
+    "string.naturescompass.startSearch": "Comece a procurar",
+    "string.naturescompass.selectBiome": "Selecionar bioma",
+    "string.naturescompass.sortBy": "Organizar por",
+    "string.naturescompass.teleport": "Teleportar",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Frio",
+    "string.naturescompass.medium": "Meio termo",
+    "string.naturescompass.warm": "Quente",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Nenhum",
+    "string.naturescompass.veryLow": "Muito baixo",
+    "string.naturescompass.low": "Baixo",
+    "string.naturescompass.average": "Média",
+    "string.naturescompass.high": "Alto",
+    "string.naturescompass.veryHigh": "Muito alto",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Bioma",
+    "string.naturescompass.category": "Categoria",
+    "string.naturescompass.coordinates": "Coordenadas",
+    "string.naturescompass.distance": "Distância",
+    "string.naturescompass.found": "Encontrado",
+    "string.naturescompass.notFound": "Não encontrado",
+    "string.naturescompass.radius": "Raio",
+    "string.naturescompass.samples": "Amostras",
+    "string.naturescompass.search": "Pesquisa",
+    "string.naturescompass.searching": "Pesquisando",
+    "string.naturescompass.source": "Origem",
+    "string.naturescompass.status": "Estado",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Altura base",
+    "string.naturescompass.climate": "Clima",
+    "string.naturescompass.fillerBlock": "Filler Block",
+    "string.naturescompass.heightVariation": "Variação de altura",
+    "string.naturescompass.highHumidity": "Humidade alta",
+    "string.naturescompass.name": "Nome",
+    "string.naturescompass.precipitation": "Precipitação",
+    "string.naturescompass.rainfall": "Chuva",
+    "string.naturescompass.temperature": "Temperatura",
+    "string.naturescompass.topBlock": "Bloco do topo",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Neve",
+    "string.naturescompass.rain": "Chuva"
+}
