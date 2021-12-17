@@ -13,7 +13,7 @@ public class PlayerUtils {
 	public static boolean cheatModeEnabled(PlayerEntity player) {
 		if (player instanceof ServerPlayerEntity) {
 			final MinecraftServer server = ((ServerPlayerEntity) player).getServer();
-			if (server != null && server.isSinglePlayer()) {
+			if (server != null && server.isSingleplayer()) {
 				return server.getPlayerManager().areCheatsAllowed();
 			}
 		}

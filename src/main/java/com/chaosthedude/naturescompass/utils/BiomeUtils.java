@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.workers.BiomeSearchWorker;
 
@@ -69,6 +71,21 @@ public class BiomeUtils {
 
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
 		return (int) MathHelper.sqrt((float) startPos.getSquaredDistance(new BlockPos(biomeX, startPos.getY(), biomeZ)));
+	}
+	
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeCategoryName(World level, Biome biome) {
+		String biomeKey = Util.createTranslationKey("biome", new Identifier(biome.getCategory().getName()));
+		String translatedBiomeKey = I18n.translate(biomeKey);
+		if (!biomeKey.equals(translatedBiomeKey)) {
+			return translatedBiomeKey;
+		}
+		String categoryKey = Util.createTranslationKey("category", new Identifier(biome.getCategory().getName()));
+		String translatedCategoryKey = I18n.translate(categoryKey);
+		if (!categoryKey.equals(translatedCategoryKey)) {
+			return translatedCategoryKey;
+		}
+		return WordUtils.capitalize(biome.getCategory().getName().replace('_', ' '));
 	}
 
 	@Environment(EnvType.CLIENT)

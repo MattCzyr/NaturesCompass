@@ -6,26 +6,26 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT)
-public class HeightVariationCategory implements ISortingCategory {
+public class RainfallSorting implements ISorting<Float> {
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		return Float.compare(biome1.getScale(), biome2.getScale());
+		return getValue(biome1).compareTo(getValue(biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
-		return biome.getScale();
+	public Float getValue(Biome biome) {
+		return biome.getDownfall();
 	}
 
 	@Override
-	public ISortingCategory next() {
-		return new TemperatureCategory();
+	public ISorting<?> next() {
+		return new TemperatureSorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.translate("string.naturescompass.heightVariation");
+		return I18n.translate("string.naturescompass.rainfall");
 	}
 
 }

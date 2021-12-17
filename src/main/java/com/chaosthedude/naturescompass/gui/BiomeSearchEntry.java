@@ -1,5 +1,8 @@
 package com.chaosthedude.naturescompass.gui;
 
+import com.chaosthedude.naturescompass.sorting.CategorySorting;
+import com.chaosthedude.naturescompass.sorting.NameSorting;
+import com.chaosthedude.naturescompass.sorting.SourceSorting;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -33,23 +36,21 @@ public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
 
 	@Override
 	public void render(MatrixStack matrixStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		String precipitationState = I18n.translate("string.naturescompass.none");
-		if (biome.getPrecipitation() == Precipitation.SNOW) {
-			precipitationState = I18n.translate("string.naturescompass.snow");
-		} else if (biome.getPrecipitation() == Precipitation.RAIN) {
-			precipitationState = I18n.translate("string.naturescompass.rain");
-		}
-
 		String title = parentScreen.getSortingCategory().getLocalizedName();
 		Object value = parentScreen.getSortingCategory().getValue(biome);
-		if (value == null) {
-			title = I18n.translate("string.naturescompass.topBlock");
-			value = I18n.translate(biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock().getTranslationKey());
+		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof CategorySorting) {
+			title = I18n.translate("string.naturescompass.precipitation");
+			value = I18n.translate("string.naturescompass.none");
+			if (biome.getPrecipitation() == Precipitation.SNOW) {
+				value = I18n.translate("string.naturescompass.snow");
+			} else if (biome.getPrecipitation() == Precipitation.RAIN) {
+				value = I18n.translate("string.naturescompass.rain");
+			}
 		}
 
 		mc.textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), par3 + 1, par2 + 1, 0xffffff);
 		mc.textRenderer.draw(matrixStack, title + ": " + value, par3 + 1, par2 + mc.textRenderer.fontHeight + 3, 0x808080);
-		mc.textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.precipitation") + ": " + precipitationState, par3 + 1, par2 + mc.textRenderer.fontHeight + 14, 0x808080);
+		mc.textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.category") + ": " + BiomeUtils.getBiomeCategoryName(parentScreen.world, biome), par3 + 1, par2 + mc.textRenderer.fontHeight + 14, 0x808080);
 		mc.textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.source") + ": " + BiomeUtils.getBiomeSource(parentScreen.world, biome), par3 + 1, par2 + mc.textRenderer.fontHeight + 25, 0x808080);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
@@ -75,7 +76,7 @@ public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
 	}
 
 	public void viewInfo() {
-		mc.openScreen(new BiomeInfoScreen(parentScreen, biome));
+		mc.setScreen(new BiomeInfoScreen(parentScreen, biome));
 	}
 
 }

@@ -9,8 +9,8 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
-import com.chaosthedude.naturescompass.sorting.ISortingCategory;
-import com.chaosthedude.naturescompass.sorting.NameCategory;
+import com.chaosthedude.naturescompass.sorting.ISorting;
+import com.chaosthedude.naturescompass.sorting.NameSorting;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import com.chaosthedude.naturescompass.utils.CompassState;
 
@@ -45,7 +45,7 @@ public class NaturesCompassScreen extends Screen {
 	private ButtonWidget sortByButton;
 	private TransparentTextField searchTextField;
 	private BiomeSearchList selectionList;
-	private ISortingCategory sortingCategory;
+	private ISorting sortingCategory;
 
 	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<Identifier> allowedBiomes) {
 		super(new TranslatableText("string.naturescompass.selectBiome"));
@@ -56,7 +56,7 @@ public class NaturesCompassScreen extends Screen {
 		this.allowedBiomes = new ArrayList<Biome>();
 		loadAllowedBiomes(allowedBiomes);
 
-		sortingCategory = new NameCategory();
+		sortingCategory = new NameSorting();
 		biomesMatchingSearch = new ArrayList<Biome>(this.allowedBiomes);
 	}
 
@@ -134,15 +134,15 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		ClientPlayNetworking.send(SearchPacket.ID, new SearchPacket(BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
-		client.openScreen(null);
+		client.setScreen(null);
 	}
 
 	public void teleport() {
 		ClientPlayNetworking.send(TeleportPacket.ID, new TeleportPacket());
-		client.openScreen(null);
+		client.setScreen(null);
 	}
 
-	public ISortingCategory getSortingCategory() {
+	public ISorting getSortingCategory() {
 		return sortingCategory;
 	}
 
@@ -158,7 +158,7 @@ public class NaturesCompassScreen extends Screen {
 
 	public List<Biome> sortBiomes() {
 		final List<Biome> biomes = biomesMatchingSearch;
-		Collections.sort(biomes, new NameCategory());
+		Collections.sort(biomes, new NameSorting());
 		Collections.sort(biomes, sortingCategory);
 
 		return biomes;
@@ -166,7 +166,7 @@ public class NaturesCompassScreen extends Screen {
 
 	private void setupButtons() {
 		cancelButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, new TranslatableText("gui.cancel"), (onPress) -> {
-			client.openScreen(null);
+			client.setScreen(null);
 		}));
 		sortByButton = addDrawableChild(new TransparentButton(10, 90, 110, 20, new LiteralText(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();

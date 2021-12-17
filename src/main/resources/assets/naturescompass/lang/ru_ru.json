@@ -28,6 +28,7 @@
 
     "_comment": "STRINGS - GUI",
     "string.naturescompass.biome": "Биом",
+    "string.naturescompass.category": "Категория",
     "string.naturescompass.coordinates": "Координаты",
     "string.naturescompass.distance": "Дистанция",
     "string.naturescompass.found": "Найден",
@@ -36,7 +37,7 @@
     "string.naturescompass.samples": "Список",
     "string.naturescompass.search": "Искать",
     "string.naturescompass.searching": "Поиск",
-    "string.naturescompass.source": "начало",
+    "string.naturescompass.source": "Добавлен",
     "string.naturescompass.status": "Статус",
 
     "_comment": "STRINGS - INFO",

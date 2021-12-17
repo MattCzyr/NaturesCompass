@@ -28,6 +28,7 @@
 
     "_comment": "STRINGS - GUI",
     "string.naturescompass.biome": "生態域",
+    "string.naturescompass.category": "类别",
     "string.naturescompass.coordinates": "座標",
     "string.naturescompass.distance": "距離",
     "string.naturescompass.found": "已發現",

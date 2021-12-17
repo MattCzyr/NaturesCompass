@@ -9,31 +9,31 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT)
-public class NameCategory implements ISortingCategory {
+public class SourceSorting implements ISorting<String> {
 	
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final MinecraftClient client = MinecraftClient.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
-		if (CLIENT.world != null) {
-			return BiomeUtils.getBiomeName(CLIENT.world, biome1).compareTo(BiomeUtils.getBiomeName(CLIENT.world, biome2));
-		}
-		return 0;
+		return getValue(biome1).compareTo(getValue(biome2));
 	}
 
 	@Override
-	public Object getValue(Biome biome) {
+	public String getValue(Biome biome) {
+		if (client.world != null) {
+			return BiomeUtils.getBiomeSource(client.world, biome);
+		}
 		return null;
 	}
 
 	@Override
-	public ISortingCategory next() {
-		return new SourceCategory();
+	public ISorting<?> next() {
+		return new CategorySorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.translate("string.naturescompass.name");
+		return I18n.translate("string.naturescompass.source");
 	}
 
 }
