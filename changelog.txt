@@ -1,4 +1,37 @@
 ------------------------------------------------------------------
+ FABRIC: 2.0.2 - 1.18.1, 1.18
+------------------------------------------------------------------
+1.18.1, 1.18
+  FEATURES:
+  - Replaced some obsolete info and sorting categories with biome category info in the compass GUI
+  - Added German translations
+  - Added Portuguese translations
+  - Corrected Russian translations
+1.18.1
+  UPDATES:
+  - Initial release for Fabric 1.18.1
+1.18
+  UPDATES:
+  - Initial release for Fabric 1.18
+
+
+------------------------------------------------------------------
+ FORGE: 1.9.3 - 1.18.1, 1.18
+------------------------------------------------------------------
+1.18.1, 1.18
+  FEATURES:
+  - Replaced some obsolete info and sorting categories with biome category info in the compass GUI
+  - Added German translations
+  - Corrected Russian translations
+1.18.1
+  UPDATES:
+  - Initial release for Forge 1.18.1
+1.18
+  UPDATES:
+  - Initial release for Forge 1.18
+
+
+------------------------------------------------------------------
  FORGE: 1.9.2 - 1.17.1
 ------------------------------------------------------------------
 1.17.1
