@@ -3,7 +3,7 @@
 ------------------------------------------------------------------
 1.18.1:
   FIXES:
-  - Fixed compatibility with Forge 39.0.7 and above
+  - Fixed incompatibility with Forge 39.0.7 and above
 
 
 ------------------------------------------------------------------
