@@ -37,7 +37,11 @@ public class PlayerUtils {
 	}
 
 	public static boolean hasPermission(Player player) {
-		return PermissionAPI.hasPermission(player, NaturesCompass.TELEPORT_PERMISSION);
+		if (player instanceof ServerPlayer) {
+			return PermissionAPI.getPermission((ServerPlayer) player, NaturesCompass.TELEPORT_PERMISSION);
+		}
+		
+		return false;
 	}
 
 }
