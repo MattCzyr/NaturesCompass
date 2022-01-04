@@ -10,7 +10,7 @@
     "string.naturescompass.info": "資訊",
     "string.naturescompass.startSearch": "開始搜尋",
     "string.naturescompass.selectBiome": "選擇生態域",
-    "string.naturescompass.sortBy": "排序",
+    "string.naturescompass.sortBy": "排序方式",
     "string.naturescompass.teleport": "傳送",
 
     "_comment": "STRINGS - CLIMATES",
@@ -28,7 +28,7 @@
 
     "_comment": "STRINGS - GUI",
     "string.naturescompass.biome": "生態域",
-    "string.naturescompass.category": "类别",
+    "string.naturescompass.category": "類別",
     "string.naturescompass.coordinates": "座標",
     "string.naturescompass.distance": "距離",
     "string.naturescompass.found": "已發現",
@@ -36,7 +36,7 @@
     "string.naturescompass.radius": "半徑",
     "string.naturescompass.samples": "樣本",
     "string.naturescompass.search": "搜尋",
-    "string.naturescompass.searching": "搜尋中",
+    "string.naturescompass.searching": "正在搜尋",
     "string.naturescompass.source": "來源",
     "string.naturescompass.status": "狀態",
 
