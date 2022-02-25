@@ -1,0 +1,58 @@
+{
+    "_comment": "Nature's Compass - Dil Dosyası",
+    "_comment": "TÜRKİYE - TÜRKÇE",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Doğa'nın Pusulası",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Geri",
+    "string.naturescompass.info": "İpucu",
+    "string.naturescompass.startSearch": "Aramayı Başlat",
+    "string.naturescompass.selectBiome": "Biyom Şeç",
+    "string.naturescompass.sortBy": "Sırala",
+    "string.naturescompass.teleport": "Işınlan",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Soğuk",
+    "string.naturescompass.medium": "Orta",
+    "string.naturescompass.warm": "Ilık",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Yok",
+    "string.naturescompass.veryLow": "Çok Alçak",
+    "string.naturescompass.low": "Alçak",
+    "string.naturescompass.average": "Ortalama",
+    "string.naturescompass.high": "Yüksek",
+    "string.naturescompass.veryHigh": "Çok Yüksek",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Biome",
+    "string.naturescompass.category": "Kategori",
+    "string.naturescompass.coordinates": "Koordinatlar",
+    "string.naturescompass.distance": "Mesafe",
+    "string.naturescompass.found": "Bulundu",
+    "string.naturescompass.notFound": "Bulunamadı",
+    "string.naturescompass.radius": "Çevresi",
+    "string.naturescompass.samples": "Örnekler",
+    "string.naturescompass.search": "Ara",
+    "string.naturescompass.searching": "Aranıyor",
+    "string.naturescompass.source": "Kaynak",
+    "string.naturescompass.status": "Statüs",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Ana Yükseklik",
+    "string.naturescompass.climate": "İklim",
+    "string.naturescompass.fillerBlock": "Dolgu Bloğu",
+    "string.naturescompass.heightVariation": "Yükseklik Varyasyonu",
+    "string.naturescompass.highHumidity": "Yüksek Nem",
+    "string.naturescompass.name": "İsim",
+    "string.naturescompass.precipitation": "Yağış",
+    "string.naturescompass.rainfall": "Dolu",
+    "string.naturescompass.temperature": "Sıcaklık",
+    "string.naturescompass.topBlock": "En Üst Blok",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Kar",
+    "string.naturescompass.rain": "Yağmur"
+}
