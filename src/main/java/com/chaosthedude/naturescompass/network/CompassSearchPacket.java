@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 public class CompassSearchPacket {
@@ -50,8 +49,7 @@ public class CompassSearchPacket {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final Level level = ctx.get().getSender().level;
-				natureCompass.searchForBiome(level, ctx.get().getSender(), biomeKey, new BlockPos(x, y, z), stack);
+				natureCompass.searchForBiome(ctx.get().getSender().getLevel(), ctx.get().getSender(), biomeKey, new BlockPos(x, y, z), stack);
 			}
 		});
 		ctx.get().setPacketHandled(true);

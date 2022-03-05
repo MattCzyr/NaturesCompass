@@ -30,6 +30,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public ItemStack stack;
 	public Player player;
 	public int x;
+	public int y;
 	public int z;
 	public int length;
 	public boolean finished;
@@ -42,6 +43,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.biome = biome;
 		this.startPos = startPos;
 		x = startPos.getX();
+		y = startPos.getY();
 		z = startPos.getZ();
 		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(level);
 		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
@@ -84,8 +86,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				x -= sampleSpace;
 			}
 
-			final BlockPos pos = new BlockPos(x, level.getHeight(), z);
-			final Biome biomeAtPos = level.getBiomeManager().getBiome(pos);
+			final Biome biomeAtPos = level.getBiomeManager().getNoiseBiomeAtPosition(new BlockPos(x, y, z));
 			final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
 			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 				finish(true);
