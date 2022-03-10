@@ -18,6 +18,7 @@ import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,7 +40,7 @@ public class TeleportPacket extends PacketByteBuf {
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						final int y = findValidTeleportHeight(player.getEntityWorld(), x, z, player);
+						final int y = findValidTeleportHeight(player.getEntityWorld(), x, z);
 
 						player.stopRiding();
 						((ServerPlayerEntity) player).networkHandler.requestTeleport(x, y, z, player.getYaw(), player.getPitch(), EnumSet.noneOf(PlayerPositionLookS2CPacket.Flag.class));
@@ -56,27 +57,30 @@ public class TeleportPacket extends PacketByteBuf {
 		});
 	}
 
-	private static int findValidTeleportHeight(World world, int x, int z, PlayerEntity player) {
-		int startY = world.getSeaLevel();
-		int upY = startY;
-		int downY = startY;
-		while (!(isValidTeleportPosition(world, new BlockPos(x, upY, z), player) || isValidTeleportPosition(world, new BlockPos(x, downY, z), player)) && (upY < 255 || downY > 1)) {
+	private static int findValidTeleportHeight(World world, int x, int z) {
+		int upY = world.getSeaLevel();
+		int downY = world.getSeaLevel();
+		while (!(isValidTeleportPosition(world, new BlockPos(x, upY, z)) || isValidTeleportPosition(world, new BlockPos(x, downY, z)))) {
 			upY++;
 			downY--;
 		}
 		BlockPos upPos = new BlockPos(x, upY, z);
 		BlockPos downPos = new BlockPos(x, downY, z);
-		if (upY < 255 && isValidTeleportPosition(world, upPos, player)) {
+		if (isValidTeleportPosition(world, upPos)) {
 			return upY;
 		}
-		if (downY > 1 && isValidTeleportPosition(world, downPos, player)) {
+		if (isValidTeleportPosition(world, downPos)) {
 			return downY;
 		}
 		return 256;
 	}
-
-	private static boolean isValidTeleportPosition(World world, BlockPos pos, PlayerEntity player) {
-		return !world.getBlockState(pos).isSolidBlock(world, pos) && world.getBlockState(pos).hasSolidTopSurface(world, pos.down(), player);
+	
+	private static boolean isValidTeleportPosition(World world, BlockPos pos) {
+		return !world.isOutOfHeightLimit(pos) && isFree(world, pos) && isFree(world, pos.up()) && !isFree(world, pos.down());
+	}
+	
+	private static boolean isFree(World world, BlockPos pos) {
+		return world.getBlockState(pos).isAir() || world.getBlockState(pos).isIn(BlockTags.FIRE) || world.getBlockState(pos).getMaterial().isLiquid() || world.getBlockState(pos).getMaterial().isReplaceable();
 	}
 
 }
