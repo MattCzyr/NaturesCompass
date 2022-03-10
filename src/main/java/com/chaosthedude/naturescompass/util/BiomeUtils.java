@@ -12,6 +12,7 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -77,17 +78,18 @@ public class BiomeUtils {
 	
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeCategoryName(Level level, Biome biome) {
-		String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(biome.getBiomeCategory().getName()));
+		Holder<Biome> biomeHolder = Holder.direct(biome);
+		String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(Biome.getBiomeCategory(biomeHolder).getName()));
 		String translatedBiomeKey = I18n.get(biomeKey);
 		if (!biomeKey.equals(translatedBiomeKey)) {
 			return translatedBiomeKey;
 		}
-		String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(biome.getBiomeCategory().getName()));
+		String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(Biome.getBiomeCategory(biomeHolder).getName()));
 		String translatedCategoryKey = I18n.get(categoryKey);
 		if (!categoryKey.equals(translatedCategoryKey)) {
 			return translatedCategoryKey;
 		}
-		return WordUtils.capitalize(biome.getBiomeCategory().getName().replace('_', ' '));
+		return WordUtils.capitalize(Biome.getBiomeCategory(biomeHolder).getName().replace('_', ' '));
 	}
 	
 	@OnlyIn(Dist.CLIENT)

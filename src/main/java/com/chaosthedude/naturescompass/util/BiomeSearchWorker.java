@@ -86,7 +86,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				x -= sampleSpace;
 			}
 
-			final Biome biomeAtPos = level.getBiomeManager().getNoiseBiomeAtPosition(new BlockPos(x, y, z));
+			final Biome biomeAtPos = level.getBiomeManager().getNoiseBiomeAtPosition(new BlockPos(x, y, z)).value();
 			final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
 			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 				finish(true);
