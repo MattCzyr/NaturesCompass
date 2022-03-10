@@ -28,6 +28,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	public ItemStack stack;
 	public PlayerEntity player;
 	public int x;
+	public int y;
 	public int z;
 	public int length;
 	public boolean finished;
@@ -40,6 +41,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.biome = biome;
 		this.startPos = startPos;
 		x = startPos.getX();
+		y = startPos.getY();
 		z = startPos.getZ();
 		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
 		maxSamples = NaturesCompassConfig.maxSamples;
@@ -82,8 +84,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				x -= sampleSpace;
 			}
 
-			final BlockPos pos = new BlockPos(x, world.getHeight(), z);
-			final Biome biomeAtPos = world.getBiomeAccess().getBiome(pos);
+			final BlockPos pos = new BlockPos(x, y, z);
+			final Biome biomeAtPos = world.getBiomeAccess().getBiomeForNoiseGen(pos);
 			final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
 			if (biomeAtPosID != null && biomeAtPosID.equals(biomeKey)) {
 				finish(true);
