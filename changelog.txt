@@ -1,3 +1,35 @@
+-------------------------------------------------
+ FABRIC: 2.0.3 - 1.18.2, 1.18.1
+-------------------------------------------------
+1.18.2:
+  UPDATES:
+  - Initial release for Fabric 1.18.2
+1.18.1:
+  FIXES:
+  - Fixed bug in which the compass could not usually find cave biomes. The compass will now search for biomes near the player's Y-plane.
+  - Fixed bug in which teleporting to a biome would place the player at the build height
+
+
+------------------------------------------------------------------
+ FORGE: 1.9.5 - 1.18.2, 1.18.1
+------------------------------------------------------------------
+1.18.2:
+  UPDATES:
+  - Initial release for Forge 1.18.2
+1.18.1:
+  FIXES:
+  - Fixed bug in which the compass could not usually find cave biomes. The compass will now search for biomes near the player's Y-plane.
+  - Fixed bug in which teleporting to a biome would place the player at the build height
+
+
+------------------------------------------------------------------
+ FORGE: 1.9.4 - 1.18.1
+------------------------------------------------------------------
+1.18.1:
+  FIXES:
+  - Fixed incompatibility with Forge 39.0.7 and above
+
+
 ------------------------------------------------------------------
  FABRIC: 2.0.2 - 1.18.1, 1.18
 ------------------------------------------------------------------
