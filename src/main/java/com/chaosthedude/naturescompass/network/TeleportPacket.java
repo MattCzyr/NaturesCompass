@@ -12,7 +12,7 @@ import com.chaosthedude.naturescompass.util.PlayerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -57,26 +57,29 @@ public class TeleportPacket {
 	}
 	
 	private int findValidTeleportHeight(Level level, int x, int z) {
-		int startY = level.getSeaLevel();
-		int upY = startY;
-		int downY = startY;
-		while (!(isValidTeleportPosition(level, new BlockPos(x, upY, z)) || isValidTeleportPosition(level, new BlockPos(x, downY, z))) && (upY < 255 || downY > 1)) {
+		int upY = level.getSeaLevel();
+		int downY = level.getSeaLevel();
+		while (!(isValidTeleportPosition(level, new BlockPos(x, upY, z)) || isValidTeleportPosition(level, new BlockPos(x, downY, z)))) {
 			upY++;
 			downY--;
 		}
 		BlockPos upPos = new BlockPos(x, upY, z);
 		BlockPos downPos = new BlockPos(x, downY, z);
-		if (upY < 255 && isValidTeleportPosition(level, upPos)) {
+		if (isValidTeleportPosition(level, upPos)) {
 			return upY;
 		}
-		if (downY > 1 && isValidTeleportPosition(level, downPos)) {
+		if (isValidTeleportPosition(level, downPos)) {
 			return downY;
 		}
 		return 256;
 	}
 	
 	private boolean isValidTeleportPosition(Level level, BlockPos pos) {
-		return !level.getBlockState(pos).canOcclude() && Block.canSupportRigidBlock(level, pos.below());
+		return !level.isOutsideBuildHeight(pos) && isFree(level, pos) && isFree(level, pos.above()) && !isFree(level, pos.below());
+	}
+	
+	private boolean isFree(Level level, BlockPos pos) {
+		return level.getBlockState(pos).isAir() || level.getBlockState(pos).is(BlockTags.FIRE) || level.getBlockState(pos).getMaterial().isLiquid() || level.getBlockState(pos).getMaterial().isReplaceable();
 	}
 
 }
