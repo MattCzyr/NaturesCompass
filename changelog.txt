@@ -5,6 +5,9 @@
   UPDATES:
   - Initial release for Fabric 1.18.2
 1.18.1:
+  FEATURES:
+  - Added Turkish translations
+  - Corrected some Chinese translations
   FIXES:
   - Fixed bug in which the compass could not usually find cave biomes. The compass will now search for biomes near the player's Y-plane.
   - Fixed bug in which teleporting to a biome would place the player at the build height
@@ -17,6 +20,9 @@
   UPDATES:
   - Initial release for Forge 1.18.2
 1.18.1:
+  FEATURES:
+  - Added Turkish translations
+  - Corrected some Chinese translations
   FIXES:
   - Fixed bug in which the compass could not usually find cave biomes. The compass will now search for biomes near the player's Y-plane.
   - Fixed bug in which teleporting to a biome would place the player at the build height
