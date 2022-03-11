@@ -22,6 +22,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -42,7 +43,7 @@ public class BiomeUtils {
 
 	public static List<Identifier> getAllowedBiomeIDs(World world) {
 		final List<Identifier> biomeIDs = new ArrayList<Identifier>();
-		for (Map.Entry<RegistryKey<Biome>, Biome> entry : getBiomeRegistry(world).getEntries()) {
+		for (Map.Entry<RegistryKey<Biome>, Biome> entry : getBiomeRegistry(world).getEntrySet()) {
 			Biome biome = entry.getValue();
 			if (biome != null) {
 				Identifier biomeID = getIdentifierForBiome(world, biome);
@@ -75,17 +76,18 @@ public class BiomeUtils {
 	
 	@Environment(EnvType.CLIENT)
 	public static String getBiomeCategoryName(World level, Biome biome) {
-		String biomeKey = Util.createTranslationKey("biome", new Identifier(biome.getCategory().getName()));
+		RegistryEntry<Biome> biomeEntry = RegistryEntry.of(biome);
+		String biomeKey = Util.createTranslationKey("biome", new Identifier(Biome.getCategory(biomeEntry).getName()));
 		String translatedBiomeKey = I18n.translate(biomeKey);
 		if (!biomeKey.equals(translatedBiomeKey)) {
 			return translatedBiomeKey;
 		}
-		String categoryKey = Util.createTranslationKey("category", new Identifier(biome.getCategory().getName()));
+		String categoryKey = Util.createTranslationKey("category", new Identifier(Biome.getCategory(biomeEntry).getName()));
 		String translatedCategoryKey = I18n.translate(categoryKey);
 		if (!categoryKey.equals(translatedCategoryKey)) {
 			return translatedCategoryKey;
 		}
-		return WordUtils.capitalize(biome.getCategory().getName().replace('_', ' '));
+		return WordUtils.capitalize(Biome.getCategory(biomeEntry).getName().replace('_', ' '));
 	}
 
 	@Environment(EnvType.CLIENT)

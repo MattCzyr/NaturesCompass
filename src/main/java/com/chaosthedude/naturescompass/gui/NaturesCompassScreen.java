@@ -121,8 +121,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public void onClose() {
-		super.onClose();
+	public void close() {
+		super.close();
 		client.keyboard.setRepeatEvents(false);
 	}
 

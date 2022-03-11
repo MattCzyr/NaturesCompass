@@ -85,7 +85,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			}
 
 			final BlockPos pos = new BlockPos(x, y, z);
-			final Biome biomeAtPos = world.getBiomeAccess().getBiomeForNoiseGen(pos);
+			final Biome biomeAtPos = world.getBiomeAccess().getBiomeForNoiseGen(pos).value();
 			final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
 			if (biomeAtPosID != null && biomeAtPosID.equals(biomeKey)) {
 				finish(true);
