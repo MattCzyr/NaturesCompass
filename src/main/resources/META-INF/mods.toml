@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[39,)"
+loaderVersion="[40,)"
 issueTrackerURL="https://github.com/MattCzyr/NaturesCompass/issues"
 license="CC BY-NC-SA 4.0"
 
@@ -16,6 +16,12 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.naturescompass]]
     modId="forge"
     mandatory=true
-    versionRange="[39,)"
+    versionRange="[40,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.naturescompass]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18.2,)"
     ordering="NONE"
     side="BOTH"
