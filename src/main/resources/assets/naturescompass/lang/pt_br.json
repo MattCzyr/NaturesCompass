@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "BRAZIL - BRAZILIAN PORTUGUESE",
+    "_comment": "LANGUAGE FILE - PORTUGUESE",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Bússola da natureza",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Pesquisando",
     "string.naturescompass.source": "Origem",
     "string.naturescompass.status": "Estado",
+    "string.naturescompass.tags": "Tag",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Altura base",

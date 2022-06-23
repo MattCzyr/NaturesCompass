@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Precipitation;
 
@@ -20,20 +20,20 @@ public class BiomeInfoScreen extends Screen {
 	private ButtonWidget searchButton;
 	private ButtonWidget backButton;
 	private String source;
-	private String category;
+	private String tags;
 	private String precipitation;
 	private String temperature;
 	private String rainfall;
 	private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
-		super(new TranslatableText(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)));
+		super(Text.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
 		source = BiomeUtils.getBiomeSource(parentScreen.world, biome);
 		
-		category = BiomeUtils.getBiomeCategoryName(parentScreen.world, biome);
+		tags = BiomeUtils.getBiomeTags(parentScreen.world, biome);
 
 		if (biome.getPrecipitation() == Precipitation.SNOW) {
 			precipitation = I18n.translate("string.naturescompass.snow");
@@ -83,32 +83,38 @@ public class BiomeInfoScreen extends Screen {
 		renderBackground(matrixStack);
 		textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff);
 
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
 		textRenderer.draw(matrixStack, source, width / 2 - 100, 50, 0x808080);
+		
+		int tagsMaxWidth = width / 2 - 50; // Margin of 10 on the right side
+		String tagsLine = tags;
+		if (textRenderer.getWidth(tagsLine) > tagsMaxWidth) {
+			tagsLine = textRenderer.trimToWidth(tagsLine + "...", tagsMaxWidth) + "...";
+		}
 
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.category"), width / 2 + 40, 40, 0xffffff);
-		textRenderer.draw(matrixStack, category, width / 2 + 40, 50, 0x808080);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff);
+		textRenderer.draw(matrixStack, tagsLine, width / 2 + 40, 50, 0x808080);
 
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
 		textRenderer.draw(matrixStack, precipitation, width / 2 - 100, 80, 0x808080);
 		
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
 		textRenderer.draw(matrixStack, rainfall, width / 2 + 40, 80, 0x808080);
 		
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
 		textRenderer.draw(matrixStack, temperature, width / 2 - 100, 110, 0x808080);
 		
-		textRenderer.draw(matrixStack, I18n.translate("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
+		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
 		textRenderer.draw(matrixStack, highHumidity, width / 2 + 40, 110, 0x808080);
 
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
-		backButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, new TranslatableText("string.naturescompass.back"), (button) -> {
+		backButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, Text.translatable("string.naturescompass.back"), (button) -> {
 			client.setScreen(parentScreen);
 		}));
-		searchButton = addDrawableChild(new TransparentButton(width - 120, height - 30, 110, 20, new TranslatableText("string.naturescompass.search"), (button) -> {
+		searchButton = addDrawableChild(new TransparentButton(width - 120, height - 30, 110, 20, Text.translatable("string.naturescompass.search"), (button) -> {
 			parentScreen.searchForBiome(biome);
 		}));
 	}

@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "JAPAN - JAPANESE",
+    "_comment": "LANGUAGE FILE - JAPANESE",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "自然のコンパス",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "検索中",
     "string.naturescompass.source": "ソース",
     "string.naturescompass.status": "ステータス",
+    "string.naturescompass.tags": "タグ",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "基準の高度",

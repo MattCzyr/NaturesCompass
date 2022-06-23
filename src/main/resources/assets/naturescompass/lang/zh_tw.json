@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "TAIWAN - CHINESE",
+    "_comment": "LANGUAGE FILE - CHINESE (TRADITIONAL)",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Nature's Compass",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "正在搜尋",
     "string.naturescompass.source": "來源",
     "string.naturescompass.status": "狀態",
+    "string.naturescompass.tags": "標籤",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "高度",

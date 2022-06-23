@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -17,6 +20,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -56,11 +60,6 @@ public class BiomeUtils {
 		return biomeIDs;
 	}
 
-	public static void searchForBiome(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
-		BiomeSearchWorker worker = new BiomeSearchWorker(world, player, stack, biome, startPos);
-		worker.start();
-	}
-
 	public static int getBiomeSize(World world) {
 		// TODO
 		return 4;
@@ -75,19 +74,41 @@ public class BiomeUtils {
 	}
 	
 	@Environment(EnvType.CLIENT)
-	public static String getBiomeCategoryName(World level, Biome biome) {
-		RegistryEntry<Biome> biomeEntry = RegistryEntry.of(biome);
-		String biomeKey = Util.createTranslationKey("biome", new Identifier(Biome.getCategory(biomeEntry).getName()));
-		String translatedBiomeKey = I18n.translate(biomeKey);
-		if (!biomeKey.equals(translatedBiomeKey)) {
-			return translatedBiomeKey;
+	public static String getBiomeTags(World world, Biome biome) {
+		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
+		List<String> tagPathsToIgnore = List.of("is_overworld");
+		// This will ignore duplicates and keep things sorted alphabetically
+		Set<String> biomeCategories = new TreeSet<String>();
+		Registry<Biome> biomeRegistry = getBiomeRegistry(world);
+		if (biomeRegistry.getKey(biome).isPresent() && biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).isPresent()) {
+			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
+			// Extremely hacky way of extracting a biome's categories from its tags
+			List<TagKey<Biome>> categoryTags = biomeEntry.streamTags().filter(tag -> tag.id().getPath().startsWith("is_")).collect(Collectors.toList());
+			for (TagKey<Biome> tag : categoryTags) {
+				if (tagPathsToIgnore.contains(tag.id().getPath())) {
+					continue;
+				}
+				String fixedPath = tag.id().getPath().replaceFirst("is_", "");
+				if (fixedPath.contains("/")) {
+					fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
+				}
+				String biomeKey = Util.createTranslationKey("biome", new Identifier(tag.id().getNamespace(), fixedPath));
+				String translatedBiomeKey = I18n.translate(biomeKey);
+				if (!biomeKey.equals(translatedBiomeKey)) {
+					return translatedBiomeKey;
+				}
+				String categoryKey = Util.createTranslationKey("category", new Identifier(tag.id().getNamespace(), fixedPath));
+				String translatedCategoryKey = I18n.translate(categoryKey);
+				if (!categoryKey.equals(translatedCategoryKey)) {
+					return translatedCategoryKey;
+				}
+				biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
+			}
 		}
-		String categoryKey = Util.createTranslationKey("category", new Identifier(Biome.getCategory(biomeEntry).getName()));
-		String translatedCategoryKey = I18n.translate(categoryKey);
-		if (!categoryKey.equals(translatedCategoryKey)) {
-			return translatedCategoryKey;
+		if (biomeCategories.isEmpty()) {
+			biomeCategories.add(I18n.translate("string.naturescompass.none"));
 		}
-		return WordUtils.capitalize(Biome.getCategory(biomeEntry).getName().replace('_', ' '));
+		return String.join(", ", biomeCategories);
 	}
 
 	@Environment(EnvType.CLIENT)

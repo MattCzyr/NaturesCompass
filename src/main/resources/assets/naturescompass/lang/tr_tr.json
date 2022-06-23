@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Dil Dosyası",
-    "_comment": "TÜRKİYE - TÜRKÇE",
+    "_comment": "LANGUAGE FILE - TURKISH",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Doğa'nın Pusulası",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Aranıyor",
     "string.naturescompass.source": "Kaynak",
     "string.naturescompass.status": "Statüs",
+    "string.naturescompass.tags": "Etiketler",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Ana Yükseklik",

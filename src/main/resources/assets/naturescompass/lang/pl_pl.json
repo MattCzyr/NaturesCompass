@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Plik językowy",
-    "_comment": "POLSKA - POLSKI",
+    "_comment": "LANGUAGE FILE - POLISH",
 
     "_comment": "PRZEDMIOTY",
     "item.naturescompass.naturescompass": "Kompas Biomów",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Szukanie",
     "string.naturescompass.source": "Pochodzenie",
     "string.naturescompass.status": "Pozycja",
+    "string.naturescompass.tags": "Tagi",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Wysokość podstawy",

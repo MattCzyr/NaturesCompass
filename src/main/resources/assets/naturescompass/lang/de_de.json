@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Sprachdatei",
-    "_comment": "DEUTSCHLAND - DEUTSCH",
+    "_comment": "LANGUAGE FILE - GERMAN",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Kompass der Natur",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Suche",
     "string.naturescompass.source": "Quelle",
     "string.naturescompass.status": "Status",
+    "string.naturescompass.tags": "Stichworte",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Basishöhe",

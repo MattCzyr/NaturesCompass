@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "UKRAINIAN - UKRAINE",
+    "_comment": "LANGUAGE FILE - UKRAINIAN",
 
     "_comment": "ITEMS",
     "item.naturescompass.NaturesCompass": "Компас природи",
@@ -40,6 +39,7 @@
     "string.naturescompass.searching": "Пошук",
     "string.naturescompass.source": "початок",
     "string.naturescompass.status": "Статус",
+    "string.naturescompass.tags": "Мітки",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Осн. висота (0 = 64)",

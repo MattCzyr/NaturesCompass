@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "MEXICO - ESPAÑOL",
+    "_comment": "LANGUAGE FILE - SPANISH",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Brújula de la Naturaleza",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Buscando",
     "string.naturescompass.source": "Origen",
     "string.naturescompass.status": "Estado",
+    "string.naturescompass.tags": "Etiquetas",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Altura base",
