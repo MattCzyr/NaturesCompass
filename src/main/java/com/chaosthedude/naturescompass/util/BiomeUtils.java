@@ -78,7 +78,7 @@ public class BiomeUtils {
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeTags(Level level, Biome biome) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
-		List<String> tagPathsToIgnore = List.of("minecraft:is_overworld");
+		List<String> tagPathsToIgnore = List.of("is_overworld");
 		// This will ignore duplicates and keep things sorted alphabetically
 		Set<String> biomeCategories = new TreeSet<String>();
 		if (getBiomeRegistry(level).isPresent()) {
