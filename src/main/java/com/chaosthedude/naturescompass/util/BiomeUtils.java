@@ -107,8 +107,10 @@ public class BiomeUtils {
 					}
 					biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
 				}
-				
 			}
+		}
+		if (biomeCategories.isEmpty()) {
+			biomeCategories.add(I18n.get("string.naturescompass.none"));
 		}
 		return String.join(", ", biomeCategories);
 	}
