@@ -18,8 +18,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +46,7 @@ public class NaturesCompassScreen extends Screen {
 	private ISorting<?> sortingCategory;
 
 	public NaturesCompassScreen(Level level, Player player, ItemStack stack, NaturesCompassItem natureCompass, List<ResourceLocation> allowedBiomes) {
-		super(new TranslatableComponent("string.naturescompass.selectBiome"));
+		super(Component.translatable("string.naturescompass.selectBiome"));
 		this.level = level;
 		this.player = player;
 		this.stack = stack;
@@ -161,25 +160,25 @@ public class NaturesCompassScreen extends Screen {
 
 	private void setupWidgets() {
 		clearWidgets();
-		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, new TranslatableComponent("gui.cancel"), (onPress) -> {
+		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(null);
 		}));
-		sortByButton = addRenderableWidget(new TransparentButton(10, 90, 110, 20, new TextComponent(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+		sortByButton = addRenderableWidget(new TransparentButton(10, 90, 110, 20, Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();
-			sortByButton.setMessage(new TextComponent(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+			sortByButton.setMessage(Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 			selectionList.refreshList();
 		}));
-		infoButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, new TranslatableComponent("string.naturescompass.info"), (onPress) -> {
+		infoButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, Component.translatable("string.naturescompass.info"), (onPress) -> {
 			if (selectionList.hasSelection()) {
 				selectionList.getSelected().viewInfo();
 			}
 		}));
-		startSearchButton = addRenderableWidget(new TransparentButton(10, 40, 110, 20, new TranslatableComponent("string.naturescompass.startSearch"), (onPress) -> {
+		startSearchButton = addRenderableWidget(new TransparentButton(10, 40, 110, 20, Component.translatable("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
 				selectionList.getSelected().searchForBiome();
 			}
 		}));
-		teleportButton = addRenderableWidget(new TransparentButton(width - 120, 10, 110, 20, new TranslatableComponent("string.naturescompass.teleport"), (onPress) -> {
+		teleportButton = addRenderableWidget(new TransparentButton(width - 120, 10, 110, 20, Component.translatable("string.naturescompass.teleport"), (onPress) -> {
 			teleport();
 		}));
 
@@ -188,7 +187,7 @@ public class NaturesCompassScreen extends Screen {
 
 		teleportButton.visible = NaturesCompass.canTeleport;
 		
-		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, new TranslatableComponent("string.naturescompass.search")));
+		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
 		
 		if (selectionList == null) {
 			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);

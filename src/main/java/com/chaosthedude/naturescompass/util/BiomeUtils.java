@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -16,6 +19,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -77,19 +81,41 @@ public class BiomeUtils {
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeCategoryName(Level level, Biome biome) {
-		Holder<Biome> biomeHolder = Holder.direct(biome);
-		String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(Biome.getBiomeCategory(biomeHolder).getName()));
-		String translatedBiomeKey = I18n.get(biomeKey);
-		if (!biomeKey.equals(translatedBiomeKey)) {
-			return translatedBiomeKey;
+	public static String getBiomeTags(Level level, Biome biome) {
+		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
+		List<String> tagPathsToIgnore = List.of("minecraft:is_overworld");
+		// This will ignore duplicates and keep things sorted alphabetically
+		Set<String> biomeCategories = new TreeSet<String>();
+		if (getBiomeRegistry(level).isPresent()) {
+			Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
+			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
+				Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
+				// Extremely hacky way of extracting a biome's categories from its tags
+				List<TagKey<Biome>> categoryTags = biomeHolder.getTagKeys().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
+				for (TagKey<Biome> tag : categoryTags) {
+					if (tagPathsToIgnore.contains(tag.location().getPath())) {
+						continue;
+					}
+					String fixedPath = tag.location().getPath().replaceFirst("is_", "");
+					if (fixedPath.contains("/")) {
+						fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
+					}
+					String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(tag.location().getNamespace(), fixedPath));
+					String translatedBiomeKey = I18n.get(biomeKey);
+					if (!biomeKey.equals(translatedBiomeKey)) {
+						return translatedBiomeKey;
+					}
+					String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(tag.location().getNamespace(), fixedPath));
+					String translatedCategoryKey = I18n.get(categoryKey);
+					if (!categoryKey.equals(translatedCategoryKey)) {
+						return translatedCategoryKey;
+					}
+					biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
+				}
+				
+			}
 		}
-		String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(Biome.getBiomeCategory(biomeHolder).getName()));
-		String translatedCategoryKey = I18n.get(categoryKey);
-		if (!categoryKey.equals(translatedCategoryKey)) {
-			return translatedCategoryKey;
-		}
-		return WordUtils.capitalize(Biome.getBiomeCategory(biomeHolder).getName().replace('_', ' '));
+		return String.join(", ", biomeCategories);
 	}
 	
 	@OnlyIn(Dist.CLIENT)

@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "FRANCE - FRANÇAIS",
+    "_comment": "LANGUAGE FILE - FRENCH",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Boussole de la nature",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Recherche",
     "string.naturescompass.source": "Source",
     "string.naturescompass.status": "Statut",
+    "string.naturescompass.tags": "Mots clés",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Hauteur de base",

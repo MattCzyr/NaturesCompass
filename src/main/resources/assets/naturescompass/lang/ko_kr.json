@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "REPUBLIC OF KOREA - KOREAN",
+    "_comment": "LANGUAGE FILE - KOREAN",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "자연의 나침반",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "검색중",
     "string.naturescompass.source": "소스",
     "string.naturescompass.status": "상태",
+    "string.naturescompass.tags": "태그",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "기반 높이",

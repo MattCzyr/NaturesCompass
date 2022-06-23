@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.biome.Biome;
 
-public class CategorySorting implements ISorting<String> {
+public class TagsSorting implements ISorting<String> {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 	
@@ -18,7 +18,7 @@ public class CategorySorting implements ISorting<String> {
 	@Override
 	public String getValue(Biome biome) {
 		if (mc.level != null) {
-			return BiomeUtils.getBiomeCategoryName(mc.level, biome);
+			return BiomeUtils.getBiomeTags(mc.level, biome);
 		}
 		return "";
 	}
@@ -30,7 +30,7 @@ public class CategorySorting implements ISorting<String> {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.get("string.naturescompass.category");
+		return I18n.get("string.naturescompass.tags");
 	}
 
 }

@@ -46,20 +46,16 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	@Override
 	protected void renderList(PoseStack poseStack, int par1, int par2, int mouseX, int mouseY, float partialTicks) {
-		for (int j = 0; j < getItemCount(); ++j) {
-			int k = getRowTop(j);
-			int l = getRowBottom(j);
-			if (l >= y0 && k <= y1) {
-				int j1 = this.itemHeight - 4;
-				BiomeSearchEntry e = getEntry(j);
-				int k1 = getRowWidth();
-				if (isSelectedItem(j)) {
+		for (int i = 0; i < getItemCount(); ++i) {
+			int top = getRowTop(i);
+			int bottom = getRowBottom(i);
+			if (bottom >= y0 && top <= y1) {
+				BiomeSearchEntry entry = getEntry(i);
+				if (isSelectedItem(i)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					RenderUtils.drawRect(insideLeft - 4, top - 4, insideLeft + getRowWidth() + 4, top + itemHeight, 255 / 2 << 24);
 				}
-
-				int j2 = getRowLeft();
-				e.render(poseStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				entry.render(poseStack, i, top, getRowLeft(), getRowWidth(), itemHeight - 4, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
 			}
 		}
 

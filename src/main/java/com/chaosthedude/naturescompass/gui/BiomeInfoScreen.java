@@ -6,8 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,20 +20,20 @@ public class BiomeInfoScreen extends Screen {
 	private Button searchButton;
 	private Button backButton;
 	private String source;
-	private String category;
+	private String tags;
 	private String precipitation;
 	private String temperature;
 	private String rainfall;
 	private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
-		super(new TranslatableComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)));
+		super(Component.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 		
 		source = BiomeUtils.getBiomeSource(parentScreen.level, biome);
 		
-		category = BiomeUtils.getBiomeCategoryName(parentScreen.level, biome);
+		tags = BiomeUtils.getBiomeTags(parentScreen.level, biome);
 
 		if (biome.getPrecipitation() == Precipitation.SNOW) {
 			precipitation = I18n.get("string.naturescompass.snow");
@@ -76,40 +75,47 @@ public class BiomeInfoScreen extends Screen {
 	@Override
 	public void init() {
 		setupWidgets();
+		
 	}
 
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(poseStack);
-		font.draw(poseStack, new TextComponent(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), (width / 2) - (font.width(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)) / 2), 20, 0xffffff);
+		font.draw(poseStack, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), (width / 2) - (font.width(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)) / 2), 20, 0xffffff);
 
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
-		font.draw(poseStack, new TextComponent(source), width / 2 - 100, 50, 0x808080);
+		font.draw(poseStack, Component.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
+		font.draw(poseStack, Component.literal(source), width / 2 - 100, 50, 0x808080);
 
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.category"), width / 2 + 40, 40, 0xffffff);
-		font.draw(poseStack, new TextComponent(category), width / 2 + 40, 50, 0x808080);
+		int tagsMaxWidth = width / 2 - 50; // Margin of 10 on the right side
+		String tagsLine = tags;
+		if (font.width(tagsLine) > tagsMaxWidth) {
+			tagsLine = font.plainSubstrByWidth(tagsLine + "...", tagsMaxWidth) + "...";
+		}
+		
+		font.draw(poseStack, Component.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff);
+		font.draw(poseStack, Component.literal(tagsLine), width / 2 + 40, 50, 0x808080);
 
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		font.draw(poseStack, new TextComponent(precipitation), width / 2 - 100, 80, 0x808080);
+		font.draw(poseStack, Component.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		font.draw(poseStack, Component.literal(precipitation), width / 2 - 100, 80, 0x808080);
 		
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
-		font.draw(poseStack, new TextComponent(rainfall), width / 2 + 40, 80, 0x808080);
+		font.draw(poseStack, Component.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
+		font.draw(poseStack, Component.literal(rainfall), width / 2 + 40, 80, 0x808080);
 		
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
-		font.draw(poseStack, new TextComponent(temperature), width / 2 - 100, 110, 0x808080);
+		font.draw(poseStack, Component.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
+		font.draw(poseStack, Component.literal(temperature), width / 2 - 100, 110, 0x808080);
 		
-		font.draw(poseStack, new TranslatableComponent("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
-		font.draw(poseStack, new TextComponent(highHumidity), width / 2 + 40, 110, 0x808080);
+		font.draw(poseStack, Component.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
+		font.draw(poseStack, Component.literal(highHumidity), width / 2 + 40, 110, 0x808080);
 
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupWidgets() {
 		clearWidgets();
-		backButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, new TranslatableComponent("string.naturescompass.back"), (onPress) -> {
+		backButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("string.naturescompass.back"), (onPress) -> {
 			minecraft.setScreen(parentScreen);
 		}));
-		searchButton = addRenderableWidget(new TransparentButton(width - 120, height - 30, 110, 20, new TranslatableComponent("string.naturescompass.search"), (onPress) -> {
+		searchButton = addRenderableWidget(new TransparentButton(width - 120, height - 30, 110, 20, Component.translatable("string.naturescompass.search"), (onPress) -> {
 			parentScreen.searchForBiome(biome);
 		}));
 	}

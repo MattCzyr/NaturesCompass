@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "ITALY - ITALIAN",
+    "_comment": "LANGUAGE FILE - ITALIAN",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Bussola della Natura",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Ricerca",
     "string.naturescompass.source": "Fonte",
     "string.naturescompass.status": "Status",
+    "string.naturescompass.tags": "Tag",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Altezza Base",

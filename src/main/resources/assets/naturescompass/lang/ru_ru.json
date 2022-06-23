@@ -1,6 +1,5 @@
 {
-    "_comment": "Nature's Compass - Language File",
-    "_comment": "ru_RU",
+    "_comment": "LANGUAGE FILE - RUSSIAN",
 
     "_comment": "ITEMS",
     "item.naturescompass.naturescompass": "Компас природы",
@@ -39,6 +38,7 @@
     "string.naturescompass.searching": "Поиск",
     "string.naturescompass.source": "Добавлен",
     "string.naturescompass.status": "Статус",
+    "string.naturescompass.tags": "Теги",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Осн. высота (0 = 64)",

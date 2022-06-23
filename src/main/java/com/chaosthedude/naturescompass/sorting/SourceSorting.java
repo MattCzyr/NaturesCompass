@@ -28,7 +28,7 @@ public class SourceSorting implements ISorting<String> {
 
 	@Override
 	public ISorting<?> next() {
-		return new CategorySorting();
+		return new TagsSorting();
 	}
 
 	@Override

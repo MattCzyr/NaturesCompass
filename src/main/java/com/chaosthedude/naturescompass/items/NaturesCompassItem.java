@@ -32,7 +32,6 @@ public class NaturesCompassItem extends Item {
 
 	public NaturesCompassItem() {
 		super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS));
-		setRegistryName(NAME);
 	}
 
 	@Override
