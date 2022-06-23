@@ -7,6 +7,7 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
+import com.chaosthedude.naturescompass.util.BiomeSearchWorker;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
@@ -29,6 +30,8 @@ import net.minecraftforge.network.NetworkDirection;
 public class NaturesCompassItem extends Item {
 
 	public static final String NAME = "naturescompass";
+	
+	private BiomeSearchWorker worker;
 
 	public NaturesCompassItem() {
 		super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS));
@@ -47,6 +50,10 @@ public class NaturesCompassItem extends Item {
 				NaturesCompass.network.sendTo(new SyncPacket(canTeleport, allowedBiomeKeys), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			}
 		} else {
+			if (worker != null) {
+				worker.stop();
+				worker = null;
+			}
 			setState(player.getItemInHand(hand), null, CompassState.INACTIVE, player);
 		}
 
@@ -65,8 +72,23 @@ public class NaturesCompassItem extends Item {
 		setSearching(stack, biomeKey, player);
 		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
 		if (optionalBiome.isPresent()) {
-			BiomeUtils.searchForBiome(level, player, stack, optionalBiome.get(), pos);
+			if (worker != null) {
+				worker.stop();
+			}
+			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
+			worker.start();
 		}
+	}
+	
+	public void succeed(ItemStack stack, Player player, int x, int z, int samples, boolean displayCoordinates) {
+		setFound(stack, x, z, samples, player);
+		setDisplayCoordinates(stack, displayCoordinates);
+		worker = null;
+	}
+	
+	public void fail(ItemStack stack, Player player, int radius, int samples) {
+		setNotFound(stack, player, radius, samples);
+		worker = null;
 	}
 
 	public boolean isActive(ItemStack stack) {

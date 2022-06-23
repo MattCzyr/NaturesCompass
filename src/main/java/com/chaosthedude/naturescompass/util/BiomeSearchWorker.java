@@ -63,7 +63,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				NaturesCompass.LOGGER.info("Starting search: " + sampleSpace + " sample space, " + maxSamples + " max samples, " + maxRadius + " max radius");
 				WorldWorkerManager.addWorker(this);
 			} else {
-				finish(false);
+				fail();
 			}
 		}
 	}
@@ -89,7 +89,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			final Biome biomeAtPos = level.getBiomeManager().getNoiseBiomeAtPosition(new BlockPos(x, y, z)).value();
 			final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
 			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
-				finish(true);
+				succeed();
 				return false;
 			}
 
@@ -115,23 +115,34 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		if (hasWork()) {
 			return true;
 		}
-		finish(false);
+		if (!finished) {
+			fail();
+		}
 		return false;
 	}
-
-	private void finish(boolean found) {
+	
+	private void succeed() {
+		NaturesCompass.LOGGER.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-			if (found) {
-				NaturesCompass.LOGGER.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-				((NaturesCompassItem) stack.getItem()).setFound(stack, x, z, samples, player);
-				((NaturesCompassItem) stack.getItem()).setDisplayCoordinates(stack, ConfigHandler.GENERAL.displayCoordinates.get());
-			} else {
-				NaturesCompass.LOGGER.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-				((NaturesCompassItem) stack.getItem()).setNotFound(stack, player, roundRadius(getRadius(), 500), samples);
-			}
+			((NaturesCompassItem) stack.getItem()).succeed(stack, player, x, z, samples, ConfigHandler.GENERAL.displayCoordinates.get());
 		} else {
 			NaturesCompass.LOGGER.error("Invalid compass after search");
 		}
+		finished = true;
+	}
+	
+	private void fail() {
+		NaturesCompass.LOGGER.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
+		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
+			((NaturesCompassItem) stack.getItem()).fail(stack, player, roundRadius(getRadius(), 500), samples);
+		} else {
+			NaturesCompass.LOGGER.error("Invalid compass after search");
+		}
+		finished = true;
+	}
+	
+	public void stop() {
+		NaturesCompass.LOGGER.info("Search stopped: " + getRadius() + " radius, " + samples + " samples");
 		finished = true;
 	}
 

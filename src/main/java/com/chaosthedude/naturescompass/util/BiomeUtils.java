@@ -62,11 +62,6 @@ public class BiomeUtils {
 		return biomeKeys;
 	}
 
-	public static void searchForBiome(Level level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
-		BiomeSearchWorker worker = new BiomeSearchWorker(level, player, stack, biome, startPos);
-		worker.start();
-	}
-
 	public static int getBiomeSize(Level world) {
 		// TODO
 		return 4;
