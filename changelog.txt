@@ -1,3 +1,29 @@
+------------------------------------------------------------------
+ FABRIC: 2.0.4 - 1.19
+------------------------------------------------------------------
+1.19:
+  UPDATES:
+  - Initial release for Fabric 1.19
+  FEATURES:
+  - Replaced biome categories with biome tags in the compass GUI
+  - Added Italian translations
+  FIXES:
+  - Fixed an issue in which clearing the compass state did not cancel the current search
+
+
+------------------------------------------------------------------
+ FORGE: 1.9.6 - 1.19
+------------------------------------------------------------------
+1.19:
+  UPDATES:
+  - Initial release for Forge 1.19
+  FEATURES:
+  - Replaced biome categories with biome tags in the compass GUI
+  - Added Italian translations
+  FIXES:
+  - Fixed an issue in which clearing the compass state did not cancel the current search
+
+
 -------------------------------------------------
  FABRIC: 2.0.3 - 1.18.2, 1.18.1
 -------------------------------------------------
