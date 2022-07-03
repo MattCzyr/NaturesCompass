@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.18.2-1.9.5-forge'
+version = '1.18.2-1.9.7-forge'
 group = 'com.chaosthedude.naturescompass' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'NaturesCompass'
 
