@@ -96,75 +96,77 @@ public class NaturesCompass {
 	public void clientInit(FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		
-		ItemProperties.register(naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
-			@OnlyIn(Dist.CLIENT)
-			private double rotation;
-			@OnlyIn(Dist.CLIENT)
-			private double rota;
-			@OnlyIn(Dist.CLIENT)
-			private long lastUpdateTick;
-
-			@OnlyIn(Dist.CLIENT)
-			@Override
-			public float unclampedCall(ItemStack stack, ClientLevel world, LivingEntity entityLiving, int seed) {
-				if (entityLiving == null && !stack.isFramed()) {
-					return 0.0F;
-				} else {
-					final boolean entityExists = entityLiving != null;
-					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
-					if (world == null && entity.level instanceof ClientLevel) {
-						world = (ClientLevel) entity.level;
-					}
-
-					double rotation = entityExists ? (double) entity.getYRot() : getFrameRotation((ItemFrame) entity);
-					rotation = rotation % 360.0D;
-					double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
-
-					if (entityExists) {
-						adjusted = wobble(world, adjusted);
-					}
-
-					final float f = (float) (adjusted / (Math.PI * 2D));
-					return Mth.positiveModulo(f, 1.0F);
-				}
-			}
-
-			@OnlyIn(Dist.CLIENT)
-			private double wobble(ClientLevel world, double amount) {
-				if (world.getGameTime() != lastUpdateTick) {
-					lastUpdateTick = world.getGameTime();
-					double d0 = amount - rotation;
-					d0 = d0 % (Math.PI * 2D);
-					d0 = Mth.clamp(d0, -1.0D, 1.0D);
-					rota += d0 * 0.1D;
-					rota *= 0.8D;
-					rotation += rota;
-				}
-
-				return rotation;
-			}
-
-			@OnlyIn(Dist.CLIENT)
-			private double getFrameRotation(ItemFrame itemFrame) {
-				Direction direction = itemFrame.getDirection();
-	            int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
-	            return (double)Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
-			}
-
-			@OnlyIn(Dist.CLIENT)
-			private double getAngle(ClientLevel world, Entity entity, ItemStack stack) {
-				if (stack.getItem() == naturesCompass) {
-					NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
-					BlockPos pos;
-					if (compassItem.getState(stack) == CompassState.FOUND) {
-						pos = new BlockPos(compassItem.getFoundBiomeX(stack), 0, compassItem.getFoundBiomeZ(stack));
+		event.enqueueWork(() -> {
+			ItemProperties.register(naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
+				@OnlyIn(Dist.CLIENT)
+				private double rotation;
+				@OnlyIn(Dist.CLIENT)
+				private double rota;
+				@OnlyIn(Dist.CLIENT)
+				private long lastUpdateTick;
+	
+				@OnlyIn(Dist.CLIENT)
+				@Override
+				public float unclampedCall(ItemStack stack, ClientLevel world, LivingEntity entityLiving, int seed) {
+					if (entityLiving == null && !stack.isFramed()) {
+						return 0.0F;
 					} else {
-						pos = world.getSharedSpawnPos();
+						final boolean entityExists = entityLiving != null;
+						final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
+						if (world == null && entity.level instanceof ClientLevel) {
+							world = (ClientLevel) entity.level;
+						}
+	
+						double rotation = entityExists ? (double) entity.getYRot() : getFrameRotation((ItemFrame) entity);
+						rotation = rotation % 360.0D;
+						double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
+	
+						if (entityExists) {
+							adjusted = wobble(world, adjusted);
+						}
+	
+						final float f = (float) (adjusted / (Math.PI * 2D));
+						return Mth.positiveModulo(f, 1.0F);
 					}
-					return Math.atan2((double) pos.getZ() - entity.position().z(), (double) pos.getX() - entity.position().x());
 				}
-				return 0.0D;
-			}
+	
+				@OnlyIn(Dist.CLIENT)
+				private double wobble(ClientLevel world, double amount) {
+					if (world.getGameTime() != lastUpdateTick) {
+						lastUpdateTick = world.getGameTime();
+						double d0 = amount - rotation;
+						d0 = d0 % (Math.PI * 2D);
+						d0 = Mth.clamp(d0, -1.0D, 1.0D);
+						rota += d0 * 0.1D;
+						rota *= 0.8D;
+						rotation += rota;
+					}
+	
+					return rotation;
+				}
+	
+				@OnlyIn(Dist.CLIENT)
+				private double getFrameRotation(ItemFrame itemFrame) {
+					Direction direction = itemFrame.getDirection();
+		            int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
+		            return (double)Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
+				}
+	
+				@OnlyIn(Dist.CLIENT)
+				private double getAngle(ClientLevel world, Entity entity, ItemStack stack) {
+					if (stack.getItem() == naturesCompass) {
+						NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
+						BlockPos pos;
+						if (compassItem.getState(stack) == CompassState.FOUND) {
+							pos = new BlockPos(compassItem.getFoundBiomeX(stack), 0, compassItem.getFoundBiomeZ(stack));
+						} else {
+							pos = world.getSharedSpawnPos();
+						}
+						return Math.atan2((double) pos.getZ() - entity.position().z(), (double) pos.getX() - entity.position().x());
+					}
+					return 0.0D;
+				}
+			});
 		});
 	}
 
