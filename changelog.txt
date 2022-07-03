@@ -3,7 +3,8 @@
 ------------------------------------------------------------------
 1.19, 1.18.2:
   FIXES:
-  - Fixed infrequent crash upon client startup
+  - Fixed a crash that occurred infrequently upon client initialization
+
 
 ------------------------------------------------------------------
  FABRIC: 2.0.4 - 1.19
