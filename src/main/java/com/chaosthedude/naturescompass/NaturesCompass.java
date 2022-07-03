@@ -57,12 +57,7 @@ public class NaturesCompass {
 	public static boolean canTeleport;
 	public static List<ResourceLocation> allowedBiomes;
 
-	public static NaturesCompass instance;
-
 	public NaturesCompass() {
-		
-		instance = this;
-
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
