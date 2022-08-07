@@ -39,16 +39,12 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int par1, int par2, float par3) {
-		int i = getScrollbarPositionX();
-		int k = getRowLeft();
-		int l = top + 4 - (int) getScrollAmount();
-
-		renderList(matrixStack, k, l, par1, par2, par3);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float par3) {
+		renderList(matrixStack, mouseX, mouseY, par3);
 	}
 
 	@Override
-	protected void renderList(MatrixStack matrixStack, int par1, int par2, int par3, int par4, float par5) {
+	protected void renderList(MatrixStack matrixStack, int mouseX, int mouseY, float par5) {
 		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -63,7 +59,7 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 				}
 
 				int j2 = getRowLeft();
-				e.render(matrixStack, j, k, j2, k1, j1, par3, par4, isMouseOver((double) par3, (double) par4) && Objects .equals(getEntryAtPosition((double) par3, (double) par4), e), par5);
+				e.render(matrixStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), par5);
 			}
 		}
 
