@@ -12,8 +12,11 @@
   - Fixed a crash that occurred infrequently upon client initialization
 
 ------------------------------------------------------------------
- FABRIC: 2.0.4 - 1.19.1, 1.19
+ FABRIC: 2.0.4 - 1.19.2, 1.19.1, 1.19
 ------------------------------------------------------------------
+1.19.2:
+  UPDATES:
+  - Initial release for Fabric 1.19.2
 1.19.1:
   UPDATES:
   - Initial release for Fabric 1.19.1
