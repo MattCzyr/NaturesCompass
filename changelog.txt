@@ -1,6 +1,8 @@
 ------------------------------------------------------------------
- FORGE: 1.9.7 - 1.19, 1.18.2
+ FORGE: 1.9.7 - 1.19.1, 1.19, 1.18.2
 ------------------------------------------------------------------
+1.19.1:
+  - Initial release for Forge 1.19.1
 1.19, 1.18.2:
   FIXES:
   - Fixed a crash that occurred infrequently upon client initialization
