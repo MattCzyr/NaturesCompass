@@ -39,13 +39,11 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		int k = getRowLeft();
-		int l = y0 + 4 - (int) getScrollAmount();
-		renderList(poseStack, k, l, mouseX, mouseY, partialTicks);
+		renderList(poseStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(PoseStack poseStack, int par1, int par2, int mouseX, int mouseY, float partialTicks) {
+	protected void renderList(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		for (int i = 0; i < getItemCount(); ++i) {
 			int top = getRowTop(i);
 			int bottom = getRowBottom(i);
