@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,6 +58,19 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 			}
 		}
 
+		if (getMaxScroll() > 0) {
+			int left = getScrollbarPosition();
+			int right = left + 6;
+			int height = (int) ((float) ((y1 - y0) * (y1 - y0)) / (float) getMaxPosition());
+			height = Mth.clamp(height, 32, y1 - y0 - 8);
+			int top = (int) getScrollAmount() * (y1 - y0 - height) / getMaxScroll() + y0;
+			if (top < y0) {
+				top = y0;
+			}
+			
+			RenderUtils.drawRect(left, y0, right, y1, (int) (2.35F * 255.0F) / 2 << 24);
+			RenderUtils.drawRect(left, top, right, top + height, (int) (1.9F * 255.0F) / 2 << 24);
+		}
 	}
 
 	private int getRowBottom(int itemIndex) {
