@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT)
@@ -63,6 +64,19 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 			}
 		}
 
+		if (getMaxScroll() > 0) {
+			int left = getScrollbarPositionX();
+			int right = left + 6;
+			int height = (int) ((float) ((bottom - top) * (bottom - top)) / (float) getMaxPosition());
+			height = MathHelper.clamp(height, 32, bottom - top - 8);
+			int scrollbarTop = (int) getScrollAmount() * (bottom - top - height) / getMaxScroll() + top;
+			if (scrollbarTop < top) {
+				scrollbarTop = top;
+			}
+			
+			RenderUtils.drawRect(left, scrollbarTop, right, bottom, (int) (2.35F * 255.0F) / 2 << 24);
+			RenderUtils.drawRect(left, scrollbarTop, right, scrollbarTop + height, (int) (1.9F * 255.0F) / 2 << 24);
+		}
 	}
 
 	private int getRowBottom(int p_getRowBottom_1_) {
