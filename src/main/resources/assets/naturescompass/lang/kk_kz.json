@@ -1,0 +1,58 @@
+{
+    "_comment": "LANGUAGE FILE - KAZAKH",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Табиғат құбыланамасы",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Артқа",
+    "string.naturescompass.info": "Ақпарат",
+    "string.naturescompass.startSearch": "Іздеуді бастау",
+    "string.naturescompass.selectBiome": "Биом таңдау",
+    "string.naturescompass.sortBy": "Сұрыптау",
+    "string.naturescompass.teleport": "Телепорттану",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Суық",
+    "string.naturescompass.medium": "Орташа",
+    "string.naturescompass.warm": "Жылы",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Еш",
+    "string.naturescompass.veryLow": "Өте төмен",
+    "string.naturescompass.low": "Төмен",
+    "string.naturescompass.average": "Орташа",
+    "string.naturescompass.high": "Жоғары",
+    "string.naturescompass.veryHigh": "Өте жоғары",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Биом",
+    "string.naturescompass.category": "Санат",
+    "string.naturescompass.coordinates": "Координат",
+    "string.naturescompass.distance": "Қашықтық",
+    "string.naturescompass.found": "Табылды",
+    "string.naturescompass.notFound": "Табылмады",
+    "string.naturescompass.radius": "Радиус",
+    "string.naturescompass.samples": "Үлгі",
+    "string.naturescompass.search": "Іздеу",
+    "string.naturescompass.searching": "Іздеуде",
+    "string.naturescompass.source": "Көз",
+    "string.naturescompass.status": "Статус",
+    "string.naturescompass.tags": "Тәг",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Негіз биіктігі",
+    "string.naturescompass.climate": "Климат",
+    "string.naturescompass.fillerBlock": "Толтырушы блок",
+    "string.naturescompass.heightVariation": "Биіктік айырмасы",
+    "string.naturescompass.highHumidity": "Жоғары ылғалдық",
+    "string.naturescompass.name": "Атау",
+    "string.naturescompass.precipitation": "Жауын-шашын",
+    "string.naturescompass.rainfall": "Жауын",
+    "string.naturescompass.temperature": "Температура",
+    "string.naturescompass.topBlock": "Үстіңгі блок",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Қар",
+    "string.naturescompass.rain": "Жаңбыр"
+}
