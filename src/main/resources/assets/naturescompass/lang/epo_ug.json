@@ -1,0 +1,58 @@
+{
+  "_comment": "LANGUAGE FILE - ESPERANTO",
+
+  "_comment": "ITEMS",
+  "item.naturescompass.naturescompass": "Kompaso de la Naturo",
+
+  "_comment": "STRINGS - BUTTONS",
+  "string.naturescompass.back": "Reen",
+  "string.naturescompass.info": "Informo",
+  "string.naturescompass.startSearch": "Komencu Serĉon",
+  "string.naturescompass.selectBiome": "Elektu Biomo",
+  "string.naturescompass.sortBy": "Ordigi Laŭ",
+  "string.naturescompass.teleport": "Teletransporti",
+
+  "_comment": "STRINGS - CLIMATES",
+  "string.naturescompass.cold": "Malvarmo",
+  "string.naturescompass.medium": "Mezo",
+  "string.naturescompass.warm": "Varmo",
+
+  "_comment": "STRINGS - RANGE",
+  "string.naturescompass.none": "Nenia",
+  "string.naturescompass.veryLow": "Tre Malalta",
+  "string.naturescompass.low": "Malalta",
+  "string.naturescompass.average": "Averaĝa",
+  "string.naturescompass.high": "Alta",
+  "string.naturescompass.veryHigh": "Tre Alta",
+
+  "_comment": "STRINGS - GUI",
+  "string.naturescompass.biome": "Biomo",
+  "string.naturescompass.category": "Kategorio",
+  "string.naturescompass.coordinates": "Koordinatoj",
+  "string.naturescompass.distance": "Distanco",
+  "string.naturescompass.found": "Trovita",
+  "string.naturescompass.notFound": "Ne Trovita",
+  "string.naturescompass.radius": "Radiuso",
+  "string.naturescompass.samples": "Specimenoj",
+  "string.naturescompass.search": "Serĉo",
+  "string.naturescompass.searching": "Serĉado",
+  "string.naturescompass.source": "Fonto",
+  "string.naturescompass.status": "Stato",
+  "string.naturescompass.tags": "Etikedoj",
+
+  "_comment": "STRINGS - INFO",
+  "string.naturescompass.baseHeight": "Baza Alteco",
+  "string.naturescompass.climate": "Klimato",
+  "string.naturescompass.fillerBlock": "Pleniga Bloko",
+  "string.naturescompass.heightVariation": "Variado de Alteco",
+  "string.naturescompass.highHumidity": "Atla Humido",
+  "string.naturescompass.name": "Nomo",
+  "string.naturescompass.precipitation": "Precipitaĵo",
+  "string.naturescompass.rainfall": "Pluvokvanto",
+  "string.naturescompass.temperature": "Temperaturo",
+  "string.naturescompass.topBlock": "Supra Bloko",
+
+  "_comment": "STRINGS - PRECIPITATION",
+  "string.naturescompass.snow": "Neĝo",
+  "string.naturescompass.rain": "Pluvo"
+}
