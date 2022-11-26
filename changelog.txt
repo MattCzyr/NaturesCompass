@@ -1,4 +1,26 @@
 ------------------------------------------------------------------
+ FORGE: 1.10.0 - 1.19.2
+------------------------------------------------------------------
+1.19.2:
+  FEATURES:
+  - Compass will now search all three axes, not just X and Z, to locate biomes regardless of the player's current Y axis
+  - Added a scroll bar to the biome selection list
+  - Added Esperanto translations
+  - Fixed missing phrases in Ukranian translations
+
+
+------------------------------------------------------------------
+ FABRIC: 2.1.0 - 1.19.2
+------------------------------------------------------------------
+1.19.2:
+  FEATURES:
+  - Compass will now search all three axes, not just X and Z, to locate biomes regardless of the player's current Y axis
+  - Added a scroll bar to the biome selection list
+  - Added Esperanto translations
+  - Fixed missing phrases in Ukranian translations
+
+
+------------------------------------------------------------------
  FORGE: 1.9.7 - 1.19.2, 1.19.1, 1.19, 1.18.2
 ------------------------------------------------------------------
 1.19.2:
