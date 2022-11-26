@@ -8,43 +8,43 @@ import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.QuartPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
-	public final int sampleSpace;
-	public final int maxSamples;
-	public final int maxRadius;
-	public Level level;
-	public Biome biome;
-	public ResourceLocation biomeKey;
-	public BlockPos startPos;
-	public int samples;
-	public int nextLength;
-	public Direction direction;
-	public ItemStack stack;
-	public Player player;
-	public int x;
-	public int y;
-	public int z;
-	public int length;
-	public boolean finished;
-	public int lastRadiusThreshold;
+	private final int sampleSpace;
+	private final int maxSamples;
+	private final int maxRadius;
+	private ServerLevel level;
+	private ResourceLocation biomeKey;
+	private BlockPos startPos;
+	private int samples;
+	private int nextLength;
+	private Direction direction;
+	private ItemStack stack;
+	private Player player;
+	private int x;
+	private int z;
+	private int[] yValues;
+	private int length;
+	private boolean finished;
+	private int lastRadiusThreshold;
 
-	public BiomeSearchWorker(Level level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
+	public BiomeSearchWorker(ServerLevel level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
 		this.level = level;
 		this.player = player;
 		this.stack = stack;
-		this.biome = biome;
 		this.startPos = startPos;
 		x = startPos.getX();
-		y = startPos.getY();
 		z = startPos.getZ();
+		yValues = Mth.outFromOrigin(startPos.getY(), level.getMinBuildHeight() + 1, level.getMaxBuildHeight(), 64).toArray();
 		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(level);
 		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
 		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(level);
@@ -85,12 +85,18 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			} else if (direction == Direction.WEST) {
 				x -= sampleSpace;
 			}
+			
+			int sampleX = QuartPos.fromBlock(x);
+			int sampleZ = QuartPos.fromBlock(z);
 
-			final Biome biomeAtPos = level.getBiomeManager().getNoiseBiomeAtPosition(new BlockPos(x, y, z)).value();
-			final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
-			if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
-				succeed();
-				return false;
+			for (int y : yValues) {
+				int sampleY = QuartPos.fromBlock(y);
+				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
+				final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
+				if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
+					succeed();
+					return false;
+				}
 			}
 
 			samples++;

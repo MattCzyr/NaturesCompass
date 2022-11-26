@@ -15,6 +15,7 @@ import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -68,7 +69,7 @@ public class NaturesCompassItem extends Item {
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
-	public void searchForBiome(Level level, Player player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
+	public void searchForBiome(ServerLevel level, Player player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeKey, player);
 		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
 		if (optionalBiome.isPresent()) {
