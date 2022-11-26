@@ -7,42 +7,42 @@ import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeCoords;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
-	public final int sampleSpace;
-	public final int maxSamples;
+	private final int sampleSpace;
+	private final int maxSamples;
 	public final int maxRadius;
-	public World world;
-	public Biome biome;
-	public Identifier biomeID;
-	public BlockPos startPos;
-	public int samples;
-	public int nextLength;
-	public Direction direction;
-	public ItemStack stack;
-	public PlayerEntity player;
-	public int x;
-	public int y;
-	public int z;
-	public int length;
-	public boolean finished;
-	public int lastRadiusThreshold;
+	private ServerWorld world;
+	private Identifier biomeID;
+	private BlockPos startPos;
+	private int samples;
+	private int nextLength;
+	private Direction direction;
+	private ItemStack stack;
+	private PlayerEntity player;
+	private int x;
+	private int z;
+	private int[] yValues;
+	private int length;
+	private boolean finished;
+	private int lastRadiusThreshold;
 
-	public BiomeSearchWorker(World world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
+	public BiomeSearchWorker(ServerWorld world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
 		this.world = world;
 		this.player = player;
 		this.stack = stack;
-		this.biome = biome;
 		this.startPos = startPos;
 		x = startPos.getX();
-		y = startPos.getY();
 		z = startPos.getZ();
+		yValues = MathHelper.stream(startPos.getY(), world.getBottomY() + 1, world.getTopY(), 64).toArray();
 		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
 		maxSamples = NaturesCompassConfig.maxSamples;
 		maxRadius = NaturesCompassConfig.radiusModifier * BiomeUtils.getBiomeSize(world);
@@ -83,13 +83,18 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			} else if (direction == Direction.WEST) {
 				x -= sampleSpace;
 			}
+			
+			int sampleX = BiomeCoords.fromBlock(x);
+			int sampleZ = BiomeCoords.fromBlock(z);
 
-			final BlockPos pos = new BlockPos(x, y, z);
-			final Biome biomeAtPos = world.getBiomeAccess().getBiomeForNoiseGen(pos).value();
-			final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
-			if (biomeAtPosID != null && biomeAtPosID.equals(biomeID)) {
-				succeed();
-				return false;
+			for (int y : yValues) {
+				int sampleY = BiomeCoords.fromBlock(y);
+				final Biome biomeAtPos = world.getChunkManager().getChunkGenerator().getBiomeSource().getBiome(sampleX, sampleY, sampleZ, world.getChunkManager().getNoiseConfig().getMultiNoiseSampler()).value();
+				final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
+				if (biomeAtPosID != null && biomeAtPosID.equals(biomeID)) {
+					succeed();
+					return false;
+				}
 			}
 
 			samples++;

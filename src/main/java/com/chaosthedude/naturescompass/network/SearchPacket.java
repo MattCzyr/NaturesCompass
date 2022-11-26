@@ -11,9 +11,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class SearchPacket extends PacketByteBuf {
 	
@@ -33,7 +33,7 @@ public class SearchPacket extends PacketByteBuf {
 	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final World world = player.getEntityWorld();
+				final ServerWorld world = player.getWorld();
 				natureCompass.searchForBiome(world, player, biomeID, pos, stack);
 			}
 		});

@@ -19,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
@@ -56,7 +57,7 @@ public class NaturesCompassItem extends Item {
 		return TypedActionResult.pass(player.getStackInHand(hand));
 	}
 
-	public void searchForBiome(World world, PlayerEntity player, Identifier biomeID, BlockPos pos, ItemStack stack) {
+	public void searchForBiome(ServerWorld world, PlayerEntity player, Identifier biomeID, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeID, player);
 		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeID);
  		if (optionalBiome.isPresent()) {
