@@ -24,10 +24,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -46,11 +48,11 @@ import net.minecraftforge.server.permission.nodes.PermissionTypes;
 public class NaturesCompass {
 
 	public static final String MODID = "naturescompass";
-	
+
 	public static final PermissionNode<Boolean> TELEPORT_PERMISSION = new PermissionNode<>(MODID, "naturescompass.teleport", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> false);
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	
+
 	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;
 
@@ -60,17 +62,18 @@ public class NaturesCompass {
 	public static NaturesCompass instance;
 
 	public NaturesCompass() {
-		
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::buildCreativeTabContents);
+
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		});
-		
+
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-		
+
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -86,16 +89,22 @@ public class NaturesCompass {
 
 		allowedBiomes = new ArrayList<ResourceLocation>();
 	}
-	
+
+	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {
+		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+			event.accept(new ItemStack(naturesCompass));
+		}
+	}
+
 	@SubscribeEvent
-    public void registerNodes(PermissionGatherEvent.Nodes event) {
+	public void registerNodes(PermissionGatherEvent.Nodes event) {
 		event.addNodes(TELEPORT_PERMISSION);
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public void clientInit(FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-		
+
 		event.enqueueWork(() -> {
 			ItemProperties.register(naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
 				@OnlyIn(Dist.CLIENT)
@@ -104,7 +113,7 @@ public class NaturesCompass {
 				private double rota;
 				@OnlyIn(Dist.CLIENT)
 				private long lastUpdateTick;
-	
+
 				@OnlyIn(Dist.CLIENT)
 				@Override
 				public float unclampedCall(ItemStack stack, ClientLevel world, LivingEntity entityLiving, int seed) {
@@ -116,20 +125,20 @@ public class NaturesCompass {
 						if (world == null && entity.level instanceof ClientLevel) {
 							world = (ClientLevel) entity.level;
 						}
-	
+
 						double rotation = entityExists ? (double) entity.getYRot() : getFrameRotation((ItemFrame) entity);
 						rotation = rotation % 360.0D;
 						double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
-	
+
 						if (entityExists) {
 							adjusted = wobble(world, adjusted);
 						}
-	
+
 						final float f = (float) (adjusted / (Math.PI * 2D));
 						return Mth.positiveModulo(f, 1.0F);
 					}
 				}
-	
+
 				@OnlyIn(Dist.CLIENT)
 				private double wobble(ClientLevel world, double amount) {
 					if (world.getGameTime() != lastUpdateTick) {
@@ -141,17 +150,17 @@ public class NaturesCompass {
 						rota *= 0.8D;
 						rotation += rota;
 					}
-	
+
 					return rotation;
 				}
-	
+
 				@OnlyIn(Dist.CLIENT)
 				private double getFrameRotation(ItemFrame itemFrame) {
 					Direction direction = itemFrame.getDirection();
-		            int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
-		            return (double)Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
+					int i = direction.getAxis().isVertical() ? 90 * direction.getAxisDirection().getStep() : 0;
+					return (double) Mth.wrapDegrees(180 + direction.get2DDataValue() * 90 + itemFrame.getRotation() * 45 + i);
 				}
-	
+
 				@OnlyIn(Dist.CLIENT)
 				private double getAngle(ClientLevel world, Entity entity, ItemStack stack) {
 					if (stack.getItem() == naturesCompass) {

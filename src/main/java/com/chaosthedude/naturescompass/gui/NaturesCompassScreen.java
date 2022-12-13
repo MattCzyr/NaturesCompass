@@ -65,7 +65,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	protected void init() {
-		minecraft.keyboardHandler.setSendRepeatsToGui(true);
 		setupWidgets();
 	}
 
@@ -110,12 +109,6 @@ public class NaturesCompassScreen extends Screen {
 			return true;
 		}
 		return ret;
-	}
-
-	@Override
-	public void onClose() {
-		super.onClose();
-		minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {

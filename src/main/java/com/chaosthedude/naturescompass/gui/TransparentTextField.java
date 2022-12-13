@@ -43,7 +43,7 @@ public class TransparentTextField extends EditBox {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
+				RenderUtils.drawRect(getX(), getY(), getX() + width, getY() + height, color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getValue().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
@@ -53,8 +53,8 @@ public class TransparentTextField extends EditBox {
 			String s = font.plainSubstrByWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
 			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
-			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
-			int i1 = pseudoEnableBackgroundDrawing ? y + (height - 8) / 2 : y;
+			int l = pseudoEnableBackgroundDrawing ? getX() + 4 : getX();
+			int i1 = pseudoEnableBackgroundDrawing ? getY() + (height - 8) / 2 : getY();
 			int j1 = l;
 
 			if (k > s.length()) {
@@ -187,12 +187,12 @@ public class TransparentTextField extends EditBox {
 			endY = j;
 		}
 
-		if (endX > x + width) {
-			endX = x + width;
+		if (endX > getX() + width) {
+			endX = getX() + width;
 		}
 
-		if (startX > x + width) {
-			startX = x + width;
+		if (startX > getX() + width) {
+			startX = getX() + width;
 		}
 
 		Tesselator tesselator = Tesselator.getInstance();
