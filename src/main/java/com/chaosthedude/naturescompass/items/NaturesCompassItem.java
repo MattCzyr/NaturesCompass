@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -32,7 +31,7 @@ public class NaturesCompassItem extends Item {
 	private BiomeSearchWorker worker;
 	
 	public NaturesCompassItem() {
-        super(new FabricItemSettings().group(ItemGroup.TOOLS).maxCount(1));
+        super(new FabricItemSettings().maxCount(1));
     }
 	
 	@Override

@@ -66,7 +66,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	protected void init() {
-		client.keyboard.setRepeatEvents(true);
 		clearChildren();
 		setupButtons();
 		setupTextFields();
@@ -117,12 +116,6 @@ public class NaturesCompassScreen extends Screen {
 			return true;
 		}
 		return ret;
-	}
-
-	@Override
-	public void close() {
-		super.close();
-		client.keyboard.setRepeatEvents(false);
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {
