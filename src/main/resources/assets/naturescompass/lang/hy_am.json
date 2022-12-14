@@ -1,0 +1,58 @@
+{
+    "_comment": "LANGUAGE FILE - ARMENIAN",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Բնության Կողմնացույց",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Հետ",
+    "string.naturescompass.info": "Տեղեկություն",
+    "string.naturescompass.startSearch": "Սկսել Որոնումը",
+    "string.naturescompass.selectBiome": "Ընտրել Բիոմը",
+    "string.naturescompass.sortBy": "Դասավորել ըստ",
+    "string.naturescompass.teleport": "Տելեպորտ",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Ցուրտ",
+    "string.naturescompass.medium": "Միջին",
+    "string.naturescompass.warm": "Ջերմ",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Ոչ Մի",
+    "string.naturescompass.veryLow": "Շատ Ցածր",
+    "string.naturescompass.low": "Ցածր",
+    "string.naturescompass.average": "Միջին",
+    "string.naturescompass.high": "Բարձր",
+    "string.naturescompass.veryHigh": "Շատ Բարձր",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Բիոմ",
+    "string.naturescompass.category": "Կատեգորիա",
+    "string.naturescompass.coordinates": "Կոորդինատներ",
+    "string.naturescompass.distance": "Հեռավորություն",
+    "string.naturescompass.found": "Գտնվել է",
+    "string.naturescompass.notFound": "Գտնվել չէ",
+    "string.naturescompass.radius": "Շառավիղ",
+    "string.naturescompass.samples": "Նմուշներ",
+    "string.naturescompass.search": "Որոնել",
+    "string.naturescompass.searching": "Որոնում",
+    "string.naturescompass.source": "Աղբյուր",
+    "string.naturescompass.status": "Կարգավիճակ",
+    "string.naturescompass.tags": "Պիտակներ",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Հիմանկան Բարձրություն",
+    "string.naturescompass.climate": "Կլիմա",
+    "string.naturescompass.fillerBlock": "Լցավորող Բլոկ",
+    "string.naturescompass.heightVariation": "Բարձրության Տատանումներ",
+    "string.naturescompass.highHumidity": "Բարձր Խոնավություն",
+    "string.naturescompass.name": "Վերնագիր",
+    "string.naturescompass.precipitation": "Տեղումներ",
+    "string.naturescompass.rainfall": "Անձրև",
+    "string.naturescompass.temperature": "Ջերմաստիճան",
+    "string.naturescompass.topBlock": "Վերևի Բլոկ",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Ձյուն",
+    "string.naturescompass.rain": "Անձրև"
+}
