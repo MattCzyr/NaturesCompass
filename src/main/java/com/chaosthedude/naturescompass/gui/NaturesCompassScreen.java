@@ -140,8 +140,17 @@ public class NaturesCompassScreen extends Screen {
 
 	public void processSearchTerm() {
 		biomesMatchingSearch = new ArrayList<Biome>();
+		String searchTerm = searchTextField.getText().toLowerCase();
 		for (Biome biome : allowedBiomes) {
-			if (BiomeUtils.getBiomeNameForDisplay(world, biome).toLowerCase().contains(searchTextField.getText().toLowerCase())) {
+			if (searchTerm.startsWith("$")) {
+				if (BiomeUtils.getBiomeTags(world, biome).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biome);
+				}
+			} else if (searchTerm.startsWith("@")) {
+				if (BiomeUtils.getBiomeSource(world, biome).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biome);
+				}
+			} else if (BiomeUtils.getBiomeNameForDisplay(world, biome).toLowerCase().contains(searchTerm)) {
 				biomesMatchingSearch.add(biome);
 			}
 		}
