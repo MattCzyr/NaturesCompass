@@ -38,7 +38,6 @@ public class NaturesCompassScreen extends Screen {
 	private NaturesCompassItem natureCompass;
 	private Button startSearchButton;
 	private Button teleportButton;
-	private Button infoButton;
 	private Button cancelButton;
 	private Button sortByButton;
 	private TransparentTextField searchTextField;
@@ -114,7 +113,6 @@ public class NaturesCompassScreen extends Screen {
 	public void selectBiome(BiomeSearchEntry entry) {
 		boolean enable = entry != null;
 		startSearchButton.active = enable;
-		infoButton.active = enable;
 	}
 
 	public void searchForBiome(Biome biome) {
@@ -165,15 +163,10 @@ public class NaturesCompassScreen extends Screen {
 		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(null);
 		}));
-		sortByButton = addRenderableWidget(new TransparentButton(10, 90, 110, 20, Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+		sortByButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();
 			sortByButton.setMessage(Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 			selectionList.refreshList();
-		}));
-		infoButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, Component.translatable("string.naturescompass.info"), (onPress) -> {
-			if (selectionList.hasSelection()) {
-				selectionList.getSelected().viewInfo();
-			}
 		}));
 		startSearchButton = addRenderableWidget(new TransparentButton(10, 40, 110, 20, Component.translatable("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
@@ -185,7 +178,6 @@ public class NaturesCompassScreen extends Screen {
 		}));
 
 		startSearchButton.active = false;
-		infoButton.active = false;
 
 		teleportButton.visible = NaturesCompass.canTeleport;
 		
