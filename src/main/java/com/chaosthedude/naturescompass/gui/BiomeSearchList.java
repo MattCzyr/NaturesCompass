@@ -2,10 +2,10 @@ package com.chaosthedude.naturescompass.gui;
 
 import java.util.Objects;
 
-import com.chaosthedude.naturescompass.util.RenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
@@ -52,7 +52,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 				BiomeSearchEntry entry = getEntry(i);
 				if (isSelectedItem(i)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					RenderUtils.drawRect(insideLeft - 4, top - 4, insideLeft + getRowWidth() + 4, top + itemHeight, 255 / 2 << 24);
+					GuiComponent.fill(poseStack, insideLeft - 4, top - 4, insideLeft + getRowWidth() + 4, top + itemHeight, 255 / 2 << 24);
 				}
 				entry.render(poseStack, i, top, getRowLeft(), getRowWidth(), itemHeight - 4, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
 			}
@@ -68,12 +68,12 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 				top = y0;
 			}
 			
-			RenderUtils.drawRect(left, y0, right, y1, (int) (2.35F * 255.0F) / 2 << 24);
-			RenderUtils.drawRect(left, top, right, top + height, (int) (1.9F * 255.0F) / 2 << 24);
+			GuiComponent.fill(poseStack, left, y0, right, y1, (int) (2.35F * 255.0F) / 2 << 24);
+			GuiComponent.fill(poseStack, left, top, right, top + height, (int) (1.9F * 255.0F) / 2 << 24);
 		}
 	}
 
-	private int getRowBottom(int itemIndex) {
+	protected int getRowBottom(int itemIndex) {
 		return getRowTop(itemIndex) + itemHeight;
 	}
 

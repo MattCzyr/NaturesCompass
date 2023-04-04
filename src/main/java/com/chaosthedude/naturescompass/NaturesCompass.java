@@ -13,6 +13,8 @@ import com.chaosthedude.naturescompass.network.CompassSearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.util.CompassState;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
@@ -58,6 +60,7 @@ public class NaturesCompass {
 
 	public static boolean canTeleport;
 	public static List<ResourceLocation> allowedBiomes;
+	public static ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys;
 
 	public static NaturesCompass instance;
 
@@ -88,6 +91,7 @@ public class NaturesCompass {
 		network.registerMessage(2, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
 		allowedBiomes = new ArrayList<ResourceLocation>();
+		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
 
 	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {

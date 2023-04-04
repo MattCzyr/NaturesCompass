@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.chaosthedude.naturescompass.config.ConfigHandler;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
@@ -19,10 +22,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,7 +35,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BiomeUtils {
-	
+
 	public static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
 		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
 	}
@@ -62,6 +65,30 @@ public class BiomeUtils {
 		return biomeKeys;
 	}
 
+	public static List<ResourceLocation> getGeneratingDimensionKeys(ServerLevel serverLevel, Biome biome) {
+		final List<ResourceLocation> dimensions = new ArrayList<ResourceLocation>();
+		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
+		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
+			Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
+			if (biomeSet.contains(biomeHolder)) {
+				dimensions.add(level.dimension().location());
+			}
+		}
+		return dimensions;
+	}
+	
+	public static ListMultimap<ResourceLocation, ResourceLocation> getGeneratingDimensionsForAllowedBiomes(ServerLevel serverLevel) {
+		ListMultimap<ResourceLocation, ResourceLocation> dimensionsForAllowedStructures = ArrayListMultimap.create();
+		for (ResourceLocation biomeKey : getAllowedBiomeKeys(serverLevel)) {
+			Optional<Biome> optionalBiome = getBiomeForKey(serverLevel, biomeKey);
+			if (optionalBiome.isPresent()) {
+				dimensionsForAllowedStructures.putAll(biomeKey, getGeneratingDimensionKeys(serverLevel, optionalBiome.get()));
+			}
+		}
+		return dimensionsForAllowedStructures;
+	}
+
 	public static int getBiomeSize(Level world) {
 		// TODO
 		return 4;
@@ -74,10 +101,11 @@ public class BiomeUtils {
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
 		return (int) Mth.sqrt((float) startPos.distSqr(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeTags(Level level, Biome biome) {
-		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
+		// Some overworld biomes have the is_overworld tag and some don't, so ignore it
+		// altogether for clarity
 		List<String> tagPathsToIgnore = List.of("is_overworld");
 		// This will ignore duplicates and keep things sorted alphabetically
 		Set<String> biomeCategories = new TreeSet<String>();
@@ -114,7 +142,7 @@ public class BiomeUtils {
 		}
 		return String.join(", ", biomeCategories);
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
 		if (getBiomeForKey(level, biome).isPresent()) {
@@ -175,6 +203,26 @@ public class BiomeUtils {
 		}
 		return modid;
 	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static String getDimensionName(ResourceLocation dimensionKey) {
+		String name = I18n.get(Util.makeDescriptionId("dimension", dimensionKey));
+		if (name.equals(Util.makeDescriptionId("dimension", dimensionKey))) {
+			name = dimensionKey.toString();
+			if (name.contains(":")) {
+				name = name.substring(name.indexOf(":") + 1);
+			}
+			name = WordUtils.capitalize(name.replace('_', ' '));
+		}
+		return name;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static String dimensionKeysToString(List<ResourceLocation> dimensions) {
+		Set<String> dimensionNames = new HashSet<String>();
+		dimensions.forEach((key) -> dimensionNames.add(getDimensionName(key)));
+		return String.join(", ", dimensionNames);
+	}
 
 	public static boolean biomeKeyIsBlacklisted(Level level, ResourceLocation biomeKey) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
@@ -185,7 +233,7 @@ public class BiomeUtils {
 		}
 		return false;
 	}
-	
+
 	private static String convertToRegex(String glob) {
 		String regex = "^";
 		for (char i = 0; i < glob.length(); i++) {

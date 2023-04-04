@@ -44,10 +44,11 @@ public class NaturesCompassItem extends Item {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				GuiWrapper.openGUI(level, player, stack);
 			} else {
+				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
-				NaturesCompass.network.sendTo(new SyncPacket(canTeleport, allowedBiomeKeys), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+				NaturesCompass.network.sendTo(new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			}
 		} else {
 			if (worker != null) {

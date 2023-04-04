@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,10 +20,8 @@ public class BiomeInfoScreen extends Screen {
 	private Button backButton;
 	private String source;
 	private String tags;
-	private String precipitation;
 	private String temperature;
 	private String rainfall;
-	private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
 		super(Component.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)));
@@ -34,14 +31,6 @@ public class BiomeInfoScreen extends Screen {
 		source = BiomeUtils.getBiomeSource(parentScreen.level, biome);
 		
 		tags = BiomeUtils.getBiomeTags(parentScreen.level, biome);
-
-		if (biome.getPrecipitation() == Precipitation.SNOW) {
-			precipitation = I18n.get("string.naturescompass.snow");
-		} else if (biome.getPrecipitation() == Precipitation.RAIN) {
-			precipitation = I18n.get("string.naturescompass.rain");
-		} else {
-			precipitation = I18n.get("string.naturescompass.none");
-		}
 		
 		if (biome.getBaseTemperature() <= 0.5) {
 			temperature = I18n.get("string.naturescompass.cold");
@@ -51,24 +40,18 @@ public class BiomeInfoScreen extends Screen {
 			temperature = I18n.get("string.naturescompass.warm");
 		}
 
-		if (biome.getDownfall() <= 0) {
+		if (biome.getModifiedClimateSettings().downfall() <= 0) {
 			rainfall = I18n.get("string.naturescompass.none");
-		} else if (biome.getDownfall() < 0.2) {
+		} else if (biome.getModifiedClimateSettings().downfall() < 0.2) {
 			rainfall = I18n.get("string.naturescompass.veryLow");
-		} else if (biome.getDownfall() < 0.3) {
+		} else if (biome.getModifiedClimateSettings().downfall() < 0.3) {
 			rainfall = I18n.get("string.naturescompass.low");
-		} else if (biome.getDownfall() < 0.5) {
+		} else if (biome.getModifiedClimateSettings().downfall() < 0.5) {
 			rainfall = I18n.get("string.naturescompass.average");
-		} else if (biome.getDownfall() < 0.85) {
+		} else if (biome.getModifiedClimateSettings().downfall() < 0.85) {
 			rainfall = I18n.get("string.naturescompass.high");
 		} else {
 			rainfall = I18n.get("string.naturescompass.veryHigh");
-		}
-		
-		if (biome.isHumid()) {
-			highHumidity = I18n.get("gui.yes");
-		} else {
-			highHumidity = I18n.get("gui.no");
 		}
 	}
 
@@ -95,8 +78,8 @@ public class BiomeInfoScreen extends Screen {
 		font.draw(poseStack, Component.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff);
 		font.draw(poseStack, Component.literal(tagsLine), width / 2 + 40, 50, 0x808080);
 
-		font.draw(poseStack, Component.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		font.draw(poseStack, Component.literal(precipitation), width / 2 - 100, 80, 0x808080);
+		//font.draw(poseStack, Component.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		//font.draw(poseStack, Component.literal(precipitation), width / 2 - 100, 80, 0x808080);
 		
 		font.draw(poseStack, Component.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
 		font.draw(poseStack, Component.literal(rainfall), width / 2 + 40, 80, 0x808080);
@@ -104,8 +87,8 @@ public class BiomeInfoScreen extends Screen {
 		font.draw(poseStack, Component.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
 		font.draw(poseStack, Component.literal(temperature), width / 2 - 100, 110, 0x808080);
 		
-		font.draw(poseStack, Component.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
-		font.draw(poseStack, Component.literal(highHumidity), width / 2 + 40, 110, 0x808080);
+		//font.draw(poseStack, Component.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
+		//font.draw(poseStack, Component.literal(highHumidity), width / 2 + 40, 110, 0x808080);
 
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 	}
