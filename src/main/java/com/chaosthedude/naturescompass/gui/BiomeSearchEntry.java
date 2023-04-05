@@ -55,7 +55,7 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 			}
 		}
 		
-		String tagsLine = I18n.get("string.naturescompass.tags") + ": " + BiomeUtils.getBiomeTags(parentScreen.level, biome);
+		String tagsLine = I18n.get("string.naturescompass.tags") + ": " + tags;
 		if (mc.font.width(tagsLine) > biomesList.getRowWidth()) {
 			tagsLine = mc.font.plainSubstrByWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
