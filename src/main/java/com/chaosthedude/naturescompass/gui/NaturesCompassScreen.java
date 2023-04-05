@@ -39,7 +39,6 @@ public class NaturesCompassScreen extends Screen {
 	private NaturesCompassItem natureCompass;
 	private ButtonWidget startSearchButton;
 	private ButtonWidget teleportButton;
-	private ButtonWidget infoButton;
 	private ButtonWidget cancelButton;
 	private ButtonWidget sortByButton;
 	private TransparentTextField searchTextField;
@@ -94,7 +93,7 @@ public class NaturesCompassScreen extends Screen {
 	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
-		drawCenteredText(stack, textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
+		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
@@ -121,7 +120,6 @@ public class NaturesCompassScreen extends Screen {
 	public void selectBiome(BiomeSearchEntry entry) {
 		boolean enable = entry != null;
 		startSearchButton.active = enable;
-		infoButton.active = enable;
 	}
 
 	public void searchForBiome(Biome biome) {
@@ -169,15 +167,10 @@ public class NaturesCompassScreen extends Screen {
 		cancelButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, Text.translatable("gui.cancel"), (onPress) -> {
 			client.setScreen(null);
 		}));
-		sortByButton = addDrawableChild(new TransparentButton(10, 90, 110, 20, Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+		sortByButton = addDrawableChild(new TransparentButton(10, 65, 110, 20, Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
 			sortingCategory = sortingCategory.next();
 			sortByButton.setMessage(Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
 			selectionList.refreshList();
-		}));
-		infoButton = addDrawableChild(new TransparentButton(10, 65, 110, 20, Text.translatable("string.naturescompass.info"), (onPress) -> {
-			if (selectionList.hasSelection()) {
-				selectionList.getSelectedOrNull().viewInfo();
-			}
 		}));
 		startSearchButton = addDrawableChild(new TransparentButton(10, 40, 110, 20, Text.translatable("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
@@ -189,7 +182,6 @@ public class NaturesCompassScreen extends Screen {
 		}));
 
 		startSearchButton.active = false;
-		infoButton.active = false;
 
 		teleportButton.visible = NaturesCompass.canTeleport;
 	}

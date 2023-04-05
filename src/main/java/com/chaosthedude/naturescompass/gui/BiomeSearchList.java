@@ -7,6 +7,7 @@ import com.chaosthedude.naturescompass.utils.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -56,7 +57,7 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 				int k1 = getRowWidth();
 				if (/*renderSelection*/ true && isSelectedEntry(j)) {
 					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
-					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					DrawableHelper.fill(matrixStack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = getRowLeft();
@@ -74,13 +75,13 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 				scrollbarTop = top;
 			}
 			
-			RenderUtils.drawRect(left, scrollbarTop, right, bottom, (int) (2.35F * 255.0F) / 2 << 24);
-			RenderUtils.drawRect(left, scrollbarTop, right, scrollbarTop + height, (int) (1.9F * 255.0F) / 2 << 24);
+			DrawableHelper.fill(matrixStack, left, scrollbarTop, right, bottom, (int) (2.35F * 255.0F) / 2 << 24);
+			DrawableHelper.fill(matrixStack, left, scrollbarTop, right, scrollbarTop + height, (int) (1.9F * 255.0F) / 2 << 24);
 		}
 	}
 
-	private int getRowBottom(int p_getRowBottom_1_) {
-		return this.getRowTop(p_getRowBottom_1_) + this.itemHeight;
+	protected int getRowBottom(int index) {
+		return getRowTop(index) + itemHeight;
 	}
 
 	public void refreshList() {

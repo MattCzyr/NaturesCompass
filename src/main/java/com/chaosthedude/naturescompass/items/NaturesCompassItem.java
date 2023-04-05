@@ -41,10 +41,11 @@ public class NaturesCompassItem extends Item {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				GuiWrapper.openGUI(world, player, stack);
 			} else {
+				final ServerWorld serverWorld = (ServerWorld) world;
 				final ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 				final boolean canTeleport = NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(player);
 				final List<Identifier> allowedBiomeIDs = BiomeUtils.getAllowedBiomeIDs(world);
-				ServerPlayNetworking.send(serverPlayer, SyncPacket.ID, new SyncPacket(canTeleport, allowedBiomeIDs));
+				ServerPlayNetworking.send(serverPlayer, SyncPacket.ID, new SyncPacket(canTeleport, allowedBiomeIDs, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverWorld)));
 			}
 		} else {
 			if (worker != null) {

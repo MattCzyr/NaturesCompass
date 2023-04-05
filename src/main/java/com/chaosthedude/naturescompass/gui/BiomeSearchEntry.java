@@ -1,31 +1,34 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.sorting.TagsSorting;
+import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.sorting.DimensionSorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
 import com.chaosthedude.naturescompass.sorting.SourceSorting;
+import com.chaosthedude.naturescompass.sorting.TagsSorting;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Precipitation;
 
 @Environment(EnvType.CLIENT)
-public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
+public class BiomeSearchEntry extends AlwaysSelectedEntryListWidget.Entry<BiomeSearchEntry> {
 
 	private final MinecraftClient mc;
 	private final NaturesCompassScreen parentScreen;
 	private final Biome biome;
 	private final BiomeSearchList biomesList;
+	private final String tags;
 	private long lastClickTime;
 
 	public BiomeSearchEntry(BiomeSearchList biomesList, Biome biome) {
@@ -33,19 +36,20 @@ public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
 		this.biome = biome;
 		parentScreen = biomesList.getGuiNaturesCompass();
 		mc = MinecraftClient.getInstance();
+		tags = BiomeUtils.getBiomeTags(parentScreen.world, biome);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+	public void render(MatrixStack matrixStack, int index, int top, int left, int width, int height, int par6, int par7, boolean par8, float par9) {
 		String title = parentScreen.getSortingCategory().getLocalizedName();
 		Object value = parentScreen.getSortingCategory().getValue(biome);
-		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting) {
-			title = I18n.translate("string.naturescompass.precipitation");
-			value = I18n.translate("string.naturescompass.none");
-			if (biome.getPrecipitation() == Precipitation.SNOW) {
-				value = I18n.translate("string.naturescompass.snow");
-			} else if (biome.getPrecipitation() == Precipitation.RAIN) {
-				value = I18n.translate("string.naturescompass.rain");
+		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting || parentScreen.getSortingCategory() instanceof DimensionSorting) {
+			title = I18n.translate("string.naturescompass.dimension");
+			Identifier biomeID = BiomeUtils.getIdentifierForBiome(parentScreen.world, biome);
+			if (biomeID != null) {
+				value = BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionIDsForAllowedBiomeIDs.get(biomeID));
+			} else {
+				value = "";
 			}
 		}
 		
@@ -54,10 +58,10 @@ public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
 			tagsLine = mc.textRenderer.trimToWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		mc.textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), par3 + 1, par2 + 1, 0xffffff);
-		mc.textRenderer.draw(matrixStack, title + ": " + value, par3 + 1, par2 + mc.textRenderer.fontHeight + 3, 0x808080);
-		mc.textRenderer.draw(matrixStack, tagsLine, par3 + 1, par2 + mc.textRenderer.fontHeight + 14, 0x808080);
-		mc.textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), par3 + 1, par2 + mc.textRenderer.fontHeight + 25, 0x808080);
+		mc.textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), left + 1, top + 1, 0xffffff);
+		mc.textRenderer.draw(matrixStack, title + ": " + value, left + 1, top + mc.textRenderer.fontHeight + 3, 0x808080);
+		mc.textRenderer.draw(matrixStack, tagsLine, left + 1, top + mc.textRenderer.fontHeight + 14, 0x808080);
+		mc.textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), left + 1, top + mc.textRenderer.fontHeight + 25, 0x808080);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
@@ -83,6 +87,11 @@ public class BiomeSearchEntry extends EntryListWidget.Entry<BiomeSearchEntry> {
 
 	public void viewInfo() {
 		mc.setScreen(new BiomeInfoScreen(parentScreen, biome));
+	}
+
+	@Override
+	public Text getNarration() {
+		return Text.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome));
 	}
 
 }

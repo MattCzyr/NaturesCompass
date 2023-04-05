@@ -21,10 +21,10 @@ public class BiomeInfoScreen extends Screen {
 	private ButtonWidget backButton;
 	private String source;
 	private String tags;
-	private String precipitation;
+	//private String precipitation;
 	private String temperature;
 	private String rainfall;
-	private String highHumidity;
+	//private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
 		super(Text.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)));
@@ -34,14 +34,6 @@ public class BiomeInfoScreen extends Screen {
 		source = BiomeUtils.getBiomeSource(parentScreen.world, biome);
 		
 		tags = BiomeUtils.getBiomeTags(parentScreen.world, biome);
-
-		if (biome.getPrecipitation() == Precipitation.SNOW) {
-			precipitation = I18n.translate("string.naturescompass.snow");
-		} else if (biome.getPrecipitation() == Precipitation.RAIN) {
-			precipitation = I18n.translate("string.naturescompass.rain");
-		} else {
-			precipitation = I18n.translate("string.naturescompass.none");
-		}
 		
 		if (biome.getTemperature() <= 0.5) {
 			temperature = I18n.translate("string.naturescompass.cold");
@@ -51,24 +43,18 @@ public class BiomeInfoScreen extends Screen {
 			temperature = I18n.translate("string.naturescompass.warm");
 		}
 
-		if (biome.getDownfall() <= 0) {
+		if (biome.weather.downfall() <= 0) {
 			rainfall = I18n.translate("string.naturescompass.none");
-		} else if (biome.getDownfall() < 0.2) {
+		} else if (biome.weather.downfall() < 0.2) {
 			rainfall = I18n.translate("string.naturescompass.veryLow");
-		} else if (biome.getDownfall() < 0.3) {
+		} else if (biome.weather.downfall() < 0.3) {
 			rainfall = I18n.translate("string.naturescompass.low");
-		} else if (biome.getDownfall() < 0.5) {
+		} else if (biome.weather.downfall() < 0.5) {
 			rainfall = I18n.translate("string.naturescompass.average");
-		} else if (biome.getDownfall() < 0.85) {
+		} else if (biome.weather.downfall() < 0.85) {
 			rainfall = I18n.translate("string.naturescompass.high");
 		} else {
 			rainfall = I18n.translate("string.naturescompass.veryHigh");
-		}
-		
-		if (biome.hasHighHumidity()) {
-			highHumidity = I18n.translate("gui.yes");
-		} else {
-			highHumidity = I18n.translate("gui.no");
 		}
 	}
 
@@ -95,8 +81,8 @@ public class BiomeInfoScreen extends Screen {
 		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff);
 		textRenderer.draw(matrixStack, tagsLine, width / 2 + 40, 50, 0x808080);
 
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		textRenderer.draw(matrixStack, precipitation, width / 2 - 100, 80, 0x808080);
+		//textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
+		//textRenderer.draw(matrixStack, precipitation, width / 2 - 100, 80, 0x808080);
 		
 		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
 		textRenderer.draw(matrixStack, rainfall, width / 2 + 40, 80, 0x808080);
@@ -104,8 +90,8 @@ public class BiomeInfoScreen extends Screen {
 		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
 		textRenderer.draw(matrixStack, temperature, width / 2 - 100, 110, 0x808080);
 		
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
-		textRenderer.draw(matrixStack, highHumidity, width / 2 + 40, 110, 0x808080);
+		//textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
+		//textRenderer.draw(matrixStack, highHumidity, width / 2 + 40, 110, 0x808080);
 
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}

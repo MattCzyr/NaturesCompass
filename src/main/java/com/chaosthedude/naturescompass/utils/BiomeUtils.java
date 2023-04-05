@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,6 +26,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -57,6 +61,30 @@ public class BiomeUtils {
 		}
 
 		return biomeIDs;
+	}
+	
+	public static List<Identifier> getGeneratingDimensionIDs(ServerWorld serverWorld, Biome biome) {
+		final List<Identifier> dimensions = new ArrayList<Identifier>();
+		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverWorld);
+		for (ServerWorld world : serverWorld.getServer().getWorlds()) {
+			Set<RegistryEntry<Biome>> biomeSet = world.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes();
+			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
+			if (biomeSet.contains(biomeEntry)) {
+				dimensions.add(world.getRegistryKey().getValue());
+			}
+		}
+		return dimensions;
+	}
+
+	public static ListMultimap<Identifier, Identifier> getGeneratingDimensionsForAllowedBiomes(ServerWorld serverWorld) {
+		ListMultimap<Identifier, Identifier> dimensionsForAllowedStructures = ArrayListMultimap.create();
+		for (Identifier biomeID : getAllowedBiomeIDs(serverWorld)) {
+			Optional<Biome> optionalBiome = getBiomeForIdentifier(serverWorld, biomeID);
+			if (optionalBiome.isPresent()) {
+				dimensionsForAllowedStructures.putAll(biomeID, getGeneratingDimensionIDs(serverWorld, optionalBiome.get()));
+			}
+		}
+		return dimensionsForAllowedStructures;
 	}
 
 	public static int getBiomeSize(World world) {
@@ -162,6 +190,26 @@ public class BiomeUtils {
 			return sourceContainer.get().getMetadata().getName();
 		}
 		return modid;
+	}
+	
+	@Environment(EnvType.CLIENT)
+	private static String getDimensionName(Identifier dimensionID) {
+		String name = I18n.translate(Util.createTranslationKey("dimension", dimensionID));
+		if (name.equals(Util.createTranslationKey("dimension", dimensionID))) {
+			name = dimensionID.toString();
+			if (name.contains(":")) {
+				name = name.substring(name.indexOf(":") + 1);
+			}
+			name = WordUtils.capitalize(name.replace('_', ' '));
+		}
+		return name;
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static String dimensionKeysToString(List<Identifier> dimensions) {
+		Set<String> dimensionNames = new HashSet<String>();
+		dimensions.forEach((key) -> dimensionNames.add(getDimensionName(key)));
+		return String.join(", ", dimensionNames);
 	}
 
 	public static boolean biomeIDIsBlacklisted(World world, Identifier biomeID) {

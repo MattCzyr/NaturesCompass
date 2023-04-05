@@ -1,10 +1,9 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.utils.RenderUtils;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -29,8 +28,8 @@ public class TransparentButton extends ButtonWidget {
 			final float f = state / 2 * 0.9F + 0.1F;
 			final int color = (int) (255.0F * f);	
 
-			RenderUtils.drawRect(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
-			drawCenteredText(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
+			DrawableHelper.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+			drawCenteredTextWithShadow(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
 		}
 	}
 

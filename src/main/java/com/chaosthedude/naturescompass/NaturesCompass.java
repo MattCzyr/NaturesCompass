@@ -10,6 +10,8 @@ import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -29,6 +31,7 @@ public class NaturesCompass implements ModInitializer {
 	
 	public static boolean canTeleport;
 	public static List<Identifier> allowedBiomes;
+	public static ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs;
 	
 	@Override
 	public void onInitialize() {
@@ -42,6 +45,7 @@ public class NaturesCompass implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(TeleportPacket.ID, TeleportPacket::apply);
 		
 		allowedBiomes = new ArrayList<Identifier>();
+		dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 	}
 	
 }

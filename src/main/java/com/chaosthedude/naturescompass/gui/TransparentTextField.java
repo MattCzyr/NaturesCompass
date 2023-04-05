@@ -7,11 +7,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -43,10 +40,10 @@ public class TransparentTextField extends TextFieldWidget {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				RenderUtils.drawRect(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+				DrawableHelper.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
-            int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
+			int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
 			int j = getCursor() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
 			String text = showLabel ? label.getString() : getText();
@@ -82,7 +79,7 @@ public class TransparentTextField extends TextFieldWidget {
 
 			if (flag1) {
 				if (flag2) {
-					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
+					DrawableHelper.fill(matrixStack, k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
 				} else {
 					textRenderer.drawWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
 				}
@@ -90,11 +87,11 @@ public class TransparentTextField extends TextFieldWidget {
 
 			if (k != j) {
 				int l1 = l + textRenderer.getWidth(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
+				drawSelectionBox(matrixStack, k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
 			}
 		}
 	}
-	
+
 	@Override
 	public void setEditable(boolean editable) {
 		super.setEditable(editable);
@@ -120,50 +117,50 @@ public class TransparentTextField extends TextFieldWidget {
 		}
 		super.setFocused(isFocused);
 	}
-	
+
 	@Override
 	public void setDrawsBackground(boolean drawsBackground) {
 		super.setDrawsBackground(drawsBackground);
 		pseudoEnableBackgroundDrawing = drawsBackground;
 	}
-	
+
 	@Override
 	public void setMaxLength(int length) {
 		super.setMaxLength(length);
 		pseudoMaxLength = length;
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
 		pseudoCursorCounter++;
 	}
-	
+
 	@Override
 	public void setSelectionEnd(int position) {
 		super.setSelectionEnd(position);
 		int i = getText().length();
-	      pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
-	      if (textRenderer != null) {
-	         if (pseudoLineScrollOffset > i) {
-	            pseudoLineScrollOffset = i;
-	         }
+		pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
+		if (textRenderer != null) {
+			if (pseudoLineScrollOffset > i) {
+				pseudoLineScrollOffset = i;
+			}
 
-	         int j = getInnerWidth();
-	         String s = textRenderer.trimToWidth(getText().substring(pseudoLineScrollOffset), j, false);
-	         int k = s.length() + pseudoLineScrollOffset;
-	         if (pseudoSelectionEnd == pseudoLineScrollOffset) {
-	            pseudoLineScrollOffset -= textRenderer.trimToWidth(getText(), j, true).length();
-	         }
+			int j = getInnerWidth();
+			String s = textRenderer.trimToWidth(getText().substring(pseudoLineScrollOffset), j, false);
+			int k = s.length() + pseudoLineScrollOffset;
+			if (pseudoSelectionEnd == pseudoLineScrollOffset) {
+				pseudoLineScrollOffset -= textRenderer.trimToWidth(getText(), j, true).length();
+			}
 
-	         if (pseudoSelectionEnd > k) {
-	        	 pseudoLineScrollOffset += pseudoSelectionEnd - k;
-	         } else if (pseudoSelectionEnd <= pseudoLineScrollOffset) {
-	        	 pseudoLineScrollOffset -= pseudoLineScrollOffset - pseudoSelectionEnd;
-	         }
+			if (pseudoSelectionEnd > k) {
+				pseudoLineScrollOffset += pseudoSelectionEnd - k;
+			} else if (pseudoSelectionEnd <= pseudoLineScrollOffset) {
+				pseudoLineScrollOffset -= pseudoLineScrollOffset - pseudoSelectionEnd;
+			}
 
-	         pseudoLineScrollOffset = MathHelper.clamp(pseudoLineScrollOffset, 0, i);
-	      }
+			pseudoLineScrollOffset = MathHelper.clamp(pseudoLineScrollOffset, 0, i);
+		}
 	}
 
 	public void setLabel(Text label) {
@@ -174,7 +171,7 @@ public class TransparentTextField extends TextFieldWidget {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(MatrixStack matrixStack, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -187,28 +184,18 @@ public class TransparentTextField extends TextFieldWidget {
 			endY = j;
 		}
 
-		if (endX > getX() + width) {
-			endX = getX() + width;
+		if (endX > getX() + getWidth()) {
+			endX = getX() + getWidth();
 		}
 
-		if (startX > getX() + width) {
-			startX = getX() + width;
+		if (startX > getX() + getWidth()) {
+			startX = getX() + getWidth();
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(DrawMode.QUADS, VertexFormats.POSITION);
-		bufferbuilder.vertex((double) startX, (double) endY, 0.0D).next();
-		bufferbuilder.vertex((double) endX, (double) endY, 0.0D).next();
-		bufferbuilder.vertex((double) endX, (double) startY, 0.0D).next();
-		bufferbuilder.vertex((double) startX, (double) startY, 0.0D).next();
-		tessellator.draw();
+		DrawableHelper.fill(matrixStack, startX, startY, endX, endY, -16776961);
 		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
 	}
 
 }
