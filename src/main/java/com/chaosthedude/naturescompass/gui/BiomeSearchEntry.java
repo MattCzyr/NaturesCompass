@@ -53,7 +53,7 @@ public class BiomeSearchEntry extends AlwaysSelectedEntryListWidget.Entry<BiomeS
 			}
 		}
 		
-		String tagsLine = I18n.translate("string.naturescompass.tags") + ": " + BiomeUtils.getBiomeTags(parentScreen.world, biome);
+		String tagsLine = I18n.translate("string.naturescompass.tags") + ": " + tags;
 		if (mc.textRenderer.getWidth(tagsLine) > biomesList.getRowWidth()) {
 			tagsLine = mc.textRenderer.trimToWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
