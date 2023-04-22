@@ -16,7 +16,7 @@ public class TransparentButton extends ButtonWidget {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			float state = 2;
@@ -31,17 +31,6 @@ public class TransparentButton extends ButtonWidget {
 			DrawableHelper.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			drawCenteredTextWithShadow(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
 		}
-	}
-
-	protected int getHoverState(boolean mouseOver) {
-		int state = 2;
-		if (!active) {
-			state = 5;
-		} else if (mouseOver) {
-			state = 4;
-		}
-
-		return state;
 	}
 
 }
