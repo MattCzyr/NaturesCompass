@@ -5,7 +5,7 @@ license="CC BY-NC-SA 4.0"
 
 [[mods]]
     modId="naturescompass"
-    version="${file.jarVersion}"
+    version="${mod_version}"
     displayName="Nature's Compass"
     displayURL="https://github.com/MattCzyr/NaturesCompass"
     authors="ChaosTheDude"
