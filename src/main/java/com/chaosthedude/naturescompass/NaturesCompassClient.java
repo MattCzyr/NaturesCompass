@@ -35,8 +35,8 @@ public class NaturesCompassClient implements ClientModInitializer {
 				} else {
 					final boolean entityExists = entityLiving != null;
 					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
-					if (world == null && entity.world instanceof ClientWorld) {
-						world = (ClientWorld) entity.world;
+					if (world == null && entity.getWorld() instanceof ClientWorld) {
+						world = (ClientWorld) entity.getWorld();
 					}
 
 					double rotation = entityExists ? (double) entity.getYaw() : getFrameRotation((ItemFrameEntity) entity);

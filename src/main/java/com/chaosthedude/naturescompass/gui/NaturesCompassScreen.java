@@ -17,10 +17,10 @@ import com.chaosthedude.naturescompass.utils.CompassState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -91,10 +91,10 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(context);
+		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
+		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

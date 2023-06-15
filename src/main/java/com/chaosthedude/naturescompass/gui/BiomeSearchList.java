@@ -2,15 +2,12 @@ package com.chaosthedude.naturescompass.gui;
 
 import java.util.Objects;
 
-import com.chaosthedude.naturescompass.utils.RenderUtils;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
@@ -41,12 +38,12 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float par3) {
-		renderList(matrixStack, mouseX, mouseY, par3);
+	public void render(DrawContext context, int mouseX, int mouseY, float par3) {
+		renderList(context, mouseX, mouseY, par3);
 	}
 
 	@Override
-	protected void renderList(MatrixStack matrixStack, int mouseX, int mouseY, float par5) {
+	protected void renderList(DrawContext context, int mouseX, int mouseY, float par5) {
 		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -57,11 +54,11 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 				int k1 = getRowWidth();
 				if (/*renderSelection*/ true && isSelectedEntry(j)) {
 					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
-					DrawableHelper.fill(matrixStack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					context.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = getRowLeft();
-				e.render(matrixStack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), par5);
+				e.render(context, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), par5);
 			}
 		}
 
@@ -75,8 +72,8 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 				scrollbarTop = top;
 			}
 			
-			DrawableHelper.fill(matrixStack, left, scrollbarTop, right, bottom, (int) (2.35F * 255.0F) / 2 << 24);
-			DrawableHelper.fill(matrixStack, left, scrollbarTop, right, scrollbarTop + height, (int) (1.9F * 255.0F) / 2 << 24);
+			context.fill(left, scrollbarTop, right, bottom, (int) (2.35F * 255.0F) / 2 << 24);
+			context.fill(left, scrollbarTop, right, scrollbarTop + height, (int) (1.9F * 255.0F) / 2 << 24);
 		}
 	}
 

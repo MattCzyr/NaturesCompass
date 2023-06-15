@@ -78,7 +78,7 @@ public class TeleportPacket extends PacketByteBuf {
 	}
 	
 	private static boolean isFree(World world, BlockPos pos) {
-		return world.getBlockState(pos).isAir() || world.getBlockState(pos).isIn(BlockTags.FIRE) || world.getBlockState(pos).getMaterial().isLiquid() || world.getBlockState(pos).getMaterial().isReplaceable();
+		return world.getBlockState(pos).isAir() || world.getBlockState(pos).isIn(BlockTags.FIRE) || world.getBlockState(pos).isLiquid() || world.getBlockState(pos).isReplaceable();
 	}
 
 }

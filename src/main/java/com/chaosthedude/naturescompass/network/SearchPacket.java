@@ -33,7 +33,7 @@ public class SearchPacket extends PacketByteBuf {
 	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final ServerWorld world = player.getWorld();
+				final ServerWorld world = player.getServerWorld();
 				natureCompass.searchForBiome(world, player, biomeID, pos, stack);
 			}
 		});

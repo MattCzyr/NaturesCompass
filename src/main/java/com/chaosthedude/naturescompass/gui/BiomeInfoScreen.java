@@ -4,13 +4,12 @@ import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Precipitation;
 
 @Environment(EnvType.CLIENT)
 public class BiomeInfoScreen extends Screen {
@@ -65,12 +64,12 @@ public class BiomeInfoScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(context);
+		context.drawText(textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff, false);
 
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
-		textRenderer.draw(matrixStack, source, width / 2 - 100, 50, 0x808080);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff, false);
+		context.drawText(textRenderer, source, width / 2 - 100, 50, 0x808080, false);
 		
 		int tagsMaxWidth = width / 2 - 50; // Margin of 10 on the right side
 		String tagsLine = tags;
@@ -78,22 +77,22 @@ public class BiomeInfoScreen extends Screen {
 			tagsLine = textRenderer.trimToWidth(tagsLine + "...", tagsMaxWidth) + "...";
 		}
 
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff);
-		textRenderer.draw(matrixStack, tagsLine, width / 2 + 40, 50, 0x808080);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff, false);
+		context.drawText(textRenderer, tagsLine, width / 2 + 40, 50, 0x808080, false);
 
-		//textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff);
-		//textRenderer.draw(matrixStack, precipitation, width / 2 - 100, 80, 0x808080);
+		//context.drawText(textRenderer, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff, false);
+		//context.drawText(textRenderer, precipitation, width / 2 - 100, 80, 0x808080, false);
 		
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff);
-		textRenderer.draw(matrixStack, rainfall, width / 2 + 40, 80, 0x808080);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff, false);
+		context.drawText(textRenderer, rainfall, width / 2 + 40, 80, 0x808080, false);
 		
-		textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff);
-		textRenderer.draw(matrixStack, temperature, width / 2 - 100, 110, 0x808080);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff, false);
+		context.drawText(textRenderer, temperature, width / 2 - 100, 110, 0x808080, false);
 		
-		//textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
-		//textRenderer.draw(matrixStack, highHumidity, width / 2 + 40, 110, 0x808080);
+		//context.drawText(textRenderer, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff, false);
+		//context.drawText(textRenderer, highHumidity, width / 2 + 40, 110, 0x808080, false);
 
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {

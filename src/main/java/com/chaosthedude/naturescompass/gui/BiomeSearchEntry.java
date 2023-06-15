@@ -11,10 +11,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -40,7 +40,7 @@ public class BiomeSearchEntry extends AlwaysSelectedEntryListWidget.Entry<BiomeS
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int index, int top, int left, int width, int height, int par6, int par7, boolean par8, float par9) {
+	public void render(DrawContext context, int index, int top, int left, int width, int height, int par6, int par7, boolean par8, float par9) {
 		String title = parentScreen.getSortingCategory().getLocalizedName();
 		Object value = parentScreen.getSortingCategory().getValue(biome);
 		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting || parentScreen.getSortingCategory() instanceof DimensionSorting) {
@@ -58,10 +58,10 @@ public class BiomeSearchEntry extends AlwaysSelectedEntryListWidget.Entry<BiomeS
 			tagsLine = mc.textRenderer.trimToWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		mc.textRenderer.draw(matrixStack, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), left + 1, top + 1, 0xffffff);
-		mc.textRenderer.draw(matrixStack, title + ": " + value, left + 1, top + mc.textRenderer.fontHeight + 3, 0x808080);
-		mc.textRenderer.draw(matrixStack, tagsLine, left + 1, top + mc.textRenderer.fontHeight + 14, 0x808080);
-		mc.textRenderer.draw(matrixStack, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), left + 1, top + mc.textRenderer.fontHeight + 25, 0x808080);
+		context.drawText(mc.textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), left + 1, top + 1, 0xffffff, false);
+		context.drawText(mc.textRenderer, title + ": " + value, left + 1, top + mc.textRenderer.fontHeight + 3, 0x808080, false);
+		context.drawText(mc.textRenderer, tagsLine, left + 1, top + mc.textRenderer.fontHeight + 14, 0x808080, false);
+		context.drawText(mc.textRenderer, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), left + 1, top + mc.textRenderer.fontHeight + 25, 0x808080, false);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
