@@ -18,7 +18,7 @@ public class PlayerUtils {
 
 	public static boolean cheatModeEnabled(MinecraftServer server, Player player) {
 		if (server != null && server.isSingleplayer()) {
-			LevelData levelData = server.getLevel(player.level.dimension()).getLevelData();
+			LevelData levelData = server.getLevel(player.level().dimension()).getLevelData();
 			if (levelData instanceof ServerLevelData) {
 				return ((ServerLevelData) levelData).getAllowCommands();
 			}

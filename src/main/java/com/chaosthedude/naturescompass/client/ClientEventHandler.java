@@ -30,40 +30,40 @@ public class ClientEventHandler {
 			if (stack != null && stack.getItem() instanceof NaturesCompassItem) {
 				final NaturesCompassItem compass = (NaturesCompassItem) stack.getItem();
 				if (compass.getState(stack) == CompassState.SEARCHING) {
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.searching"), 5, 5, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.searching"), 5, 5, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
 					
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
 				} else if (compass.getState(stack) == CompassState.FOUND) {
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.found"), 5, 5, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.found"), 5, 5, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
 
 					if (compass.shouldDisplayCoordinates(stack)) {
-						RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.coordinates"), 5, 5, 0xFFFFFF, 6);
-						RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), compass.getFoundBiomeX(stack) + ", " + compass.getFoundBiomeZ(stack), 5, 5, 0xAAAAAA, 7);
+						RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.coordinates"), 5, 5, 0xFFFFFF, 6);
+						RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), compass.getFoundBiomeX(stack) + ", " + compass.getFoundBiomeZ(stack), 5, 5, 0xAAAAAA, 7);
 	
-						RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.distance"), 5, 5, 0xFFFFFF, 9);
-						RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xAAAAAA, 10);
+						RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.distance"), 5, 5, 0xFFFFFF, 9);
+						RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xAAAAAA, 10);
 					}
 				} else if (compass.getState(stack) == CompassState.NOT_FOUND) {
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.notFound"), 5, 5, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.status"), 5, 5, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.notFound"), 5, 5, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.biome"), 5, 5, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, 0xAAAAAA, 4);
 
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.radius"), 5, 5, 0xFFFFFF, 6);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xAAAAAA, 7);
 
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), I18n.get("string.naturescompass.samples"), 5, 5, 0xFFFFFF, 9);
-					RenderUtils.drawConfiguredStringOnHUD(event.getPoseStack(), String.valueOf(compass.getSamples(stack)), 5, 5, 0xAAAAAA, 10);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), I18n.get("string.naturescompass.samples"), 5, 5, 0xFFFFFF, 9);
+					RenderUtils.drawConfiguredStringOnHUD(event.getGuiGraphics(), String.valueOf(compass.getSamples(stack)), 5, 5, 0xAAAAAA, 10);
 				}
 			}
 		}

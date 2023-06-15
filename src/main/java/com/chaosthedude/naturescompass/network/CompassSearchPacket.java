@@ -49,7 +49,7 @@ public class CompassSearchPacket {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				natureCompass.searchForBiome(ctx.get().getSender().getLevel(), ctx.get().getSender(), biomeKey, new BlockPos(x, y, z), stack);
+				natureCompass.searchForBiome(ctx.get().getSender().serverLevel(), ctx.get().getSender(), biomeKey, new BlockPos(x, y, z), stack);
 			}
 		});
 		ctx.get().setPacketHandled(true);

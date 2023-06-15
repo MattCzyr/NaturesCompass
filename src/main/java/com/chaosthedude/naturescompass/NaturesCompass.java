@@ -31,7 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -94,8 +94,8 @@ public class NaturesCompass {
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
 
-	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {
-		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+	private void buildCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(new ItemStack(naturesCompass));
 		}
 	}
@@ -126,8 +126,8 @@ public class NaturesCompass {
 					} else {
 						final boolean entityExists = entityLiving != null;
 						final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
-						if (world == null && entity.level instanceof ClientLevel) {
-							world = (ClientLevel) entity.level;
+						if (world == null && entity.level() instanceof ClientLevel) {
+							world = (ClientLevel) entity.level();
 						}
 
 						double rotation = entityExists ? (double) entity.getYRot() : getFrameRotation((ItemFrame) entity);

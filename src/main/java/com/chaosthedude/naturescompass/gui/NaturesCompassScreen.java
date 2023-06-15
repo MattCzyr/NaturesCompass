@@ -13,8 +13,8 @@ import com.chaosthedude.naturescompass.sorting.ISorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -84,10 +84,10 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(poseStack);
-		drawCenteredString(poseStack, font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(guiGraphics);
+		guiGraphics.drawCenteredString(font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

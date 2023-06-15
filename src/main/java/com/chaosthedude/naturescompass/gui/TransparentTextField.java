@@ -1,13 +1,9 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.util.RenderUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,11 +32,11 @@ public class TransparentTextField extends EditBox {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				GuiComponent.fill(poseStack, getX(), getY(), getX() + width, getY() + height, color / 2 << 24);
+				guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getValue().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
@@ -60,7 +56,7 @@ public class TransparentTextField extends EditBox {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = font.drawShadow(poseStack, s1, (float) l, (float) i1, i);
+				j1 = guiGraphics.drawString(font, s1, l, i1, i, true);
 			}
 
 			boolean flag2 = getCursorPosition() < getValue().length() || getValue().length() >= pseudoMaxStringLength;
@@ -74,20 +70,20 @@ public class TransparentTextField extends EditBox {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = font.drawShadow(poseStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = guiGraphics.drawString(font, s.substring(j), j1, i1, i, true);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					GuiComponent.fill(poseStack, k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
+					guiGraphics.fill(RenderType.guiOverlay(), k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
 				} else {
-					font.drawShadow(poseStack, "_", (float) k1, (float) i1, i);
+					guiGraphics.drawString(font, "_", k1, i1, i, true);
 				}
 			}
 
 			if (k != j) {
 				int l1 = l + font.width(s.substring(0, k));
-				drawSelectionBox(poseStack, k1, i1 - 1, l1 - 1, i1 + 1 + font.lineHeight);
+				drawSelectionBox(guiGraphics, k1, i1 - 1, l1 - 1, i1 + 1 + font.lineHeight);
 			}
 		}
 	}
@@ -171,7 +167,7 @@ public class TransparentTextField extends EditBox {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(PoseStack poseStack, int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -192,10 +188,7 @@ public class TransparentTextField extends EditBox {
 			startX = getX() + width;
 		}
 
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		GuiComponent.fill(poseStack, startX, startY, endX, endY, -16776961);
-		RenderSystem.disableColorLogicOp();
+		guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
 	}
 
 }
