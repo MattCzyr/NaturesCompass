@@ -21,12 +21,12 @@ repositories {
 loom {
     splitEnvironmentSourceSets()
 
-    mods {
-        "modid" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
+	mods {
+		"naturescompass" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
 
 }
 
@@ -88,4 +88,8 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/naturescompass.accesswidener")
 }
