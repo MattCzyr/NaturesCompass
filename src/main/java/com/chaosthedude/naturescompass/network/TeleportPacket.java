@@ -58,7 +58,7 @@ public class TeleportPacket extends PacketByteBuf {
 	private static int findValidTeleportHeight(World world, int x, int z) {
 		int upY = world.getSeaLevel();
 		int downY = world.getSeaLevel();
-		while (!(isValidTeleportPosition(world, new BlockPos(x, upY, z)) || isValidTeleportPosition(world, new BlockPos(x, downY, z)))) {
+		while ((!world.isOutOfHeightLimit(upY) || !world.isOutOfHeightLimit(downY)) && !(isValidTeleportPosition(world, new BlockPos(x, upY, z)) || isValidTeleportPosition(world, new BlockPos(x, downY, z)))) {
 			upY++;
 			downY--;
 		}
@@ -74,7 +74,7 @@ public class TeleportPacket extends PacketByteBuf {
 	}
 	
 	private static boolean isValidTeleportPosition(World world, BlockPos pos) {
-		return !world.isOutOfHeightLimit(pos) && isFree(world, pos) && isFree(world, pos.up()) && !isFree(world, pos.down());
+		return isFree(world, pos) && isFree(world, pos.up()) && !isFree(world, pos.down());
 	}
 	
 	private static boolean isFree(World world, BlockPos pos) {
