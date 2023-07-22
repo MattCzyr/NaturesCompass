@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
 
 public class TeleportPacket {
@@ -59,7 +58,7 @@ public class TeleportPacket {
 	private int findValidTeleportHeight(Level level, int x, int z) {
 		int upY = level.getSeaLevel();
 		int downY = level.getSeaLevel();
-		while (!(isValidTeleportPosition(level, new BlockPos(x, upY, z)) || isValidTeleportPosition(level, new BlockPos(x, downY, z)))) {
+		while ((!level.isOutsideBuildHeight(upY) || !level.isOutsideBuildHeight(downY)) && !(isValidTeleportPosition(level, new BlockPos(x, upY, z)) || isValidTeleportPosition(level, new BlockPos(x, downY, z)))) {
 			upY++;
 			downY--;
 		}
@@ -75,7 +74,7 @@ public class TeleportPacket {
 	}
 	
 	private boolean isValidTeleportPosition(Level level, BlockPos pos) {
-		return !level.isOutsideBuildHeight(pos) && isFree(level, pos) && isFree(level, pos.above()) && !isFree(level, pos.below());
+		return isFree(level, pos) && isFree(level, pos.above()) && !isFree(level, pos.below());
 	}
 	
 	private boolean isFree(Level level, BlockPos pos) {
