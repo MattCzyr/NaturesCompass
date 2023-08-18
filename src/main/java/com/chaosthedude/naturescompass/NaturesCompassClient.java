@@ -57,7 +57,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 					lastUpdateTick = world.getTime();
 					double d0 = amount - rotation;
 					d0 = d0 % (Math.PI * 2D);
-					d0 = MathHelper.clamp(d0, -1.0D, 1.0D);
+					d0 = MathHelper.floorMod(d0 + Math.PI, Math.PI * 2D) - Math.PI;
 					rota += d0 * 0.1D;
 					rota *= 0.8D;
 					rotation += rota;
