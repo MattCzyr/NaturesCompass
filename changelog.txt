@@ -1,4 +1,24 @@
 ------------------------------------------------------------------
+ FORGE: 1.11.2 - 1.20.1
+------------------------------------------------------------------
+1.20.1:
+ - Added the compass to the minecraft:compasses tag
+ - Added Swedish translations
+ - Fixed compass spinning when player's yaw goes from positive to negative or vice versa
+ - Fixed a server hang and eventual crash that occurred when using the compass to teleport to coordinates with no blocks to stand on
+
+
+------------------------------------------------------------------
+ FABRIC: 2.2.3 - 1.20.1
+------------------------------------------------------------------
+1.20.1:
+ - Added the compass to the minecraft:compasses tag
+ - Added Swedish translations
+ - Fixed compass spinning when player's yaw goes from positive to negative or vice versa
+ - Fixed a server hang and eventual crash that occurred when using the compass to teleport to coordinates with no blocks to stand on
+
+
+------------------------------------------------------------------
  FABRIC: 2.2.2 - 1.20
 ------------------------------------------------------------------
 1.20:
