@@ -62,7 +62,6 @@ public class BiomeInfoScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(guiGraphics);
 		guiGraphics.drawString(font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), (width / 2) - (font.width(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)) / 2), 20, 0xffffff);
 
 		guiGraphics.drawString(font, Component.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);

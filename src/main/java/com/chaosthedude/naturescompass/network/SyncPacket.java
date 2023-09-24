@@ -2,7 +2,6 @@ package com.chaosthedude.naturescompass.network;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.google.common.collect.ArrayListMultimap;
@@ -10,7 +9,7 @@ import com.google.common.collect.ListMultimap;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class SyncPacket {
 
@@ -60,13 +59,13 @@ public class SyncPacket {
 		}
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			NaturesCompass.canTeleport = canTeleport;
-			NaturesCompass.allowedBiomes = allowedBiomes;
-			NaturesCompass.dimensionKeysForAllowedBiomeKeys = dimensionKeysForAllowedBiomeKeys;
+	public static void handle(SyncPacket packet, CustomPayloadEvent.Context ctx) {
+		ctx.enqueueWork(() -> {
+			NaturesCompass.canTeleport = packet.canTeleport;
+			NaturesCompass.allowedBiomes = packet.allowedBiomes;
+			NaturesCompass.dimensionKeysForAllowedBiomeKeys = packet.dimensionKeysForAllowedBiomeKeys;
 		});
-		ctx.get().setPacketHandled(true);
+		ctx.setPacketHandled(true);
 	}
 
 }

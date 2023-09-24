@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class CompassSearchPacket {
 
@@ -44,15 +44,15 @@ public class CompassSearchPacket {
 		buf.writeInt(z);
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
+	public static void handle(CompassSearchPacket packet, CustomPayloadEvent.Context ctx) {
+		ctx.enqueueWork(() -> {
+			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				natureCompass.searchForBiome(ctx.get().getSender().serverLevel(), ctx.get().getSender(), biomeKey, new BlockPos(x, y, z), stack);
+				natureCompass.searchForBiome(ctx.getSender().serverLevel(), ctx.getSender(), packet.biomeKey, new BlockPos(packet.x, packet.y, packet.z), stack);
 			}
 		});
-		ctx.get().setPacketHandled(true);
+		ctx.setPacketHandled(true);
 	}
 
 }

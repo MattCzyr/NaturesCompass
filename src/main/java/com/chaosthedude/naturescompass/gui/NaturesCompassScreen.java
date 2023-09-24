@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 public class NaturesCompassScreen extends Screen {
@@ -58,8 +59,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double scroll1, double scroll2, double scroll3) {
-		return selectionList.mouseScrolled(scroll1, scroll2, scroll3);
+	public boolean mouseScrolled(double par1, double par2, double par3, double par4) {
+		return selectionList.mouseScrolled(par1, par2, par3, par4);
 	}
 
 	@Override
@@ -69,7 +70,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void tick() {
-		searchTextField.tick();
 		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
 		
 		// Check if the sync packet has been received
@@ -85,7 +85,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(guiGraphics);
 		guiGraphics.drawCenteredString(font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
@@ -117,13 +116,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
+			NaturesCompass.network.send(new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()), PacketDistributor.SERVER.noArg());
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		NaturesCompass.network.sendToServer(new TeleportPacket());
+		NaturesCompass.network.send(new TeleportPacket(), PacketDistributor.SERVER.noArg());
 		minecraft.setScreen(null);
 	}
 

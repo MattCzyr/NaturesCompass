@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.network;
 
-import java.util.function.Supplier;
-
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
@@ -15,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class TeleportPacket {
 
@@ -27,17 +25,17 @@ public class TeleportPacket {
 
 	public void toBytes(FriendlyByteBuf buf) {}
 
-	public void handle(Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.get().getSender());
+	public static void handle(TeleportPacket packet, CustomPayloadEvent.Context ctx) {
+		ctx.enqueueWork(() -> {
+			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final ServerPlayer player = ctx.get().getSender();
+				final ServerPlayer player = ctx.getSender();
 				if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player.getServer(), player)) {
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						final int y = findValidTeleportHeight(player.level(), x, z);
+						final int y = packet.findValidTeleportHeight(player.level(), x, z);
 
 						player.stopRiding();
 						player.connection.teleport(x, y, z, player.getYRot(), player.getXRot());
@@ -52,7 +50,7 @@ public class TeleportPacket {
 				}
 			}
 		});
-		ctx.get().setPacketHandled(true);
+		ctx.setPacketHandled(true);
 	}
 	
 	private int findValidTeleportHeight(Level level, int x, int z) {
