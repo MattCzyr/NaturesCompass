@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -22,8 +23,8 @@ public class TransparentTextField extends TextFieldWidget {
 	private int pseudoLineScrollOffset;
 	private int pseudoEditableColor = 14737632;
 	private int pseudoUneditableColor = 7368816;
-	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
+	private long pseudoFocusTime;
 
 	public TransparentTextField(TextRenderer textRenderer, int x, int y, int width, int height, Text label) {
 		super(textRenderer, x, y, width, height, label);
@@ -45,7 +46,7 @@ public class TransparentTextField extends TextFieldWidget {
 			String text = showLabel ? label.getString() : getText();
 			String s = textRenderer.trimToWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
-			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
+			boolean flag1 = isFocused() && (Util.getMeasuringTimeMs() - pseudoFocusTime) / 300L % 2L == 0L && flag;
 			int l = pseudoEnableBackgroundDrawing ? getX() + 4 : getX();
 			int i1 = pseudoEnableBackgroundDrawing ? getY() + (getHeight() - 8) / 2 : getY();
 			int j1 = l;
@@ -109,7 +110,7 @@ public class TransparentTextField extends TextFieldWidget {
 	@Override
 	public void setFocused(boolean isFocused) {
 		if (isFocused && !isFocused()) {
-			pseudoCursorCounter = 0;
+			pseudoFocusTime = Util.getMeasuringTimeMs();
 		}
 		super.setFocused(isFocused);
 	}
@@ -124,12 +125,6 @@ public class TransparentTextField extends TextFieldWidget {
 	public void setMaxLength(int length) {
 		super.setMaxLength(length);
 		pseudoMaxLength = length;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		pseudoCursorCounter++;
 	}
 
 	@Override

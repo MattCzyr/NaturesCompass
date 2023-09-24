@@ -59,8 +59,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double scroll1, double scroll2, double scroll3) {
-		return selectionList.mouseScrolled(scroll1, scroll2, scroll3);
+	public boolean mouseScrolled(double par1, double par2, double par3, double par4) {
+		return selectionList.mouseScrolled(par1, par2, par3, par4);
 	}
 
 	@Override
@@ -76,7 +76,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void tick() {
-		searchTextField.tick();
 		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
 		
 		// Check if the sync packet has been received
@@ -92,7 +91,6 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(context);
 		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(context, mouseX, mouseY, partialTicks);
 	}
