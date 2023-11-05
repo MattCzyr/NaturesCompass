@@ -1,3 +1,7 @@
+## Version 1.11.3
+#### Forge 1.20.2
+- Fixed clients not being allowed to connect to servers that did not have Nature's Compass installed
+
 ## Version 1.11.2
 #### Forge 1.20.2, 1.20.1
 - Updated to Forge 1.20.2
