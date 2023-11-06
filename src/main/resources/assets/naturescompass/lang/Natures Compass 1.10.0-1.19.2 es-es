@@ -1,0 +1,58 @@
+{
+    "_comment": "ESPAÑA - ESPAÑOL",
+
+    "_comment": "ITEMS",
+    "item.naturescompass.naturescompass": "Brújula de la naturaleza",
+
+    "_comment": "STRINGS - BUTTONS",
+    "string.naturescompass.back": "Atrás",
+    "string.naturescompass.info": "Info",
+    "string.naturescompass.startSearch": "Iniciar búsqueda",
+    "string.naturescompass.selectBiome": "Elegir bioma",
+    "string.naturescompass.sortBy": "Ordenar por",
+    "string.naturescompass.teleport": "Teletransportarse",
+
+    "_comment": "STRINGS - CLIMATES",
+    "string.naturescompass.cold": "Frío",
+    "string.naturescompass.medium": "Medio",
+    "string.naturescompass.warm": "Cálido",
+
+    "_comment": "STRINGS - RANGE",
+    "string.naturescompass.none": "Ninguno",
+    "string.naturescompass.veryLow": "Muy Bajo",
+    "string.naturescompass.low": "Bajo",
+    "string.naturescompass.average": "Promedio",
+    "string.naturescompass.high": "Alto",
+    "string.naturescompass.veryHigh": "Muy Alto",
+
+    "_comment": "STRINGS - GUI",
+    "string.naturescompass.biome": "Bioma",
+    "string.naturescompass.category": "Categoría",
+    "string.naturescompass.coordinates": "Coordenadas",
+    "string.naturescompass.distance": "Distancia",
+    "string.naturescompass.found": "Encontrado",
+    "string.naturescompass.notFound": "No encontrado",
+    "string.naturescompass.radius": "Radio",
+    "string.naturescompass.samples": "Ejemplos",
+    "string.naturescompass.search": "Buscar",
+    "string.naturescompass.searching": "Buscando",
+    "string.naturescompass.source": "Origen",
+    "string.naturescompass.status": "Estado",
+    "string.naturescompass.tags": "Etiquetas",
+
+    "_comment": "STRINGS - INFO",
+    "string.naturescompass.baseHeight": "Altura base",
+    "string.naturescompass.climate": "Clima",
+    "string.naturescompass.fillerBlock": "Bloque de Relleno",
+    "string.naturescompass.heightVariation": "Variación de Altura",
+    "string.naturescompass.highHumidity": "Humedad Alta",
+    "string.naturescompass.name": "Nombre",
+    "string.naturescompass.precipitation": "Precipitación",
+    "string.naturescompass.rainfall": "Lluvia",
+    "string.naturescompass.temperature": "Temperatura",
+    "string.naturescompass.topBlock": "Bloque superior",
+
+    "_comment": "STRINGS - PRECIPITATION",
+    "string.naturescompass.snow": "Nieve",
+    "string.naturescompass.rain": "Lluvia"
+}
