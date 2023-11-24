@@ -22,30 +22,30 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class NaturesCompass implements ModInitializer {
-	
+
 	public static final String MODID = "naturescompass";
-	
+
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	
+
 	public static final NaturesCompassItem NATURES_COMPASS_ITEM = new NaturesCompassItem();
-	
+
 	public static boolean canTeleport;
 	public static List<Identifier> allowedBiomes;
 	public static ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs;
-	
+
 	@Override
 	public void onInitialize() {
 		NaturesCompassConfig.load();
-		
+
 		Registry.register(Registries.ITEM, new Identifier(MODID, "naturescompass"), NATURES_COMPASS_ITEM);
-		
+
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(NATURES_COMPASS_ITEM));
-		
+
 		ServerPlayNetworking.registerGlobalReceiver(SearchPacket.ID, SearchPacket::apply);
 		ServerPlayNetworking.registerGlobalReceiver(TeleportPacket.ID, TeleportPacket::apply);
-		
+
 		allowedBiomes = new ArrayList<Identifier>();
 		dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 	}
-	
+
 }
