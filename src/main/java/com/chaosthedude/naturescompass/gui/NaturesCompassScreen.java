@@ -78,7 +78,7 @@ public class NaturesCompassScreen extends Screen {
 			removeWidget(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
 			addRenderableWidget(selectionList);
 		}
 	}
@@ -183,7 +183,7 @@ public class NaturesCompassScreen extends Screen {
 		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
 		
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
 		}
 		addRenderableWidget(selectionList);
 	}

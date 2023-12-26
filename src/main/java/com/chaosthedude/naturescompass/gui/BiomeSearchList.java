@@ -15,8 +15,8 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	private final NaturesCompassScreen parentScreen;
 
-	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
-		super(mc, width, height, top, bottom, slotHeight);
+	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, int width, int height, int top, int bottom) {
+		super(mc, width, height, top, bottom);
 		this.parentScreen = parentScreen;
 		refreshList();
 	}
@@ -37,7 +37,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		renderList(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
@@ -46,10 +46,10 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 		for (int i = 0; i < getItemCount(); ++i) {
 			int top = getRowTop(i);
 			int bottom = getRowBottom(i);
-			if (bottom >= y0 && top <= y1) {
+			if (bottom >= getY() && top <= getBottom()) {
 				BiomeSearchEntry entry = getEntry(i);
 				if (isSelectedItem(i)) {
-					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
+					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
 					guiGraphics.fill(insideLeft - 4, top - 4, insideLeft + getRowWidth() + 4, top + itemHeight, 255 / 2 << 24);
 				}
 				entry.render(guiGraphics, i, top, getRowLeft(), getRowWidth(), itemHeight - 4, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
@@ -59,14 +59,14 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 		if (getMaxScroll() > 0) {
 			int left = getScrollbarPosition();
 			int right = left + 6;
-			int height = (int) ((float) ((y1 - y0) * (y1 - y0)) / (float) getMaxPosition());
-			height = Mth.clamp(height, 32, y1 - y0 - 8);
-			int top = (int) getScrollAmount() * (y1 - y0 - height) / getMaxScroll() + y0;
-			if (top < y0) {
-				top = y0;
+			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) getMaxPosition());
+			height = Mth.clamp(height, 32, getBottom() - getY() - 8);
+			int top = (int) getScrollAmount() * (getBottom() - getY() - height) / getMaxScroll() + getY();
+			if (top < getY()) {
+				top = getY();
 			}
 			
-			guiGraphics.fill(left, y0, right, y1, (int) (2.35F * 255.0F) / 2 << 24);
+			guiGraphics.fill(left, getY(), right, getBottom(), (int) (2.35F * 255.0F) / 2 << 24);
 			guiGraphics.fill(left, top, right, top + height, (int) (1.9F * 255.0F) / 2 << 24);
 		}
 	}
