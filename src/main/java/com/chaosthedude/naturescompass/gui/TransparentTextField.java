@@ -33,7 +33,7 @@ public class TransparentTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);

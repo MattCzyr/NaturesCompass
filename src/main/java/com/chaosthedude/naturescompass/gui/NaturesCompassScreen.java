@@ -69,7 +69,7 @@ public class NaturesCompassScreen extends Screen {
 		setupButtons();
 		setupTextFields();
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, client, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, client, width + 110, height - 40, 40, 45);
 		}
 		addDrawableChild(selectionList);
 	}
@@ -84,7 +84,7 @@ public class NaturesCompassScreen extends Screen {
 			remove(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, client, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, client, width + 110, height - 40, 40, 45);
 			addDrawableChild(selectionList);
 		}
 	}

@@ -15,7 +15,7 @@ public class TransparentButton extends ButtonWidget {
 	}
 
 	@Override
-	public void renderButton(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			float state = 2;
