@@ -1,3 +1,9 @@
+## Version 1.11.3
+#### Forge 1.20.4, 1.20.3, 1.20.2
+- Updated to Forge 1.20.4
+- Updated to Forge 1.20.3
+- Fixed clients not being allowed to connect to servers that did not have Nature's Compass installed
+
 ## Version 1.11.2
 #### Forge 1.20.2, 1.20.1
 - Updated to Forge 1.20.2
@@ -7,7 +13,9 @@
 - Fixed a server hang and eventual crash that occurred when using the compass to teleport to coordinates with no blocks to stand on
 
 ## Version 2.2.3
-#### Fabric 1.20.2, 1.20.1
+#### Fabric 1.20.4, 1.20.3, 1.20.2, 1.20.1
+- Updated to Fabric 1.20.4
+- Updated to Fabric 1.20.3
 - Updated to Fabric 1.20.2
 - Added the compass to the minecraft:compasses tag
 - Added Swedish translations
