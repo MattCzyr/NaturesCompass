@@ -82,7 +82,7 @@ public class NaturesCompass {
 	}
 
 	private void preInit(FMLCommonSetupEvent event) {
-		network = ChannelBuilder.named(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID)).networkProtocolVersion(1).optionalServer().clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
+		network = ChannelBuilder.named(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID)).networkProtocolVersion(1).optionalClient().clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
 
 		// Server packets
 		network.messageBuilder(CompassSearchPacket.class).encoder(CompassSearchPacket::toBytes).decoder(CompassSearchPacket::new).consumerMainThread(CompassSearchPacket::handle).add();
