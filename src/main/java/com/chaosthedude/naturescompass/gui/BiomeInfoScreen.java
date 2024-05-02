@@ -65,6 +65,8 @@ public class BiomeInfoScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		
 		context.drawText(textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff, false);
 
 		context.drawText(textRenderer, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff, false);
@@ -90,8 +92,6 @@ public class BiomeInfoScreen extends Screen {
 		
 		//context.drawText(textRenderer, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff, false);
 		//context.drawText(textRenderer, highHumidity, width / 2 + 40, 110, 0x808080, false);
-
-		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {

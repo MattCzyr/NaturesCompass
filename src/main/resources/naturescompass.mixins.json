@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "com.chaosthedude.naturescompass.mixins",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ServerMixin"
   ],

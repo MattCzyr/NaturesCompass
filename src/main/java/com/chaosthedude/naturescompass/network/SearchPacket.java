@@ -4,37 +4,42 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.utils.ItemUtils;
 
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-public class SearchPacket extends PacketByteBuf {
+public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPayload {
 	
-	public static final Identifier ID = new Identifier(NaturesCompass.MODID, "search");
+	public static final CustomPayload.Id<SearchPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier(NaturesCompass.MODID, "search"));
 	
-	public SearchPacket(Identifier biomeID, BlockPos pos) {
-		super(Unpooled.buffer());
-		writeIdentifier(biomeID);
-		writeBlockPos(pos);
+	public static final PacketCodec<RegistryByteBuf, SearchPacket> PACKET_CODEC = PacketCodec.of(SearchPacket::write, SearchPacket::read);
+	
+	public static SearchPacket read(RegistryByteBuf buf) {
+		return new SearchPacket(buf.readIdentifier(), buf.readBlockPos());
 	}
+	
+	public void write(RegistryByteBuf buf) {
+		buf.writeIdentifier(biomeID);
+		buf.writeBlockPos(pos);
+	}
+	
+	@Override
+    public Id<? extends CustomPayload> getId() {
+        return PACKET_ID;
+    }
 
-    public static void apply(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		final Identifier biomeID = buf.readIdentifier();
-		final BlockPos pos = buf.readBlockPos();
-		
-		server.execute(() -> {
-	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
+    public static void apply(SearchPacket packet, ServerPlayNetworking.Context context) {
+    	context.player().getServer().execute(() -> {
+	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final ServerWorld world = player.getServerWorld();
-				natureCompass.searchForBiome(world, player, biomeID, pos, stack);
+				final ServerWorld world = context.player().getServerWorld();
+				natureCompass.searchForBiome(world, context.player(), packet.biomeID(), packet.pos(), stack);
 			}
 		});
 	}

@@ -20,10 +20,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -41,7 +43,7 @@ public class NaturesCompassScreen extends Screen {
 	private ButtonWidget teleportButton;
 	private ButtonWidget cancelButton;
 	private ButtonWidget sortByButton;
-	private TransparentTextField searchTextField;
+	private TextFieldWidget searchTextField;
 	private BiomeSearchList selectionList;
 	private ISorting sortingCategory;
 
@@ -91,8 +93,8 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(context, mouseX, mouseY, partialTicks);
+		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, Colors.WHITE);
 	}
 
 	@Override
@@ -121,12 +123,12 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		ClientPlayNetworking.send(SearchPacket.ID, new SearchPacket(BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
+		ClientPlayNetworking.send(new SearchPacket(BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
 		client.setScreen(null);
 	}
 
 	public void teleport() {
-		ClientPlayNetworking.send(TeleportPacket.ID, new TeleportPacket());
+		ClientPlayNetworking.send(new TeleportPacket());
 		client.setScreen(null);
 	}
 
@@ -185,8 +187,7 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	private void setupTextFields() {
-		searchTextField = new TransparentTextField(textRenderer, 130, 10, 140, 20, Text.translatable("string.naturescompass.search"));
-		addDrawableChild(searchTextField);
+		searchTextField = addDrawableChild(new TransparentTextField(textRenderer, 130, 10, 140, 20, Text.translatable("string.naturescompass.search")));
 	}
 	
 	private void loadAllowedBiomes(List<Identifier> allowedBiomeIDs) {
