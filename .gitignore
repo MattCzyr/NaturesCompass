@@ -9,6 +9,7 @@ ehthumbs.db
 
 # ForgeGradle
 /run
+/runs
 
 # Eclipse
 /.settings
