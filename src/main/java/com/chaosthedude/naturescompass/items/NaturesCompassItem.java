@@ -3,7 +3,6 @@ package com.chaosthedude.naturescompass.items;
 import java.util.List;
 import java.util.Optional;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
@@ -14,6 +13,7 @@ import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +25,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class NaturesCompassItem extends Item {
 
@@ -48,7 +47,7 @@ public class NaturesCompassItem extends Item {
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
-				NaturesCompass.network.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
+				serverPlayer.connection.send(new ClientboundCustomPayloadPacket(new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel))));
 			}
 		} else {
 			if (worker != null) {

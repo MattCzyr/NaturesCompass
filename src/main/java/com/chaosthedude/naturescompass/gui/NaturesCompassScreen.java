@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.CompassSearchPacket;
+import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +79,7 @@ public class NaturesCompassScreen extends Screen {
 			removeWidget(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
 			addRenderableWidget(selectionList);
 		}
 	}
@@ -116,13 +117,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			NaturesCompass.network.send(PacketDistributor.SERVER.noArg(), new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
+			minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition())));
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		NaturesCompass.network.send(PacketDistributor.SERVER.noArg(), new TeleportPacket());
+		minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new TeleportPacket()));
 		minecraft.setScreen(null);
 	}
 
@@ -183,7 +184,7 @@ public class NaturesCompassScreen extends Screen {
 		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
 		
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height, 40, height, 45);
+			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
 		}
 		addRenderableWidget(selectionList);
 	}

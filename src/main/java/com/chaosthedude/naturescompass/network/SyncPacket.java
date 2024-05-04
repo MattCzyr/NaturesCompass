@@ -8,27 +8,18 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkEvent.ClientCustomPayloadEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class SyncPacket {
+public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes, ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys) implements CustomPacketPayload {
 
-	private boolean canTeleport;
-	private List<ResourceLocation> allowedBiomes;
-	private ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys;
-
-	public SyncPacket() {}
-
-	public SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes, ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys) {
-		this.canTeleport = canTeleport;
-		this.allowedBiomes = allowedBiomes;
-		this.dimensionKeysForAllowedBiomeKeys = dimensionKeysForAllowedBiomeKeys;
-	}
-
-	public SyncPacket(FriendlyByteBuf buf) {
-		canTeleport = buf.readBoolean();
-		allowedBiomes = new ArrayList<ResourceLocation>();
-		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
+	public static final ResourceLocation ID = new ResourceLocation(NaturesCompass.MODID, "sync");
+	
+	public static SyncPacket read(FriendlyByteBuf buf) {
+		boolean canTeleport = buf.readBoolean();
+		List<ResourceLocation> allowedBiomes = new ArrayList<ResourceLocation>();
+		ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 		
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
@@ -44,9 +35,12 @@ public class SyncPacket {
 				dimensionKeysForAllowedBiomeKeys.putAll(biomeKey, dimensionKeys);
 			}
 		}
+		
+		return new SyncPacket(canTeleport, allowedBiomes, dimensionKeysForAllowedBiomeKeys);
 	}
 
-	public void toBytes(FriendlyByteBuf buf) {
+	@Override
+	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
 		for (ResourceLocation biomeKey : allowedBiomes) {
@@ -59,13 +53,17 @@ public class SyncPacket {
 		}
 	}
 
-	public static void handle(SyncPacket packet, ClientCustomPayloadEvent.Context ctx) {
-		ctx.enqueueWork(() -> {
+	public static void handle(SyncPacket packet, PlayPayloadContext context) {
+		context.workHandler().submitAsync(() -> {
 			NaturesCompass.canTeleport = packet.canTeleport;
 			NaturesCompass.allowedBiomes = packet.allowedBiomes;
 			NaturesCompass.dimensionKeysForAllowedBiomeKeys = packet.dimensionKeysForAllowedBiomeKeys;
 		});
-		ctx.setPacketHandled(true);
+	}
+	
+	@Override
+	public ResourceLocation id() {
+		return ID;
 	}
 
 }

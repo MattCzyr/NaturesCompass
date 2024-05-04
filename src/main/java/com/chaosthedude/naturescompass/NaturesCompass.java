@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.CompassSearchPacket;
+import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.google.common.collect.ArrayListMultimap;
@@ -17,16 +17,17 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.network.NetworkRegistry.ChannelBuilder;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import net.neoforged.neoforge.server.permission.nodes.PermissionTypes;
@@ -40,7 +41,6 @@ public class NaturesCompass {
 
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;
 	
 	public static boolean canTeleport;
@@ -49,11 +49,12 @@ public class NaturesCompass {
 
 	public static NaturesCompass instance;
 
-	public NaturesCompass() {
+	public NaturesCompass(IEventBus bus, Dist dist) {
 		instance = this;
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::buildCreativeTabContents);
+		bus.addListener(this::preInit);
+		bus.addListener(this::buildCreativeTabContents);
+		bus.addListener(this::registerPayloads);
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
@@ -62,16 +63,6 @@ public class NaturesCompass {
 	}
 
 	private void preInit(FMLCommonSetupEvent event) {
-		String networkVersion = "1";
-		network = ChannelBuilder.named(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID)).networkProtocolVersion(() -> networkVersion).clientAcceptedVersions(networkVersion::equals).serverAcceptedVersions(networkVersion::equals).simpleChannel();
-
-		// Server packets
-		network.messageBuilder(CompassSearchPacket.class, 0).encoder(CompassSearchPacket::toBytes).decoder(CompassSearchPacket::new).consumerMainThread(CompassSearchPacket::handle).add();
-		network.messageBuilder(TeleportPacket.class, 1).encoder(TeleportPacket::toBytes).decoder(TeleportPacket::new).consumerMainThread(TeleportPacket::handle).add();
-
-		// Client packet
-		network.messageBuilder(SyncPacket.class, 2).encoder(SyncPacket::toBytes).decoder(SyncPacket::new).consumerMainThread(SyncPacket::handle).add();
-
 		allowedBiomes = new ArrayList<ResourceLocation>();
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
@@ -80,6 +71,13 @@ public class NaturesCompass {
 		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(new ItemStack(naturesCompass));
 		}
+	}
+	
+	private void registerPayloads(RegisterPayloadHandlerEvent event) {
+	    final IPayloadRegistrar registrar = event.registrar(MODID);
+	    registrar.play(SearchPacket.ID, SearchPacket::read, handler -> handler.server(SearchPacket::handle));
+	    registrar.play(TeleportPacket.ID, TeleportPacket::read, handler -> handler.server(TeleportPacket::handle));
+	    registrar.play(SyncPacket.ID, SyncPacket::read, handler -> handler.client(SyncPacket::handle));
 	}
 
 	@SubscribeEvent
