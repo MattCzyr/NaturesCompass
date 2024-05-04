@@ -24,9 +24,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 public class NaturesCompassScreen extends Screen {
@@ -116,13 +116,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			NaturesCompass.network.send(new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()), PacketDistributor.SERVER.noArg());
+			NaturesCompass.network.send(PacketDistributor.SERVER.noArg(), new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		NaturesCompass.network.send(new TeleportPacket(), PacketDistributor.SERVER.noArg());
+		NaturesCompass.network.send(PacketDistributor.SERVER.noArg(), new TeleportPacket());
 		minecraft.setScreen(null);
 	}
 

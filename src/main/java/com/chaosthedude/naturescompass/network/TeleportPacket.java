@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent.ServerCustomPayloadEvent;
 
 public class TeleportPacket {
 
@@ -25,7 +25,7 @@ public class TeleportPacket {
 
 	public void toBytes(FriendlyByteBuf buf) {}
 
-	public static void handle(TeleportPacket packet, CustomPayloadEvent.Context ctx) {
+	public static void handle(TeleportPacket packet, ServerCustomPayloadEvent.Context ctx) {
 		ctx.enqueueWork(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getSender());
 			if (!stack.isEmpty()) {

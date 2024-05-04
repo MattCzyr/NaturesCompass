@@ -15,7 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.common.WorldWorkerManager;
+import net.neoforged.neoforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 

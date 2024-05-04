@@ -5,28 +5,28 @@ import java.util.List;
 
 import com.chaosthedude.naturescompass.client.OverlaySide;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigHandler {
 
-	private static final ForgeConfigSpec.Builder GENERAL_BUILDER = new ForgeConfigSpec.Builder();
-	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ModConfigSpec.Builder GENERAL_BUILDER = new ModConfigSpec.Builder();
+	private static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 
 	public static final General GENERAL = new General(GENERAL_BUILDER);
 	public static final Client CLIENT = new Client(CLIENT_BUILDER);
 
-	public static final ForgeConfigSpec GENERAL_SPEC = GENERAL_BUILDER.build();
-	public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
+	public static final ModConfigSpec GENERAL_SPEC = GENERAL_BUILDER.build();
+	public static final ModConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 
 	public static class General {
-		public final ForgeConfigSpec.BooleanValue allowTeleport;
-		public final ForgeConfigSpec.BooleanValue displayCoordinates;
-		public final ForgeConfigSpec.IntValue radiusModifier;
-		public final ForgeConfigSpec.IntValue sampleSpaceModifier;
-		public final ForgeConfigSpec.ConfigValue<List<String>> biomeBlacklist;
-		public final ForgeConfigSpec.IntValue maxSamples;
+		public final ModConfigSpec.BooleanValue allowTeleport;
+		public final ModConfigSpec.BooleanValue displayCoordinates;
+		public final ModConfigSpec.IntValue radiusModifier;
+		public final ModConfigSpec.IntValue sampleSpaceModifier;
+		public final ModConfigSpec.ConfigValue<List<String>> biomeBlacklist;
+		public final ModConfigSpec.IntValue maxSamples;
 
-		General(ForgeConfigSpec.Builder builder) {
+		General(ModConfigSpec.Builder builder) {
 			String desc;
 			builder.push("General");
 
@@ -53,12 +53,12 @@ public class ConfigHandler {
 	}
 
 	public static class Client {
-		public final ForgeConfigSpec.BooleanValue displayWithChatOpen;
-		public final ForgeConfigSpec.BooleanValue fixBiomeNames;
-		public final ForgeConfigSpec.EnumValue<OverlaySide> overlaySide;
-		public final ForgeConfigSpec.IntValue overlayLineOffset;
+		public final ModConfigSpec.BooleanValue displayWithChatOpen;
+		public final ModConfigSpec.BooleanValue fixBiomeNames;
+		public final ModConfigSpec.EnumValue<OverlaySide> overlaySide;
+		public final ModConfigSpec.IntValue overlayLineOffset;
 
-		Client(ForgeConfigSpec.Builder builder) {
+		Client(ModConfigSpec.Builder builder) {
 			String desc;
 			builder.push("Client");
 

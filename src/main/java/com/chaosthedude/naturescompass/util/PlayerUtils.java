@@ -8,7 +8,7 @@ import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraftforge.server.permission.PermissionAPI;
+import net.neoforged.neoforge.server.permission.PermissionAPI;
 
 public class PlayerUtils {
 

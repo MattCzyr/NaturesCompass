@@ -20,6 +20,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -28,16 +29,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 
 public class BiomeUtils {
 
 	public static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
-		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
+		return level.registryAccess().registry(Registries.BIOME);
 	}
 
 	public static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
@@ -114,7 +114,7 @@ public class BiomeUtils {
 			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
 				Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
 				// Extremely hacky way of extracting a biome's categories from its tags
-				List<TagKey<Biome>> categoryTags = biomeHolder.getTagKeys().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
+				List<TagKey<Biome>> categoryTags = biomeHolder.tags().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
 				for (TagKey<Biome> tag : categoryTags) {
 					if (tagPathsToIgnore.contains(tag.location().getPath())) {
 						continue;
