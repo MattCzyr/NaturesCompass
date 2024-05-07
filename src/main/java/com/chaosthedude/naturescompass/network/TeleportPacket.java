@@ -9,37 +9,39 @@ import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record TeleportPacket() implements CustomPacketPayload {
 
-	public static final ResourceLocation ID = new ResourceLocation(NaturesCompass.MODID, "teleport");
+	public static final Type<TeleportPacket> TYPE = new Type<TeleportPacket>(new ResourceLocation(NaturesCompass.MODID, "teleport"));
+	
+	public static final StreamCodec<FriendlyByteBuf, TeleportPacket> CODEC = StreamCodec.ofMember(TeleportPacket::write, TeleportPacket::read);
 	
 	public static TeleportPacket read(FriendlyByteBuf buf) {
 		return new TeleportPacket();
 	}
 
-	@Override
 	public void write(FriendlyByteBuf buf) {}
 
-	public static void handle(TeleportPacket packet, PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
-			if (context.player().isPresent() && context.level().isPresent()) {
-				final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player().get());
+	public static void handle(TeleportPacket packet, IPayloadContext context) {
+		if (context.flow().isServerbound()) {
+			context.enqueueWork(() -> {
+				final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player());
 				if (!stack.isEmpty()) {
 					final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-					final ServerPlayer player = (ServerPlayer) context.player().get();
+					final ServerPlayer player = (ServerPlayer) context.player();
 					if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player.getServer(), player)) {
 						if (natureCompass.getState(stack) == CompassState.FOUND) {
 							final int x = natureCompass.getFoundBiomeX(stack);
 							final int z = natureCompass.getFoundBiomeZ(stack);
-							final int y = packet.findValidTeleportHeight(context.level().get(), x, z);
+							final int y = packet.findValidTeleportHeight(context.player().level(), x, z);
 	
 							player.stopRiding();
 							player.connection.teleport(x, y, z, player.getYRot(), player.getXRot());
@@ -53,8 +55,8 @@ public record TeleportPacket() implements CustomPacketPayload {
 						NaturesCompass.LOGGER.warn("Player " + player.getDisplayName().getString() + " tried to teleport but does not have permission.");
 					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	private int findValidTeleportHeight(Level level, int x, int z) {
@@ -84,8 +86,8 @@ public record TeleportPacket() implements CustomPacketPayload {
 	}
 	
 	@Override
-	public ResourceLocation id() {
-		return ID;
+	public Type<TeleportPacket> type() {
+		return TYPE;
 	}
 
 }

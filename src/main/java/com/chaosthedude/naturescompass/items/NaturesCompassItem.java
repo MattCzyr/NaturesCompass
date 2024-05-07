@@ -3,6 +3,7 @@ package com.chaosthedude.naturescompass.items;
 import java.util.List;
 import java.util.Optional;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
@@ -92,7 +93,7 @@ public class NaturesCompassItem extends Item {
 	}
 
 	public boolean isActive(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
 			return getState(stack) != CompassState.INACTIVE;
 		}
 
@@ -100,120 +101,120 @@ public class NaturesCompassItem extends Item {
 	}
 
 	public void setSearching(ItemStack stack, ResourceLocation biomeKey, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putString("BiomeKey", biomeKey.toString());
-			stack.getTag().putInt("State", CompassState.SEARCHING.getID());
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
+			stack.set(NaturesCompass.COMPASS_STATE, CompassState.SEARCHING.getID());
 		}
 	}
 
 	public void setFound(ItemStack stack, int x, int z, int samples, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("State", CompassState.FOUND.getID());
-			stack.getTag().putInt("FoundX", x);
-			stack.getTag().putInt("FoundZ", z);
-			stack.getTag().putInt("Samples", samples);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.COMPASS_STATE, CompassState.FOUND.getID());
+			stack.set(NaturesCompass.FOUND_X, x);
+			stack.set(NaturesCompass.FOUND_Z, z);
+			stack.set(NaturesCompass.SAMPLES, samples);
 		}
 	}
 
 	public void setNotFound(ItemStack stack, Player player, int searchRadius, int samples) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("State", CompassState.NOT_FOUND.getID());
-			stack.getTag().putInt("SearchRadius", searchRadius);
-			stack.getTag().putInt("Samples", samples);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.COMPASS_STATE, CompassState.NOT_FOUND.getID());
+			stack.set(NaturesCompass.SEARCH_RADIUS, searchRadius);
+			stack.set(NaturesCompass.SAMPLES, samples);
 		}
 	}
 
 	public void setInactive(ItemStack stack, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("State", CompassState.INACTIVE.getID());
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.COMPASS_STATE, CompassState.INACTIVE.getID());
 		}
 	}
 
 	public void setState(ItemStack stack, BlockPos pos, CompassState state, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("State", state.getID());
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.COMPASS_STATE, state.getID());
 		}
 	}
 
 	public void setFoundBiomeX(ItemStack stack, int x, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("FoundX", x);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.FOUND_X, x);
 		}
 	}
 
 	public void setFoundBiomeZ(ItemStack stack, int z, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("FoundZ", z);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.FOUND_Z, z);
 		}
 	}
 
 	public void setBiomeKey(ItemStack stack, ResourceLocation biomeKey, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putString("BiomeKey", biomeKey.toString());
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
 		}
 	}
 
 	public void setSearchRadius(ItemStack stack, int searchRadius, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("SearchRadius", searchRadius);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.SEARCH_RADIUS, searchRadius);
 		}
 	}
 
 	public void setSamples(ItemStack stack, int samples, Player player) {
-		if (ItemUtils.verifyNBT(stack)) {
-			stack.getTag().putInt("Samples", samples);
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			stack.set(NaturesCompass.SAMPLES, samples);
 		}
 	}
 
 	public CompassState getState(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return CompassState.fromID(stack.getTag().getInt("State"));
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.COMPASS_STATE)) {
+			return CompassState.fromID(stack.get(NaturesCompass.COMPASS_STATE));
 		}
 
 		return null;
 	}
 	
 	public void setDisplayCoordinates(ItemStack stack, boolean displayPosition) {
- 		if (ItemUtils.verifyNBT(stack)) {
- 			stack.getTag().putBoolean("DisplayCoordinates", displayPosition);
+ 		if (stack.getItem() == NaturesCompass.naturesCompass) {
+ 			stack.set(NaturesCompass.DISPLAY_COORDS, displayPosition);
  		}
  	}
 
 	public int getFoundBiomeX(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTag().getInt("FoundX");
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.FOUND_X)) {
+			return stack.get(NaturesCompass.FOUND_X);
 		}
 
 		return 0;
 	}
 
 	public int getFoundBiomeZ(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTag().getInt("FoundZ");
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.FOUND_Z)) {
+			return stack.get(NaturesCompass.FOUND_Z);
 		}
 
 		return 0;
 	}
 
 	public ResourceLocation getBiomeKey(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return new ResourceLocation(stack.getTag().getString("BiomeKey"));
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.BIOME_ID)) {
+			return new ResourceLocation(stack.get(NaturesCompass.BIOME_ID));
 		}
 
 		return new ResourceLocation("");
 	}
 
 	public int getSearchRadius(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTag().getInt("SearchRadius");
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.SEARCH_RADIUS)) {
+			return stack.get(NaturesCompass.SEARCH_RADIUS);
 		}
 
 		return -1;
 	}
 
 	public int getSamples(ItemStack stack) {
-		if (ItemUtils.verifyNBT(stack)) {
-			return stack.getTag().getInt("Samples");
+		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.SAMPLES)) {
+			return stack.get(NaturesCompass.SAMPLES);
 		}
 
 		return -1;
@@ -224,8 +225,8 @@ public class NaturesCompassItem extends Item {
 	}
 	
 	public boolean shouldDisplayCoordinates(ItemStack stack) {
- 		if (ItemUtils.verifyNBT(stack) && stack.getTag().contains("DisplayCoordinates")) {
- 			return stack.getTag().getBoolean("DisplayCoordinates");
+ 		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.DISPLAY_COORDS)) {
+ 			return stack.get(NaturesCompass.DISPLAY_COORDS);
  		}
 
  		return true;
