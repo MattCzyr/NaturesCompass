@@ -36,8 +36,7 @@ public class TransparentTextField extends TextFieldWidget {
 	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
-				final int color = (int) (255.0F * 0.55f);
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 255 / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
 			int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
