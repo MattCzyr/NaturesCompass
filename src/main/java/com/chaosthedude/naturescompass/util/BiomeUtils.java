@@ -55,7 +55,7 @@ public class BiomeUtils {
 				Biome biome = entry.getValue();
 				if (biome != null) {
 					Optional<ResourceLocation> optionalBiomeKey = getKeyForBiome(level, biome);
-					if (biome != null && optionalBiomeKey.isPresent() && !biomeKeyIsBlacklisted(level, optionalBiomeKey.get())) {
+					if (biome != null && optionalBiomeKey.isPresent() && !biomeKeyIsBlacklisted(level, optionalBiomeKey.get()) && !biomeKeyIsHidden(level, optionalBiomeKey.get())) {
 						biomeKeys.add(optionalBiomeKey.get());
 					}
 				}
@@ -229,6 +229,18 @@ public class BiomeUtils {
 		for (String key : biomeBlacklist) {
 			if (biomeKey.toString().matches(convertToRegex(key))) {
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean biomeKeyIsHidden(Level level, ResourceLocation biomeKey) {
+		if (getBiomeRegistry(level).isPresent() && getBiomeForKey(level, biomeKey).isPresent()) {
+			final Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
+			final Biome biome = getBiomeForKey(level, biomeKey).get();
+			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
+				final Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
+				return biomeHolder.tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
 			}
 		}
 		return false;
