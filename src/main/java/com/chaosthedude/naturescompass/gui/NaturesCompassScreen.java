@@ -117,13 +117,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition())));
+			PacketDistributor.SERVER.noArg().send(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new TeleportPacket()));
+		PacketDistributor.SERVER.noArg().send(new TeleportPacket());
 		minecraft.setScreen(null);
 	}
 
