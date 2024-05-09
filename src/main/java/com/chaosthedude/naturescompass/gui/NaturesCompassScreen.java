@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -117,13 +116,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition())));
+			PacketDistributor.sendToServer(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new TeleportPacket()));
+		PacketDistributor.sendToServer(new TeleportPacket());
 		minecraft.setScreen(null);
 	}
 

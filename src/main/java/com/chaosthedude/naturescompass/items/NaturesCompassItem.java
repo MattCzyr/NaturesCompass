@@ -14,7 +14,6 @@ import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class NaturesCompassItem extends Item {
 
@@ -48,7 +48,7 @@ public class NaturesCompassItem extends Item {
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
-				serverPlayer.connection.send(new ClientboundCustomPayloadPacket(new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel))));
+				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
 			}
 		} else {
 			if (worker != null) {
