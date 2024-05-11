@@ -1,3 +1,31 @@
+## Version 3.0.1
+#### NeoForge 1.20.6, 1.20.5
+- Updated to NeoForge 1.20.6
+- Updated to NeoForge 1.20.5
+- Hid biomes with the c:hidden_from_locator_selection from appearing in the compass GUI
+
+# Version 2.2.4
+#### Fabric 1.20.6, 1.20.5
+- Updated to Fabric 1.20.6
+- Updated to Fabric 1.20.5
+- Hid biomes with the c:hidden_from_locator_selection from appearing in the compass GUI
+
+## Version 1.11.5
+#### Forge 1.20.6
+- Updated to Forge 1.20.6
+- Hid biomes with the c:hidden_from_locator_selection from appearing in the compass GUI
+
+## Version 3.0.0
+#### NeoForge 1.20.4, 1.20.2
+- Updated to NeoForge 1.20.4
+- Updated to NeoForge 1.20.2
+
+## Version 1.11.4
+#### Forge 1.20.4, 1.20.2
+- Fixed clients not being allowed to connect to servers that did not have Nature's Compass installed
+- Fixed Russian translations
+- Fixed simplified Chinese translations
+
 ## Version 1.11.3
 #### Forge 1.20.4, 1.20.3, 1.20.2
 - Updated to Forge 1.20.4
