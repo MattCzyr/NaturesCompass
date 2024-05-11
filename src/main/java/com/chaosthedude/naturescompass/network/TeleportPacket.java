@@ -21,9 +21,7 @@ public class TeleportPacket {
 
 	public TeleportPacket(FriendlyByteBuf buf) {}
 
-	public void fromBytes(FriendlyByteBuf buf) {}
-
-	public void toBytes(FriendlyByteBuf buf) {}
+	public void encode(FriendlyByteBuf buf) {}
 
 	public static void handle(TeleportPacket packet, CustomPayloadEvent.Context ctx) {
 		ctx.enqueueWork(() -> {

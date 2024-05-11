@@ -1,9 +1,14 @@
 package com.chaosthedude.naturescompass.client;
 
+import java.lang.reflect.Field;
+
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.CompassState;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -17,14 +22,15 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 @Mod.EventBusSubscriber(modid = NaturesCompass.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class NaturesCompassClient {
+	
+	private static final Field LAYERS = ObfuscationReflectionHelper.findField(Gui.class, "layers");
 	
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event) {
@@ -100,11 +106,17 @@ public class NaturesCompassClient {
 				}
 			});
 		});
+		
+		event.enqueueWork(() -> {
+			Minecraft mc = Minecraft.getInstance();
+			try {
+				LayeredDraw layers = (LayeredDraw) LAYERS.get(mc.gui);
+				layers.add(new NaturesCompassOverlay());
+			} catch (IllegalAccessException e) {
+				NaturesCompass.LOGGER.error("Failed to add Nature's Compass GUI layer");
+				throw new RuntimeException("Failed to add layer");
+			}
+		});
 	}
-	
-	@SubscribeEvent
-    public static void registerOverlay(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), "natures_compass", new NaturesCompassOverlay());
-    }
 
 }

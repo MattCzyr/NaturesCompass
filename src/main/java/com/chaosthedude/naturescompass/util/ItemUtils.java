@@ -2,21 +2,14 @@ package com.chaosthedude.naturescompass.util;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemUtils {
 
-	public static boolean verifyNBT(ItemStack stack) {
-		if (stack.isEmpty() || stack.getItem() != NaturesCompass.naturesCompass) {
-			return false;
-		} else if (!stack.hasTag()) {
-			stack.setTag(new CompoundTag());
-		}
-
-		return true;
+	public static boolean isCompass(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass;
 	}
 
 	public static ItemStack getHeldNatureCompass(Player player) {

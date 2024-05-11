@@ -62,6 +62,8 @@ public class BiomeInfoScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		
 		guiGraphics.drawString(font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), (width / 2) - (font.width(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)) / 2), 20, 0xffffff);
 
 		guiGraphics.drawString(font, Component.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff);
@@ -87,8 +89,6 @@ public class BiomeInfoScreen extends Screen {
 		
 		//guiGraphics.drawString(font, Component.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff);
 		//guiGraphics.drawString(font, Component.literal(highHumidity), width / 2 + 40, 110, 0x808080);
-
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupWidgets() {

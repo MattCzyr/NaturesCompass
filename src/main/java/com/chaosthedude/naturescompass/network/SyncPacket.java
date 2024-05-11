@@ -46,7 +46,7 @@ public class SyncPacket {
 		}
 	}
 
-	public void toBytes(FriendlyByteBuf buf) {
+	public void encode(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
 		for (ResourceLocation biomeKey : allowedBiomes) {

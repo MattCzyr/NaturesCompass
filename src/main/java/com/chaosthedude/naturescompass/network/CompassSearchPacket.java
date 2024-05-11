@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.network;
 
-import java.util.function.Supplier;
-
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
@@ -14,34 +12,23 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 public class CompassSearchPacket {
 
 	private ResourceLocation biomeKey;
-	private int x;
-	private int y;
-	private int z;
+	private BlockPos pos;
 
 	public CompassSearchPacket() {}
 
 	public CompassSearchPacket(ResourceLocation biomeKey, BlockPos pos) {
 		this.biomeKey = biomeKey;
-
-		this.x = pos.getX();
-		this.y = pos.getY();
-		this.z = pos.getZ();
+		this.pos = pos;
 	}
 
 	public CompassSearchPacket(FriendlyByteBuf buf) {
 		biomeKey = buf.readResourceLocation();
-
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = buf.readBlockPos();
 	}
 
-	public void toBytes(FriendlyByteBuf buf) {
+	public void encode(FriendlyByteBuf buf) {
 		buf.writeResourceLocation(biomeKey);
-
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeBlockPos(pos);
 	}
 
 	public static void handle(CompassSearchPacket packet, CustomPayloadEvent.Context ctx) {
@@ -49,7 +36,7 @@ public class CompassSearchPacket {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(ctx.getSender());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				natureCompass.searchForBiome(ctx.getSender().serverLevel(), ctx.getSender(), packet.biomeKey, new BlockPos(packet.x, packet.y, packet.z), stack);
+				natureCompass.searchForBiome(ctx.getSender().serverLevel(), ctx.getSender(), packet.biomeKey, packet.pos, stack);
 			}
 		});
 		ctx.setPacketHandled(true);

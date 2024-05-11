@@ -13,7 +13,10 @@ import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.mojang.serialization.Codec;
 
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +46,14 @@ public class NaturesCompass {
 
 	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;
+	
+	public static final DataComponentType<String> BIOME_ID = DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build();
+	public static final DataComponentType<Integer> COMPASS_STATE = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
+	public static final DataComponentType<Integer> FOUND_X = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
+	public static final DataComponentType<Integer> FOUND_Z = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
+	public static final DataComponentType<Integer> SEARCH_RADIUS = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
+	public static final DataComponentType<Integer> SAMPLES = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
+	public static final DataComponentType<Boolean> DISPLAY_COORDS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
 
 	public static boolean canTeleport;
 	public static List<ResourceLocation> allowedBiomes;
@@ -66,11 +77,11 @@ public class NaturesCompass {
 		network = ChannelBuilder.named(new ResourceLocation(NaturesCompass.MODID, NaturesCompass.MODID)).networkProtocolVersion(1).optionalClient().clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
 
 		// Server packets
-		network.messageBuilder(CompassSearchPacket.class).encoder(CompassSearchPacket::toBytes).decoder(CompassSearchPacket::new).consumerMainThread(CompassSearchPacket::handle).add();
-		network.messageBuilder(TeleportPacket.class).encoder(TeleportPacket::toBytes).decoder(TeleportPacket::new).consumerMainThread(TeleportPacket::handle).add();
+		network.messageBuilder(CompassSearchPacket.class).encoder(CompassSearchPacket::encode).decoder(CompassSearchPacket::new).consumerMainThread(CompassSearchPacket::handle).add();
+		network.messageBuilder(TeleportPacket.class).encoder(TeleportPacket::encode).decoder(TeleportPacket::new).consumerMainThread(TeleportPacket::handle).add();
 
 		// Client packet
-		network.messageBuilder(SyncPacket.class).encoder(SyncPacket::toBytes).decoder(SyncPacket::new).consumerMainThread(SyncPacket::handle).add();
+		network.messageBuilder(SyncPacket.class).encoder(SyncPacket::encode).decoder(SyncPacket::new).consumerMainThread(SyncPacket::handle).add();
 
 		allowedBiomes = new ArrayList<ResourceLocation>();
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
