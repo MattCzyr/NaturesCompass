@@ -8,13 +8,17 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.ClientPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes, ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys) implements CustomPacketPayload {
 
-	public static final ResourceLocation ID = new ResourceLocation(NaturesCompass.MODID, "sync");
+	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(new ResourceLocation(NaturesCompass.MODID, "sync"));
+	
+	public static final StreamCodec<FriendlyByteBuf, SyncPacket> CODEC = StreamCodec.ofMember(SyncPacket::write, SyncPacket::read);
 	
 	public static SyncPacket read(FriendlyByteBuf buf) {
 		boolean canTeleport = buf.readBoolean();
@@ -39,7 +43,6 @@ public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiom
 		return new SyncPacket(canTeleport, allowedBiomes, dimensionKeysForAllowedBiomeKeys);
 	}
 
-	@Override
 	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
@@ -53,17 +56,19 @@ public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiom
 		}
 	}
 
-	public static void handle(SyncPacket packet, PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
-			NaturesCompass.canTeleport = packet.canTeleport;
-			NaturesCompass.allowedBiomes = packet.allowedBiomes;
-			NaturesCompass.dimensionKeysForAllowedBiomeKeys = packet.dimensionKeysForAllowedBiomeKeys;
-		});
+	public static void handle(SyncPacket packet, IPayloadContext context) {
+		if (context.flow().isClientbound()) {
+			context.enqueueWork(() -> {
+				NaturesCompass.canTeleport = packet.canTeleport;
+				NaturesCompass.allowedBiomes = packet.allowedBiomes;
+				NaturesCompass.dimensionKeysForAllowedBiomeKeys = packet.dimensionKeysForAllowedBiomeKeys;
+			});
+		}
 	}
 	
 	@Override
-	public ResourceLocation id() {
-		return ID;
+	public Type<SyncPacket> type() {
+		return TYPE;
 	}
 
 }

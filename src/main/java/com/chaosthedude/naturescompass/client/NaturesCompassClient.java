@@ -18,12 +18,12 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
-@Mod.EventBusSubscriber(modid = NaturesCompass.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = NaturesCompass.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class NaturesCompassClient {
 	
 	@SubscribeEvent
@@ -103,8 +103,8 @@ public class NaturesCompassClient {
 	}
 	
 	@SubscribeEvent
-    public static void registerOverlay(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id(), new ResourceLocation(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
+    public static void registerOverlay(RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, new ResourceLocation(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
     }
 
 }

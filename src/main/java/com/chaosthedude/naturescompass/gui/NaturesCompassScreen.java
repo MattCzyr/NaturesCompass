@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -86,8 +85,8 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		guiGraphics.drawCenteredString(font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		guiGraphics.drawCenteredString(font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
 	}
 
 	@Override
@@ -117,13 +116,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Biome biome) {
 		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			PacketDistributor.SERVER.noArg().send(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
+			PacketDistributor.sendToServer(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
 		}
 		minecraft.setScreen(null);
 	}
 
 	public void teleport() {
-		PacketDistributor.SERVER.noArg().send(new TeleportPacket());
+		PacketDistributor.sendToServer(new TeleportPacket());
 		minecraft.setScreen(null);
 	}
 
