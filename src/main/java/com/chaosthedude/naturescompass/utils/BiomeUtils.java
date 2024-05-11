@@ -54,7 +54,7 @@ public class BiomeUtils {
 			Biome biome = entry.getValue();
 			if (biome != null) {
 				Identifier biomeID = getIdentifierForBiome(world, biome);
-				if (biomeID != null && !biomeIDIsBlacklisted(world, biomeID)) {
+				if (biomeID != null && !biomeIDIsBlacklisted(world, biomeID) && !biomeIDIsHidden(world, biomeID)) {
 					biomeIDs.add(biomeID);
 				}
 			}
@@ -220,6 +220,18 @@ public class BiomeUtils {
  			}
  		}
  		return false;
+	}
+	
+	public static boolean biomeIDIsHidden(World world, Identifier biomeID) {
+		if (getBiomeForIdentifier(world, biomeID).isPresent()) {
+			final Registry<Biome> biomeRegistry = getBiomeRegistry(world);
+			final Biome biome = getBiomeForIdentifier(world, biomeID).get();
+			if (biomeRegistry.getKey(biome).isPresent() && biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).isPresent()) {
+				final RegistryEntry<Biome> biomeHolder = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
+				return biomeHolder.streamTags().anyMatch(tag -> tag.id().getPath().equals("c:hidden_from_locator_selection"));
+			}
+		}
+		return false;
 	}
 	
 	private static String convertToRegex(String glob) {
