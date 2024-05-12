@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 public class ItemUtils {
 	
 	public static boolean isCompass(ItemStack stack) {
-		return !stack.isEmpty() || stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM;
+		return !stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM;
 	}
 
 	public static ItemStack getHeldNatureCompass(PlayerEntity player) {
