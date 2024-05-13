@@ -1,3 +1,15 @@
+## Version 3.0.2
+#### NeoForge 1.20.6
+- Fixed uncraftable Nature's Compass recipe
+
+# Version 2.2.5
+#### Fabric 1.20.6
+- Fixed uncraftable Nature's Compass recipe
+
+## Version 1.11.6
+#### Forge 1.20.6
+- Fixed uncraftable Nature's Compass recipe
+
 ## Version 3.0.1
 #### NeoForge 1.20.6, 1.20.5
 - Updated to NeoForge 1.20.6
