@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 
 public record TeleportPacket() implements CustomPayload {
 
-public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier(NaturesCompass.MODID, "teleport"));
+public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of(NaturesCompass.MODID, "teleport"));
 	
 	public static final PacketCodec<RegistryByteBuf, TeleportPacket> PACKET_CODEC = PacketCodec.of(TeleportPacket::write, TeleportPacket::read);
 

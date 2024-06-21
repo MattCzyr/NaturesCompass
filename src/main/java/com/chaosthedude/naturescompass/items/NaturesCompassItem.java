@@ -187,10 +187,10 @@ public class NaturesCompassItem extends Item {
 
 	public Identifier getBiomeID(ItemStack stack) {
 		if (ItemUtils.isCompass(stack) && stack.contains(NaturesCompass.BIOME_ID_COMPONENT)) {
-			return new Identifier(stack.get(NaturesCompass.BIOME_ID_COMPONENT));
+			return Identifier.of(stack.get(NaturesCompass.BIOME_ID_COMPONENT));
 		}
 
-		return new Identifier("");
+		return Identifier.of("", "");
 	}
 
 	public int getSearchRadius(ItemStack stack) {

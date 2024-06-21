@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs, ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs) implements CustomPayload {
 
-	public static final CustomPayload.Id<SyncPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier(NaturesCompass.MODID, "sync"));
+	public static final CustomPayload.Id<SyncPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of(NaturesCompass.MODID, "sync"));
 	
 	public static final PacketCodec<RegistryByteBuf, SyncPacket> PACKET_CODEC = PacketCodec.of(SyncPacket::write, SyncPacket::read);
 

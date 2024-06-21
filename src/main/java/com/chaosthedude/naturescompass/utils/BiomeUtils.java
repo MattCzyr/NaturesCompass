@@ -119,12 +119,12 @@ public class BiomeUtils {
 				if (fixedPath.contains("/")) {
 					fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
 				}
-				String biomeKey = Util.createTranslationKey("biome", new Identifier(tag.id().getNamespace(), fixedPath));
+				String biomeKey = Util.createTranslationKey("biome", Identifier.of(tag.id().getNamespace(), fixedPath));
 				String translatedBiomeKey = I18n.translate(biomeKey);
 				if (!biomeKey.equals(translatedBiomeKey)) {
 					return translatedBiomeKey;
 				}
-				String categoryKey = Util.createTranslationKey("category", new Identifier(tag.id().getNamespace(), fixedPath));
+				String categoryKey = Util.createTranslationKey("category", Identifier.of(tag.id().getNamespace(), fixedPath));
 				String translatedCategoryKey = I18n.translate(categoryKey);
 				if (!categoryKey.equals(translatedCategoryKey)) {
 					return translatedCategoryKey;

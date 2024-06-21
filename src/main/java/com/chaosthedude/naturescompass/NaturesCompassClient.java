@@ -23,7 +23,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(SyncPacket.PACKET_ID, SyncPacket::apply);
 		
-		ModelPredicateProviderRegistry.register(NaturesCompass.NATURES_COMPASS_ITEM, new Identifier("angle"), new ClampedModelPredicateProvider() {
+		ModelPredicateProviderRegistry.register(NaturesCompass.NATURES_COMPASS_ITEM, Identifier.of(NaturesCompass.MODID, "angle"), new ClampedModelPredicateProvider() {
 			private double rotation;
 			private double rota;
 			private long lastUpdateTick;
