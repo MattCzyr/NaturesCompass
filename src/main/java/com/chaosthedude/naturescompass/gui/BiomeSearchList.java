@@ -23,7 +23,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	@Override
 	protected int getScrollbarPosition() {
-		return super.getScrollbarPosition() + 20;
+		return getRowLeft() + getRowWidth() - 2;
 	}
 
 	@Override

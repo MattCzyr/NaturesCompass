@@ -35,7 +35,7 @@ public class NaturesCompassClient {
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			ItemProperties.register(NaturesCompass.naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
+			ItemProperties.register(NaturesCompass.naturesCompass, ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "angle"), new ClampedItemPropertyFunction() {
 				@OnlyIn(Dist.CLIENT)
 				private double rotation;
 				@OnlyIn(Dist.CLIENT)
