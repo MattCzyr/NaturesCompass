@@ -29,7 +29,7 @@ public class NaturesCompassClient {
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			ItemProperties.register(NaturesCompass.naturesCompass, new ResourceLocation("angle"), new ClampedItemPropertyFunction() {
+			ItemProperties.register(NaturesCompass.naturesCompass, ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "angle"), new ClampedItemPropertyFunction() {
 				@OnlyIn(Dist.CLIENT)
 				private double rotation;
 				@OnlyIn(Dist.CLIENT)
@@ -104,7 +104,7 @@ public class NaturesCompassClient {
 	
 	@SubscribeEvent
     public static void registerOverlay(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, new ResourceLocation(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
+        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
     }
 
 }

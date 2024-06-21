@@ -15,7 +15,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SearchPacket(ResourceLocation biomeKey, BlockPos pos) implements CustomPacketPayload {
 	
-	public static final Type<SearchPacket> TYPE = new Type<SearchPacket>(new ResourceLocation(NaturesCompass.MODID, "search"));
+	public static final Type<SearchPacket> TYPE = new Type<SearchPacket>(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "search"));
 	
 	public static final StreamCodec<FriendlyByteBuf, SearchPacket> CODEC = StreamCodec.ofMember(SearchPacket::write, SearchPacket::read);
 

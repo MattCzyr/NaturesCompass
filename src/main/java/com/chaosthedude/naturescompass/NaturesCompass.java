@@ -20,9 +20,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -60,15 +59,15 @@ public class NaturesCompass {
 
 	public static NaturesCompass instance;
 
-	public NaturesCompass(IEventBus bus, Dist dist) {
+	public NaturesCompass(ModContainer modContainer) {
 		instance = this;
 
-		bus.addListener(this::preInit);
-		bus.addListener(this::buildCreativeTabContents);
-		bus.addListener(this::registerPayloads);
+		modContainer.getEventBus().addListener(this::preInit);
+		modContainer.getEventBus().addListener(this::buildCreativeTabContents);
+		modContainer.getEventBus().addListener(this::registerPayloads);
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
+		modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
+		modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 
 		NeoForge.EVENT_BUS.register(this);
 	}

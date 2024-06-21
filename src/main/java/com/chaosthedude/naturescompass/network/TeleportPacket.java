@@ -20,7 +20,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record TeleportPacket() implements CustomPacketPayload {
 
-	public static final Type<TeleportPacket> TYPE = new Type<TeleportPacket>(new ResourceLocation(NaturesCompass.MODID, "teleport"));
+	public static final Type<TeleportPacket> TYPE = new Type<TeleportPacket>(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "teleport"));
 	
 	public static final StreamCodec<FriendlyByteBuf, TeleportPacket> CODEC = StreamCodec.ofMember(TeleportPacket::write, TeleportPacket::read);
 	

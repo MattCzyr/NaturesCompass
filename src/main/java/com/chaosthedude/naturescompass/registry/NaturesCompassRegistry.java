@@ -16,17 +16,17 @@ public class NaturesCompassRegistry {
 	public static void register(RegisterEvent event) {
 	    event.register(BuiltInRegistries.ITEM.key(), registry -> {
 	    	NaturesCompass.naturesCompass = new NaturesCompassItem();
-            registry.register(new ResourceLocation(NaturesCompass.MODID, NaturesCompassItem.NAME), NaturesCompass.naturesCompass);
+            registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, NaturesCompassItem.NAME), NaturesCompass.naturesCompass);
         });
 	    
 	    event.register(BuiltInRegistries.DATA_COMPONENT_TYPE.key(), registry -> {
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "biome_id"), NaturesCompass.BIOME_ID);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "compass_state"), NaturesCompass.COMPASS_STATE);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "found_x"), NaturesCompass.FOUND_X);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "found_z"), NaturesCompass.FOUND_Z);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "search_radius"), NaturesCompass.SEARCH_RADIUS);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "samples"), NaturesCompass.SAMPLES);
-	    	registry.register(new ResourceLocation(NaturesCompass.MODID, "display_coords"), NaturesCompass.DISPLAY_COORDS);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "biome_id"), NaturesCompass.BIOME_ID);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "compass_state"), NaturesCompass.COMPASS_STATE);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "found_x"), NaturesCompass.FOUND_X);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "found_z"), NaturesCompass.FOUND_Z);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "search_radius"), NaturesCompass.SEARCH_RADIUS);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "samples"), NaturesCompass.SAMPLES);
+	    	registry.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "display_coords"), NaturesCompass.DISPLAY_COORDS);
 	    });
 	}
 

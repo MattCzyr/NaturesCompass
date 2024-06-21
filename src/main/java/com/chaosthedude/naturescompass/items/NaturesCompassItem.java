@@ -198,10 +198,10 @@ public class NaturesCompassItem extends Item {
 
 	public ResourceLocation getBiomeKey(ItemStack stack) {
 		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.BIOME_ID)) {
-			return new ResourceLocation(stack.get(NaturesCompass.BIOME_ID));
+			return ResourceLocation.parse(stack.get(NaturesCompass.BIOME_ID));
 		}
 
-		return new ResourceLocation("");
+		return ResourceLocation.fromNamespaceAndPath("", "");
 	}
 
 	public int getSearchRadius(ItemStack stack) {

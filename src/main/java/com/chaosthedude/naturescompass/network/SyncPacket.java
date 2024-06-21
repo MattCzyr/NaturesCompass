@@ -11,12 +11,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.ClientPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes, ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys) implements CustomPacketPayload {
 
-	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(new ResourceLocation(NaturesCompass.MODID, "sync"));
+	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
 	
 	public static final StreamCodec<FriendlyByteBuf, SyncPacket> CODEC = StreamCodec.ofMember(SyncPacket::write, SyncPacket::read);
 	
