@@ -1,9 +1,21 @@
+## Version 3.0.3
+#### NeoForge 1.21
+- Fixed uncraftable Nature's Compass recipe
+
+## Version 2.2.6
+#### Fabric 1.21
+- Fixed uncraftable Nature's Compass recipe
+
+## Version 1.11.7
+#### Forge 1.21
+- Fixed uncraftable Nature's Compass recipe
+
 ## Version 3.0.2
 #### NeoForge 1.21, 1.20.6
 - Updated to NeoForge 1.21
 - Fixed uncraftable Nature's Compass recipe
 
-# Version 2.2.5
+## Version 2.2.5
 #### Fabric 1.21, 1.20.6
 - Updated to Fabric 1.21
 - Fixed uncraftable Nature's Compass recipe
@@ -19,7 +31,7 @@
 - Updated to NeoForge 1.20.5
 - Hid biomes with the c:hidden_from_locator_selection from appearing in the compass GUI
 
-# Version 2.2.4
+## Version 2.2.4
 #### Fabric 1.20.6, 1.20.5
 - Updated to Fabric 1.20.6
 - Updated to Fabric 1.20.5
