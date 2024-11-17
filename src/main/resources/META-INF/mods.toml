@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[52,)"
+loaderVersion="[53,)"
 issueTrackerURL="https://github.com/MattCzyr/NaturesCompass/issues"
 license="CC BY-NC-SA 4.0"
 
 [[mods]]
     modId="naturescompass"
-    version="1.21.1-1.11.7-forge"
+    version="1.21.3-1.11.8-forge"
     displayName="Nature's Compass"
     displayURL="https://github.com/MattCzyr/NaturesCompass"
     authors="ChaosTheDude"
@@ -16,12 +16,12 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.naturescompass]]
     modId="forge"
     mandatory=true
-    versionRange="[52,)"
+    versionRange="[53,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.naturescompass]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.21.1,)"
+    versionRange="[1.21.3,)"
     ordering="NONE"
     side="BOTH"
