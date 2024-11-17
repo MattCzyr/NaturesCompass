@@ -44,7 +44,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		yValues = Mth.outFromOrigin(startPos.getY(), level.getMinBuildHeight() + 1, level.getMaxBuildHeight(), 64).toArray();
+		yValues = Mth.outFromOrigin(startPos.getY(), level.getMinY() + 1, level.getMaxY(), 64).toArray();
 		sampleSpace = ConfigHandler.GENERAL.sampleSpaceModifier.get() * BiomeUtils.getBiomeSize(level);
 		maxSamples = ConfigHandler.GENERAL.maxSamples.get();
 		maxRadius = ConfigHandler.GENERAL.radiusModifier.get() * BiomeUtils.getBiomeSize(level);

@@ -14,12 +14,13 @@ import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,14 +32,16 @@ public class NaturesCompassItem extends Item {
 
 	public static final String NAME = "naturescompass";
 	
+	public static final ResourceKey<Item> KEY = ResourceKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, NAME));
+	
 	private BiomeSearchWorker worker;
 
 	public NaturesCompassItem() {
-		super(new Properties().stacksTo(1));
+		super(new Properties().setId(KEY).stacksTo(1));
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (!player.isCrouching()) {
 			if (level.isClientSide()) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
@@ -58,7 +61,7 @@ public class NaturesCompassItem extends Item {
 			setState(player.getItemInHand(hand), null, CompassState.INACTIVE, player);
 		}
 
-		return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, player.getItemInHand(hand));
+		return InteractionResult.CONSUME;
 	}
 	
 	@Override

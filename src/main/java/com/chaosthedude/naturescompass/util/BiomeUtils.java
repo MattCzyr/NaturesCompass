@@ -37,7 +37,7 @@ import net.neoforged.fml.ModList;
 public class BiomeUtils {
 
 	public static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
-		return level.registryAccess().registry(Registries.BIOME);
+		return level.registryAccess().lookup(Registries.BIOME);
 	}
 
 	public static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
@@ -70,7 +70,7 @@ public class BiomeUtils {
 		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
 		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
 			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
-			Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
+			Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
 			if (biomeSet.contains(biomeHolder)) {
 				dimensions.add(level.dimension().location());
 			}
@@ -111,8 +111,8 @@ public class BiomeUtils {
 		Set<String> biomeCategories = new TreeSet<String>();
 		if (getBiomeRegistry(level).isPresent()) {
 			Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
-			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
-				Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
+			if (biomeRegistry.wrapAsHolder(biome) != null) {
+				Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
 				// Extremely hacky way of extracting a biome's categories from its tags
 				List<TagKey<Biome>> categoryTags = biomeHolder.tags().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
 				for (TagKey<Biome> tag : categoryTags) {
@@ -238,9 +238,8 @@ public class BiomeUtils {
 		if (getBiomeRegistry(level).isPresent() && getBiomeForKey(level, biomeKey).isPresent()) {
 			final Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
 			final Biome biome = getBiomeForKey(level, biomeKey).get();
-			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
-				final Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
-				return biomeHolder.tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
+			if (biomeRegistry.wrapAsHolder(biome) != null) {
+				return biomeRegistry.wrapAsHolder(biome).tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
 			}
 		}
 		return false;

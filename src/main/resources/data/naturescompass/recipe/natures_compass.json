@@ -7,15 +7,9 @@
     "SLS"
   ],
   "key": {
-    "S": {
-      "tag": "saplings"
-    },
-    "L":{
-      "tag": "logs"
-	},
-	"C":{
-      "item": "minecraft:compass"
-	}
+    "S": "#saplings",
+    "L": "#logs",
+	"C": "minecraft:compass"
   },
   "result": {
     "id": "naturescompass:naturescompass"

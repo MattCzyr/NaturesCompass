@@ -76,7 +76,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	}
 
 	@Override
-	protected int getRowBottom(int itemIndex) {
+	public int getRowBottom(int itemIndex) {
 		return getRowTop(itemIndex) + itemHeight;
 	}
 
