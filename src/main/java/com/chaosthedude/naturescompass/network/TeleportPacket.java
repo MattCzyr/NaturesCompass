@@ -44,9 +44,9 @@ public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPaylo
 						final int y = findValidTeleportHeight(context.player().getEntityWorld(), x, z);
 
 						context.player().stopRiding();
-						context.player().networkHandler.requestTeleport(x, y, z, context.player().getYaw(), context.player().getPitch(), Collections.emptySet());
+						context.player().networkHandler.requestTeleport(x, y, z, context.player().getYaw(), context.player().getPitch());
 
-						if (!context.player().isFallFlying()) {
+						if (!context.player().isGliding()) {
 							context.player().setVelocity(context.player().getVelocity().getX(), 0, context.player().getVelocity().getZ());
 							context.player().setOnGround(true);
 						}

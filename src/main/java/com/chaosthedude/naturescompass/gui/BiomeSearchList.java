@@ -87,7 +87,7 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
     }
 
 	@Override
-	protected int getRowBottom(int index) {
+	public int getRowBottom(int index) {
 		return getRowTop(index) + itemHeight;
 	}
 

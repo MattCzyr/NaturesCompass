@@ -42,7 +42,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		yValues = MathHelper.stream(startPos.getY(), world.getBottomY() + 1, world.getTopY(), 64).toArray();
+		yValues = MathHelper.stream(startPos.getY(), world.getBottomY() + 1, world.getBottomY() + world.getHeight(), 64).toArray();
 		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
 		maxSamples = NaturesCompassConfig.maxSamples;
 		maxRadius = NaturesCompassConfig.radiusModifier * BiomeUtils.getBiomeSize(world);

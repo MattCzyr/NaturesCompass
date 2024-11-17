@@ -17,25 +17,31 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public class NaturesCompassItem extends Item {
 	
+	public static final String NAME = "naturescompass";
+	
+	public static final RegistryKey<Item> KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(NaturesCompass.MODID, NAME));
+	
 	private BiomeSearchWorker worker;
 	
 	public NaturesCompassItem() {
-        super(new Settings().maxCount(1));
+        super(new Settings().registryKey(KEY).maxCount(1));
     }
 	
 	@Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
 		if (!player.isSneaking()) {
 			if (world.isClient) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
@@ -54,7 +60,7 @@ public class NaturesCompassItem extends Item {
 			}
 			setState(player.getStackInHand(hand), null, CompassState.INACTIVE, player);
 		}
-		return TypedActionResult.pass(player.getStackInHand(hand));
+		return ActionResult.CONSUME;
 	}
 
 	public void searchForBiome(ServerWorld world, PlayerEntity player, Identifier biomeID, BlockPos pos, ItemStack stack) {

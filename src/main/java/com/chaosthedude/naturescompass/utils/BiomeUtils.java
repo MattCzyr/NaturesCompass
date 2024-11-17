@@ -37,7 +37,7 @@ import net.minecraft.world.biome.Biome;
 public class BiomeUtils {
 	
 	public static Registry<Biome> getBiomeRegistry(World world) {
-		return world.getRegistryManager().get(RegistryKeys.BIOME);
+		return world.getRegistryManager().getOrThrow(RegistryKeys.BIOME);
 	}
 
 	public static Identifier getIdentifierForBiome(World world, Biome biome) {
@@ -45,7 +45,7 @@ public class BiomeUtils {
 	}
 
 	public static Optional<Biome> getBiomeForIdentifier(World world, Identifier id) {
-		return getBiomeRegistry(world).getOrEmpty(id);
+		return getBiomeRegistry(world).getOptionalValue(id);
 	}
 
 	public static List<Identifier> getAllowedBiomeIDs(World world) {
@@ -68,7 +68,7 @@ public class BiomeUtils {
 		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverWorld);
 		for (ServerWorld world : serverWorld.getServer().getWorlds()) {
 			Set<RegistryEntry<Biome>> biomeSet = world.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes();
-			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
+			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biome);
 			if (biomeSet.contains(biomeEntry)) {
 				dimensions.add(world.getRegistryKey().getValue());
 			}
@@ -107,8 +107,8 @@ public class BiomeUtils {
 		// This will ignore duplicates and keep things sorted alphabetically
 		Set<String> biomeCategories = new TreeSet<String>();
 		Registry<Biome> biomeRegistry = getBiomeRegistry(world);
-		if (biomeRegistry.getKey(biome).isPresent() && biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).isPresent()) {
-			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
+		if (biomeRegistry.getEntry(biome) != null) {
+			RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biome);
 			// Extremely hacky way of extracting a biome's categories from its tags
 			List<TagKey<Biome>> categoryTags = biomeEntry.streamTags().filter(tag -> tag.id().getPath().startsWith("is_")).collect(Collectors.toList());
 			for (TagKey<Biome> tag : categoryTags) {
@@ -223,13 +223,9 @@ public class BiomeUtils {
 	}
 	
 	public static boolean biomeIDIsHidden(World world, Identifier biomeID) {
-		if (getBiomeForIdentifier(world, biomeID).isPresent()) {
-			final Registry<Biome> biomeRegistry = getBiomeRegistry(world);
-			final Biome biome = getBiomeForIdentifier(world, biomeID).get();
-			if (biomeRegistry.getKey(biome).isPresent() && biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).isPresent()) {
-				final RegistryEntry<Biome> biomeHolder = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
-				return biomeHolder.streamTags().anyMatch(tag -> tag.id().getPath().equals("c:hidden_from_locator_selection"));
-			}
+		final Registry<Biome> biomeRegistry = getBiomeRegistry(world);
+		if (biomeRegistry.getEntry(biomeID).isPresent()) {
+			return biomeRegistry.getEntry(biomeID).get().streamTags().anyMatch(tag -> tag.id().getPath().equals("c:hidden_from_locator_selection"));
 		}
 		return false;
 	}

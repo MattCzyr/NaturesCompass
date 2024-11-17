@@ -50,7 +50,7 @@ public class NaturesCompass implements ModInitializer {
 	public void onInitialize() {
 		NaturesCompassConfig.load();
 
-		Registry.register(Registries.ITEM, Identifier.of(MODID, "naturescompass"), NATURES_COMPASS_ITEM);
+		Registry.register(Registries.ITEM, NaturesCompassItem.KEY, NATURES_COMPASS_ITEM);
 		
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "biome_id"), BIOME_ID_COMPONENT);
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "compass_state"), COMPASS_STATE_COMPONENT);
