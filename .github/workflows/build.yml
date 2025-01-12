@@ -23,6 +23,6 @@ jobs:
       - name: Remove sources JAR
         run: |
           find -type f -path './build/libs/*' -name '*sources*' -delete
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: build/libs/*
