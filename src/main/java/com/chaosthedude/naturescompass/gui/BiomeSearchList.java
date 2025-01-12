@@ -28,7 +28,7 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 	}
 	
 	@Override
-	protected int getDefaultScrollbarX() {
+	protected int getScrollbarX() {
         return getRowLeft() + getRowWidth() - 2;
     }
 
@@ -66,12 +66,12 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 		}
 		context.disableScissor();
 
-		if (getMaxScroll() > 0) {
+		if (getMaxScrollY() > 0) {
 			int left = getScrollbarX();
 			int right = left + 6;
-			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) getMaxPosition());
+			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) getContentsHeightWithPadding());
 			height = MathHelper.clamp(height, 32, getBottom() - getY() - 8);
-			int scrollbarTop = (int) getScrollAmount() * (getBottom() - getY() - height) / getMaxScroll() + getY();
+			int scrollbarTop = (int) getScrollY() * (getBottom() - getY() - height) / getMaxScrollY() + getY();
 			if (scrollbarTop < getY()) {
 				scrollbarTop = getY();
 			}

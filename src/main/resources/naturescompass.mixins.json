@@ -7,7 +7,8 @@
   ],
   "client": [
     "HUDMixin",
-    "HeldItemRendererMixin"
+    "HeldItemRendererMixin",
+    "NumericPropertiesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

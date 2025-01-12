@@ -40,7 +40,7 @@ public class NaturesCompass implements ModInitializer {
 	public static final ComponentType<Integer> FOUND_Z_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 	public static final ComponentType<Integer> SEARCH_RADIUS_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 	public static final ComponentType<Integer> SAMPLES_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
-	public static final ComponentType<Boolean> DISPLAY_COORDS_COMPONENT = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build();
+	public static final ComponentType<Boolean> DISPLAY_COORDS_COMPONENT = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOLEAN).build();
 
 	public static boolean canTeleport;
 	public static List<Identifier> allowedBiomes;
