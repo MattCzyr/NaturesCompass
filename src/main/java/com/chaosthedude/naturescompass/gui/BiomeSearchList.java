@@ -22,7 +22,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
+	protected int scrollBarX() {
 		return getRowLeft() + getRowWidth() - 2;
 	}
 
@@ -55,12 +55,12 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 		}
 		guiGraphics.disableScissor();
 
-		if (getMaxScroll() > 0) {
-			int left = getScrollbarPosition();
+		if (maxScrollAmount() > 0) {
+			int left = scrollBarX();
 			int right = left + 6;
-			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) getMaxPosition());
+			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) contentHeight());
 			height = Mth.clamp(height, 32, getBottom() - getY() - 8);
-			int top = (int) getScrollAmount() * (getBottom() - getY() - height) / getMaxScroll() + getY();
+			int top = (int) scrollAmount() * (getBottom() - getY() - height) / maxScrollAmount() + getY();
 			if (top < getY()) {
 				top = getY();
 			}

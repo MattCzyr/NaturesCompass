@@ -1,0 +1,241 @@
+{
+    "model": {
+        "type": "minecraft:range_dispatch",
+        "property": "naturescompass:angle",
+        "scale": 32,
+        
+        "entries": [
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_16"
+                },
+                "threshold": 0
+            },
+            {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "naturescompass:item/naturescompass_17"
+                },
+                "threshold": 0.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_18"
+                },
+                "threshold": 1.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_19"
+                },
+                "threshold": 2.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_20"
+                },
+                "threshold": 3.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_21"
+                },
+                "threshold": 4.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_22"
+                },
+                "threshold": 5.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_23"
+                },
+                "threshold": 6.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_24"
+                },
+                "threshold": 7.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_25"
+                },
+                "threshold": 8.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_26"
+                },
+                "threshold": 9.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_27"
+                },
+                "threshold": 10.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_28"
+                },
+                "threshold": 11.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_29"
+                },
+                "threshold": 12.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_30"
+                },
+                "threshold": 13.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_31"
+                },
+                "threshold": 14.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_00"
+                },
+                "threshold": 15.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_01"
+                },
+                "threshold": 16.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_02"
+                },
+                "threshold": 17.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_03"
+                },
+                "threshold": 18.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_04"
+                },
+                "threshold": 19.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_05"
+                },
+                "threshold": 20.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_06"
+                },
+                "threshold": 21.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_07"
+                },
+                "threshold": 22.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_08"
+                },
+                "threshold": 23.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_09"
+                },
+                "threshold": 24.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_10"
+                },
+                "threshold": 25.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_11"
+                },
+                "threshold": 26.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_12"
+                },
+                "threshold": 27.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_13"
+                },
+                "threshold": 28.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_14"
+                },
+                "threshold": 29.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_15"
+                },
+                "threshold": 30.5
+            },
+            {
+                "model": {
+                    "type": "minecraft:model",
+                    "model": "naturescompass:item/naturescompass_16"
+                },
+                "threshold": 31.5
+            }
+        ]
+    }
+}
