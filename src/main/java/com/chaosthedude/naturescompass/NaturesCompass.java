@@ -61,19 +61,19 @@ public class NaturesCompass {
 
 	public static NaturesCompass instance;
 
-	public NaturesCompass() {
+	public NaturesCompass(FMLJavaModLoadingContext context) {
 		instance = this;
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::buildCreativeTabContents);
+		context.getModEventBus().addListener(NaturesCompass::preInit);
+		context.getModEventBus().addListener(NaturesCompass::buildCreativeTabContents);
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
+		context.registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
+		context.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(NaturesCompass::registerNodes);
 	}
 
-	private void preInit(FMLCommonSetupEvent event) {
+	private static void preInit(FMLCommonSetupEvent event) {
 		network = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, NaturesCompass.MODID)).networkProtocolVersion(1).optionalClient().clientAcceptedVersions(Channel.VersionTest.exact(1)).simpleChannel();
 
 		// Server packets
@@ -87,14 +87,13 @@ public class NaturesCompass {
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
 
-	private void buildCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+	private static void buildCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
 		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(new ItemStack(naturesCompass));
 		}
 	}
 
-	@SubscribeEvent
-	public void registerNodes(PermissionGatherEvent.Nodes event) {
+	public static void registerNodes(PermissionGatherEvent.Nodes event) {
 		event.addNodes(TELEPORT_PERMISSION);
 	}
 
