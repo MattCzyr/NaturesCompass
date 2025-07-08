@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.network;
 
-import java.util.Collections;
-
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
@@ -41,7 +39,7 @@ public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPaylo
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						final int y = findValidTeleportHeight(context.player().getEntityWorld(), x, z);
+						final int y = findValidTeleportHeight(context.player().getWorld(), x, z);
 
 						context.player().stopRiding();
 						context.player().networkHandler.requestTeleport(x, y, z, context.player().getYaw(), context.player().getPitch());

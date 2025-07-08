@@ -38,7 +38,7 @@ public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPa
 	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final ServerWorld world = context.player().getServerWorld();
+				final ServerWorld world = context.player().getWorld();
 				natureCompass.searchForBiome(world, context.player(), packet.biomeID(), packet.pos(), stack);
 			}
 		});

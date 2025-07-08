@@ -58,11 +58,10 @@ public class BiomeSearchEntry extends AlwaysSelectedEntryListWidget.Entry<BiomeS
 			tagsLine = mc.textRenderer.trimToWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		context.drawText(mc.textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), left + 1, top + 1, 0xffffff, false);
-		context.drawText(mc.textRenderer, title + ": " + value, left + 1, top + mc.textRenderer.fontHeight + 3, 0x808080, false);
-		context.drawText(mc.textRenderer, tagsLine, left + 1, top + mc.textRenderer.fontHeight + 14, 0x808080, false);
-		context.drawText(mc.textRenderer, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), left + 1, top + mc.textRenderer.fontHeight + 25, 0x808080, false);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		context.drawText(mc.textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), left + 1, top + 1, 0xffffffff, false);
+		context.drawText(mc.textRenderer, title + ": " + value, left + 1, top + mc.textRenderer.fontHeight + 3, 0xff808080, false);
+		context.drawText(mc.textRenderer, tagsLine, left + 1, top + mc.textRenderer.fontHeight + 14, 0xff808080, false);
+		context.drawText(mc.textRenderer, Text.translatable("string.naturescompass.source").append(": " + BiomeUtils.getBiomeSource(parentScreen.world, biome)), left + 1, top + mc.textRenderer.fontHeight + 25, 0xff808080, false);
 	}
 
 	@Override

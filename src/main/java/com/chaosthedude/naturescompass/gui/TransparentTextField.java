@@ -5,7 +5,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -15,14 +14,14 @@ public class TransparentTextField extends TextFieldWidget {
 
 	private TextRenderer textRenderer;
 	private Text label;
-	private int labelColor = 0x808080;
+	private int labelColor = 0xff808080;
 
 	private boolean pseudoEditable = true;
 	private boolean pseudoEnableBackgroundDrawing = true;
 	private int pseudoMaxLength = 32;
 	private int pseudoLineScrollOffset;
-	private int pseudoEditableColor = 14737632;
-	private int pseudoUneditableColor = 7368816;
+	private int pseudoEditableColor = 0xffe0e0e0;
+	private int pseudoUneditableColor = 0xff707070;
 	private int pseudoSelectionEnd;
 	private long pseudoFocusTime;
 
@@ -56,7 +55,8 @@ public class TransparentTextField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = context.drawTextWithShadow(textRenderer, s1, l, i1, i);
+				context.drawTextWithShadow(textRenderer, s1, l, i1, i);
+				j1 += textRenderer.getWidth(s1);
 			}
 
 			boolean flag2 = getCursor() < getText().length() || getText().length() >= pseudoMaxLength;
@@ -70,12 +70,12 @@ public class TransparentTextField extends TextFieldWidget {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = context.drawTextWithShadow(textRenderer, s.substring(j), j1, i1, i);
+				context.drawTextWithShadow(textRenderer, s.substring(j), j1, i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					context.fill(RenderLayer.getGuiTextHighlight(), k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
+					context.fill(k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
 				} else {
 					context.drawTextWithShadow(textRenderer, "_", k1, i1, i);
 				}
@@ -182,7 +182,7 @@ public class TransparentTextField extends TextFieldWidget {
 			startX = getX() + getWidth();
 		}
 
-		context.fill(RenderLayer.getGuiTextHighlight(), startX, startY, endX, endY, -16776961);
+		context.drawSelection(startX, startY, endX, endY);
 	}
 
 }

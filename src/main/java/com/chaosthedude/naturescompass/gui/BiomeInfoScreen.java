@@ -67,10 +67,10 @@ public class BiomeInfoScreen extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		super.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawText(textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffff, false);
+		context.drawText(textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffffff, false);
 
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffff, false);
-		context.drawText(textRenderer, source, width / 2 - 100, 50, 0x808080, false);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffffff, false);
+		context.drawText(textRenderer, source, width / 2 - 100, 50, 0xff808080, false);
 		
 		int tagsMaxWidth = width / 2 - 50; // Margin of 10 on the right side
 		String tagsLine = tags;
@@ -78,20 +78,20 @@ public class BiomeInfoScreen extends Screen {
 			tagsLine = textRenderer.trimToWidth(tagsLine + "...", tagsMaxWidth) + "...";
 		}
 
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffff, false);
-		context.drawText(textRenderer, tagsLine, width / 2 + 40, 50, 0x808080, false);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffffff, false);
+		context.drawText(textRenderer, tagsLine, width / 2 + 40, 50, 0xff808080, false);
 
-		//context.drawText(textRenderer, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffff, false);
-		//context.drawText(textRenderer, precipitation, width / 2 - 100, 80, 0x808080, false);
+		//context.drawText(textRenderer, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffffff, false);
+		//context.drawText(textRenderer, precipitation, width / 2 - 100, 80, 0xff808080, false);
 		
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffff, false);
-		context.drawText(textRenderer, rainfall, width / 2 + 40, 80, 0x808080, false);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffffff, false);
+		context.drawText(textRenderer, rainfall, width / 2 + 40, 80, 0xff808080, false);
 		
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffff, false);
-		context.drawText(textRenderer, temperature, width / 2 - 100, 110, 0x808080, false);
+		context.drawText(textRenderer, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffffff, false);
+		context.drawText(textRenderer, temperature, width / 2 - 100, 110, 0xff808080, false);
 		
-		//context.drawText(textRenderer, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffff, false);
-		//context.drawText(textRenderer, highHumidity, width / 2 + 40, 110, 0x808080, false);
+		//context.drawText(textRenderer, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffffff, false);
+		//context.drawText(textRenderer, highHumidity, width / 2 + 40, 110, 0xff808080, false);
 	}
 
 	private void setupButtons() {
