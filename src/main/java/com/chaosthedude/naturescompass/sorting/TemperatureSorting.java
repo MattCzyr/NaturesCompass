@@ -2,10 +2,7 @@ package com.chaosthedude.naturescompass.sorting;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class TemperatureSorting implements ISorting<Float> {
 
 	@Override

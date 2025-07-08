@@ -29,8 +29,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 
@@ -102,7 +100,6 @@ public class BiomeUtils {
 		return (int) Mth.sqrt((float) startPos.distSqr(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeTags(Level level, Biome biome) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it
 		// altogether for clarity
@@ -143,7 +140,6 @@ public class BiomeUtils {
 		return String.join(", ", biomeCategories);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
 		if (getBiomeForKey(level, biome).isPresent()) {
 			return getBiomeNameForDisplay(level, getBiomeForKey(level, biome).get());
@@ -151,7 +147,6 @@ public class BiomeUtils {
 		return "";
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeNameForDisplay(Level level, Biome biome) {
 		if (biome != null) {
 			if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
@@ -175,12 +170,10 @@ public class BiomeUtils {
 		return "";
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeName(Level level, Biome biome) {
 		return getKeyForBiome(level, biome).isPresent() ? I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(level, biome).get())) : "";
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeName(Level level, ResourceLocation key) {
 		if (getBiomeForKey(level, key).isPresent()) {
 			return getBiomeName(level, getBiomeForKey(level, key).get());
@@ -188,7 +181,6 @@ public class BiomeUtils {
 		return "";
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getBiomeSource(Level level, Biome biome) {
 		if (getKeyForBiome(level, biome).isEmpty()) {
 			return "";
@@ -204,7 +196,6 @@ public class BiomeUtils {
 		return modid;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	private static String getDimensionName(ResourceLocation dimensionKey) {
 		String name = I18n.get(Util.makeDescriptionId("dimension", dimensionKey));
 		if (name.equals(Util.makeDescriptionId("dimension", dimensionKey))) {
@@ -217,7 +208,6 @@ public class BiomeUtils {
 		return name;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	public static String dimensionKeysToString(List<ResourceLocation> dimensions) {
 		Set<String> dimensionNames = new HashSet<String>();
 		dimensions.forEach((key) -> dimensionNames.add(getDimensionName(key)));

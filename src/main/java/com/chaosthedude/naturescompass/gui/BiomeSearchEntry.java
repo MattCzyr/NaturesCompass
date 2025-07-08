@@ -8,7 +8,6 @@ import com.chaosthedude.naturescompass.sorting.NameSorting;
 import com.chaosthedude.naturescompass.sorting.SourceSorting;
 import com.chaosthedude.naturescompass.sorting.TagsSorting;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -19,11 +18,9 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry> {
 
 	private final Minecraft mc;
@@ -60,11 +57,10 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 			tagsLine = mc.font.plainSubstrByWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), left + 1, top + 1, 0xffffff);
-		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), left + 1, top + mc.font.lineHeight + 3, 0x808080);
-		guiGraphics.drawString(mc.font, Component.literal(tagsLine), left + 1, top + mc.font.lineHeight + 14, 0x808080);
-		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), left + 1, top + mc.font.lineHeight + 25, 0x808080);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), left + 1, top + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), left + 1, top + mc.font.lineHeight + 3, 0xff808080);
+		guiGraphics.drawString(mc.font, Component.literal(tagsLine), left + 1, top + mc.font.lineHeight + 14, 0xff808080);
+		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), left + 1, top + mc.font.lineHeight + 25, 0xff808080);
 	}
 
 	@Override
