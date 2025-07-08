@@ -182,7 +182,7 @@ public class TransparentTextField extends TextFieldWidget {
 			startX = getX() + getWidth();
 		}
 
-		context.drawSelection(startX, startY, endX, endY);
+		context.fill(startX, startY, endX, endY, 0xff0000ff);
 	}
 
 }

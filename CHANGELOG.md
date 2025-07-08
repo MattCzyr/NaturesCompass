@@ -1,3 +1,17 @@
+## Version 3.0.5
+#### NeoForge 1.21.7, 1.12.6
+- Updated to NeoForge 1.21.7
+- Updated to NeoForge 1.21.6
+- Added Ecuadorian Spanish translations
+- Fixed compass recipe not unlocking when an ingredient is picked up
+
+## Version 2.2.9
+#### Fabric 1.21.7, 1.21.6
+- Updated to Fabric 1.21.7
+- Updated to Fabric 1.21.6
+- Added Ecuadorian Spanish translations
+- Fixed compass recipe not unlocking when an ingredient is picked up
+
 ## Version 3.0.4
 #### NeoForge 1.21.5, 1.21.4, 1.21.3
 - Updated to NeoForge 1.21.5
@@ -18,10 +32,6 @@
 - Updated to Forge 1.21.4
 - Updated to Forge 1.21.3
 - Fixed compass also performing offhand item action after opening GUI
-
-## Version 2.2.7
-#### Fabric 1.21.1
-- Fixed uncraftable Nature's Compass recipe
 
 ## Version 3.0.3
 #### NeoForge 1.21.1, 1.21
