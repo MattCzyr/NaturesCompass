@@ -14,7 +14,7 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.naturescompass]]
     modId="neoforge"
     type="required"
-    versionRange="${neo_version_range}"
+    versionRange="[${neo_version},)
     ordering="NONE"
     side="BOTH"
 [[dependencies.naturescompass]]
