@@ -56,7 +56,7 @@ public class TransparentTextField extends TextFieldWidget {
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
 				context.drawTextWithShadow(textRenderer, s1, l, i1, i);
-				j1 += textRenderer.getWidth(s1);
+				j1 += textRenderer.getWidth(s1) + 1;
 			}
 
 			boolean flag2 = getCursor() < getText().length() || getText().length() >= pseudoMaxLength;
