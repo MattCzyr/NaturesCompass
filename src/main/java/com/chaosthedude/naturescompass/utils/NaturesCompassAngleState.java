@@ -12,6 +12,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.HeldItemContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.MathHelper;
@@ -28,10 +29,10 @@ public class NaturesCompassAngleState extends NeedleAngleState {
 		super(true);
 		wobbler = createAngler(0.8F);
 	}
-
+	
 	@Override
-	protected float getAngle(ItemStack stack, ClientWorld world, int seed, Entity entity) {
-		GlobalPos pos = new GlobalPos(world.getRegistryKey(), world.getSpawnPos());
+	protected float getAngle(ItemStack stack, ClientWorld world, int seed, HeldItemContext context) {
+		GlobalPos pos = world.getSpawnPoint().globalPos();
 		if (stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
 			NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
 			if (compassItem.getState(stack) == CompassState.FOUND) {
@@ -39,7 +40,7 @@ public class NaturesCompassAngleState extends NeedleAngleState {
 			}
 		}
 		long gameTime = world.getTime();
-		return !isValidCompassTargetPos(entity, pos) ? getRandomlySpinningRotation(seed, gameTime) : getRotationTowardsCompassTarget(entity, gameTime, pos.pos());
+		return context.getEntity() == null || !isValidCompassTargetPos(context.getEntity(), pos) ? getRandomlySpinningRotation(seed, gameTime) : getRotationTowardsCompassTarget(context.getEntity(), gameTime, pos.pos());
 	}
 
 	private float getRandomlySpinningRotation(int seed, long gameTime) {
@@ -54,7 +55,7 @@ public class NaturesCompassAngleState extends NeedleAngleState {
 	private float getRotationTowardsCompassTarget(Entity entity, long gameTime, BlockPos pos) {
 		float f = (float) getAngleFromEntityToPos(entity, pos);
 		float f1 = getWrappedVisualRotationY(entity);
-		if (entity instanceof PlayerEntity playerEntity && playerEntity.isMainPlayer() && playerEntity.getWorld().getTickManager().shouldTick()) {
+		if (entity instanceof PlayerEntity playerEntity && playerEntity.isMainPlayer() && playerEntity.getEntityWorld().getTickManager().shouldTick()) {
 			if (wobbler.shouldUpdate(gameTime)) {
 				wobbler.update(gameTime, 0.5F - (f1 - 0.25F));
 			}
@@ -68,7 +69,7 @@ public class NaturesCompassAngleState extends NeedleAngleState {
 	}
 
 	private static boolean isValidCompassTargetPos(Entity entity, @Nullable GlobalPos pos) {
-		return pos != null && pos.dimension() == entity.getWorld().getRegistryKey() && !(pos.pos().getSquaredDistance(entity.getPos()) < 1.0E-5F);
+		return pos != null && pos.dimension() == entity.getEntityWorld().getRegistryKey() && !(pos.pos().getSquaredDistance(entity.getBlockPos()) < 1.0E-5F);
 	}
 
 	private static double getAngleFromEntityToPos(Entity entity, BlockPos pos) {

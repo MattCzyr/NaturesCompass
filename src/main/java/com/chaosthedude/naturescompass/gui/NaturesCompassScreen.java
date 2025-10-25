@@ -21,11 +21,11 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -96,20 +96,10 @@ public class NaturesCompassScreen extends Screen {
 		super.render(context, mouseX, mouseY, partialTicks);
 		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("string.naturescompass.selectBiome"), 65, 15, 0xffffffff);
 	}
-
+	
 	@Override
-	public boolean keyPressed(int par1, int par2, int par3) {
-		boolean ret = super.keyPressed(par1, par2, par3);
-		if (searchTextField.isFocused()) {
-			processSearchTerm();
-			return true;
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean charTyped(char typedChar, int keyCode) {
-		boolean ret = super.charTyped(typedChar, keyCode);
+	public boolean keyPressed(KeyInput input) {
+		boolean ret = super.keyPressed(input);
 		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;

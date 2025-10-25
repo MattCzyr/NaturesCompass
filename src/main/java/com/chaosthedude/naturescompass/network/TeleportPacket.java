@@ -31,7 +31,7 @@ public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPaylo
 	}
 
 	public static void apply(TeleportPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> {
+		context.server().execute(() -> {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
@@ -39,7 +39,7 @@ public static final CustomPayload.Id<TeleportPacket> PACKET_ID = new CustomPaylo
 					if (natureCompass.getState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
-						final int y = findValidTeleportHeight(context.player().getWorld(), x, z);
+						final int y = findValidTeleportHeight(context.player().getEntityWorld(), x, z);
 
 						context.player().stopRiding();
 						context.player().networkHandler.requestTeleport(x, y, z, context.player().getYaw(), context.player().getPitch());

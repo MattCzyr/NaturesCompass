@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.util.Objects;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -33,11 +31,6 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
     }
 
 	@Override
-	protected boolean isSelectedEntry(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelectedOrNull()) : false;
-	}
-
-	@Override
 	public void renderWidget(DrawContext context, int mouseX, int mouseY, float par3) {
 		renderList(context, mouseX, mouseY, par3);
 	}
@@ -47,21 +40,14 @@ public class BiomeSearchList extends EntryListWidget<BiomeSearchEntry> {
 		context.fill(getRowLeft() - 4, getY(), getRowLeft() + getRowWidth() + 4, getY() + getHeight() + 4, 255 / 2 << 24);
 		
 		enableScissor(context);
-		int i = getEntryCount();
-		for (int j = 0; j < i; ++j) {
-			int k = getRowTop(j);
-			int l = getRowBottom(j);
-			if (l >= getY() && k <= getBottom()) {
-				int j1 = itemHeight - 4;
-				BiomeSearchEntry e = getEntry(j);
-				int k1 = getRowWidth();
-				if (isSelectedEntry(j)) {
-					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
-					context.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+		for (int i = 0; i < getEntryCount(); ++i) {
+			if (getRowBottom(i) >= getY() && getRowTop(i) <= getBottom()) {
+				BiomeSearchEntry e = children().get(i);
+				if (e == getSelectedOrNull()) {
+					context.fill(getRowLeft() - 4, getRowTop(i) - 4, getRowLeft() + getRowWidth() + 4, getRowTop(i) + itemHeight, 255 / 2 << 24);
 				}
 
-				int j2 = getRowLeft();
-				e.render(context, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), par5);
+				e.render(context, mouseX, mouseY, e == getHoveredEntry(), par5);
 			}
 		}
 		context.disableScissor();

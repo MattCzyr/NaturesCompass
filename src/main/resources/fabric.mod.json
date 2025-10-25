@@ -30,9 +30,9 @@
   ],
   "accessWidener" : "naturescompass.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.14",
+    "fabricloader": ">=0.0.17.2",
     "fabric-api": "*",
-    "minecraft": "~1.21.8",
+    "minecraft": "~1.21.10",
     "java": ">=21"
   },
   "suggests": {

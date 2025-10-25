@@ -12,7 +12,7 @@ public class PlayerUtils {
 
 	public static boolean cheatModeEnabled(PlayerEntity player) {
 		if (player instanceof ServerPlayerEntity) {
-			final MinecraftServer server = ((ServerPlayerEntity) player).getServer();
+			final MinecraftServer server = ((ServerPlayerEntity) player).getEntityWorld().getServer();
 			if (server != null && server.isSingleplayer()) {
 				return server.getPlayerManager().areCheatsAllowed();
 			}
@@ -23,9 +23,9 @@ public class PlayerUtils {
 
 	public static boolean isOp(PlayerEntity player) {
 		if (player instanceof ServerPlayerEntity) {
-			final MinecraftServer server = ((ServerPlayerEntity) player).getServer();
+			final MinecraftServer server = ((ServerPlayerEntity) player).getEntityWorld().getServer();
 			if (server != null) {
-				return server.getPlayerManager().isOperator(player.getGameProfile());
+				return server.getPlayerManager().isOperator(player.getPlayerConfigEntry());
 			}
 		}
 

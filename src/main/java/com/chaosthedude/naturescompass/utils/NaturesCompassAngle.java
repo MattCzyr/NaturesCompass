@@ -1,15 +1,13 @@
 package com.chaosthedude.naturescompass.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.item.property.numeric.NumericProperty;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.HeldItemContext;
 
 @Environment(EnvType.CLIENT)
 public class NaturesCompassAngle implements NumericProperty {
@@ -24,10 +22,10 @@ public class NaturesCompassAngle implements NumericProperty {
 	private NaturesCompassAngle(NaturesCompassAngleState state) {
 		this.state = state;
 	}
-
+	
 	@Override
-	public float getValue(ItemStack stack, @Nullable ClientWorld level, @Nullable LivingEntity entity, int seed) {
-		return state.getValue(stack, level, entity, seed);
+	public float getValue(ItemStack stack, ClientWorld world, HeldItemContext context, int seed) {
+		return state.getValue(stack, world, context, seed);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class NaturesCompassItem extends Item {
 	@Override
     public ActionResult use(World world, PlayerEntity player, Hand hand) {
 		if (!player.isSneaking()) {
-			if (world.isClient) {
+			if (world.isClient()) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				GuiWrapper.openGUI(world, player, stack);
 			} else {
