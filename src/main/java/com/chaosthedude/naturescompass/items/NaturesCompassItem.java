@@ -7,11 +7,11 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
-import com.chaosthedude.naturescompass.util.BiomeSearchWorker;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
+import com.chaosthedude.naturescompass.worker.BiomeSearchWorker;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,7 +49,7 @@ public class NaturesCompassItem extends Item {
 			} else {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
-				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
+				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.level().getServer(), player);
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
 				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
 			}

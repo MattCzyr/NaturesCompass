@@ -1,10 +1,11 @@
-package com.chaosthedude.naturescompass.util;
+package com.chaosthedude.naturescompass.worker;
 
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +16,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.common.WorldWorkerManager;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 

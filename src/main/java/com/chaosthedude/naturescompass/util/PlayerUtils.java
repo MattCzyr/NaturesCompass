@@ -29,7 +29,7 @@ public class PlayerUtils {
 
 	public static boolean isOp(Player player) {
 		if (player instanceof ServerPlayer) {
-			final ServerOpListEntry userEntry = ((ServerPlayer) player).getServer().getPlayerList().getOps().get(player.getGameProfile());
+			final ServerOpListEntry userEntry = ((ServerPlayer) player).level().getServer().getPlayerList().getOps().get(player.nameAndId());
 			return userEntry != null;
 		}
 

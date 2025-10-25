@@ -13,12 +13,12 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.level.biome.Biome;
 
 public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry> {
@@ -28,7 +28,6 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 	private final Biome biome;
 	private final BiomeSearchList biomesList;
 	private final String tags;
-	private long lastClickTime;
 
 	public BiomeSearchEntry(BiomeSearchList biomesList, Biome biome) {
 		this.biomesList = biomesList;
@@ -39,7 +38,7 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int par6, int par7, boolean par8, float par9) {
+	public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
 		String title = parentScreen.getSortingCategory().getLocalizedName();
 		Object value = parentScreen.getSortingCategory().getValue(biome);
 		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting || parentScreen.getSortingCategory() instanceof DimensionSorting) {
@@ -57,25 +56,19 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 			tagsLine = mc.font.plainSubstrByWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), left + 1, top + 1, 0xffffffff);
-		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), left + 1, top + mc.font.lineHeight + 3, 0xff808080);
-		guiGraphics.drawString(mc.font, Component.literal(tagsLine), left + 1, top + mc.font.lineHeight + 14, 0xff808080);
-		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), left + 1, top + mc.font.lineHeight + 25, 0xff808080);
+		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), getX() + 1, getY() + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), getX() + 1, getY() + mc.font.lineHeight + 3, 0xff808080);
+		guiGraphics.drawString(mc.font, Component.literal(tagsLine), getX() + 1, getY() + mc.font.lineHeight + 14, 0xff808080);
+		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), getX() + 1, getY() + mc.font.lineHeight + 25, 0xff808080);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (button == 0) {
-			biomesList.selectBiome(this);
-			if (Util.getMillis() - lastClickTime < 250L) {
-				searchForBiome();
-				return true;
-			} else {
-				lastClickTime = Util.getMillis();
-				return false;
-			}
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		biomesList.selectBiome(this);
+		if (doubleClick) {
+			searchForBiome();
 		}
-		return false;
+		return true;
 	}
 
 	public void searchForBiome() {

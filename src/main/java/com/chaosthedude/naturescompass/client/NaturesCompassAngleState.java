@@ -13,6 +13,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -28,8 +29,8 @@ public class NaturesCompassAngleState extends NeedleDirectionHelper {
 	}
 
 	@Override
-	protected float calculate(ItemStack stack, ClientLevel level, int seed, Entity entity) {
-		GlobalPos pos = new GlobalPos(level.dimension(), level.getSharedSpawnPos());
+	protected float calculate(ItemStack stack, ClientLevel level, int seed, ItemOwner owner) {
+		GlobalPos pos = level.getRespawnData().globalPos();
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
 			NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
 			if (compassItem.getState(stack) == CompassState.FOUND) {
@@ -37,7 +38,7 @@ public class NaturesCompassAngleState extends NeedleDirectionHelper {
 			}
 		}
 		long gameTime = level.getGameTime();
-		return !isValidCompassTargetPos(entity, pos) ? getRandomlySpinningRotation(seed, gameTime) : getRotationTowardsCompassTarget(entity, gameTime, pos.pos());
+		return owner.asLivingEntity() == null || !isValidCompassTargetPos(owner.asLivingEntity(), pos) ? getRandomlySpinningRotation(seed, gameTime) : getRotationTowardsCompassTarget(owner.asLivingEntity(), gameTime, pos.pos());
 	}
 
 	private float getRandomlySpinningRotation(int seed, long gameTime) {
@@ -52,7 +53,7 @@ public class NaturesCompassAngleState extends NeedleDirectionHelper {
 	private float getRotationTowardsCompassTarget(Entity entity, long gameTime, BlockPos pos) {
 		float f = (float) getAngleFromEntityToPos(entity, pos);
 		float f1 = getWrappedVisualRotationY(entity);
-		if (entity instanceof Player player && player.isLocalPlayer() && player.level().tickRateManager().runsNormally()) {
+		if (entity.asLivingEntity() instanceof Player player && player.isLocalPlayer() && player.level().tickRateManager().runsNormally()) {
 			if (wobbler.shouldUpdate(gameTime)) {
 				wobbler.update(gameTime, 0.5F - (f1 - 0.25F));
 			}

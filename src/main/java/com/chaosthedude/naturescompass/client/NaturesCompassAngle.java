@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 
 public class NaturesCompassAngle implements RangeSelectItemModelProperty {
@@ -23,8 +23,8 @@ public class NaturesCompassAngle implements RangeSelectItemModelProperty {
 	}
 
 	@Override
-	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-		return state.get(stack, level, entity, seed);
+	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+		return state.get(stack, level, owner, seed);
 	}
 
 	@Override

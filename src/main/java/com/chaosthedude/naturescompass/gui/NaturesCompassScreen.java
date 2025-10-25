@@ -17,6 +17,8 @@ import com.chaosthedude.naturescompass.util.CompassState;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -87,8 +89,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
+	public boolean keyPressed(KeyEvent event) {
+		boolean ret = super.keyPressed(event);
 		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;
@@ -97,8 +99,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean charTyped(char typedChar, int keyCode) {
-		boolean ret = super.charTyped(typedChar, keyCode);
+	public boolean charTyped(CharacterEvent event) {
+		boolean ret = super.charTyped(event);
 		if (searchTextField.isFocused()) {
 			processSearchTerm();
 			return true;

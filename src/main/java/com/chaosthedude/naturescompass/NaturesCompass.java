@@ -11,6 +11,7 @@ import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
+import com.chaosthedude.naturescompass.worker.WorldWorkerManager;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.serialization.Codec;
@@ -27,6 +28,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
@@ -93,5 +96,20 @@ public class NaturesCompass {
 	public void registerNodes(PermissionGatherEvent.Nodes event) {
 		event.addNodes(TELEPORT_PERMISSION);
 	}
+	
+	@SubscribeEvent
+    public void preServerTick(ServerTickEvent.Pre event) {
+        WorldWorkerManager.tick(true);
+    }
+
+    @SubscribeEvent
+    public void postServerTick(ServerTickEvent.Post event) {
+    	WorldWorkerManager.tick(false);
+    }
+    
+    @SubscribeEvent
+    public void serverStopping(ServerStoppingEvent evt) {
+    	WorldWorkerManager.clear();
+    }
 
 }
