@@ -3,12 +3,12 @@
   "package": "com.chaosthedude.naturescompass.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ServerMixin"
+    "MinecraftServerMixin"
   ],
   "client": [
-    "HUDMixin",
-    "HeldItemRendererMixin",
-    "NumericPropertiesMixin"
+    "GuiMixin",
+    "ItemInHandRendererMixin",
+    "RangeSelectItemModelPropertiesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

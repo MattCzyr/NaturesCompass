@@ -9,7 +9,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(SyncPacket.PACKET_ID, SyncPacket::apply);
+		ClientPlayNetworking.registerGlobalReceiver(SyncPacket.TYPE, SyncPacket::apply);
 	}
 
 }

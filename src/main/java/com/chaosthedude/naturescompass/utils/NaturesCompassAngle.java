@@ -4,13 +4,13 @@ import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.item.property.numeric.NumericProperty;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.HeldItemContext;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
+import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
-public class NaturesCompassAngle implements NumericProperty {
+public class NaturesCompassAngle implements RangeSelectItemModelProperty {
 
 	public static final MapCodec<NaturesCompassAngle> MAP_CODEC = MapCodec.unit(new NaturesCompassAngle());
 	private final NaturesCompassAngleState state;
@@ -24,12 +24,12 @@ public class NaturesCompassAngle implements NumericProperty {
 	}
 	
 	@Override
-	public float getValue(ItemStack stack, ClientWorld world, HeldItemContext context, int seed) {
-		return state.getValue(stack, world, context, seed);
+	public float get(ItemStack stack, ClientLevel level, ItemOwner owner, int seed) {
+		return state.get(stack, level, owner, seed);
 	}
 
 	@Override
-	public MapCodec<NaturesCompassAngle> getCodec() {
+	public MapCodec<NaturesCompassAngle> type() {
 		return MAP_CODEC;
 	}
 

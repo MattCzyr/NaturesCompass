@@ -4,14 +4,14 @@ import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class NameSorting implements ISorting<String> {
 	
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
 	public int compare(Biome biome1, Biome biome2) {
@@ -20,8 +20,8 @@ public class NameSorting implements ISorting<String> {
 
 	@Override
 	public String getValue(Biome biome) {
-		if (client.world != null) {
-			return BiomeUtils.getBiomeName(client.world, biome);
+		if (mc.level != null) {
+			return BiomeUtils.getBiomeName(mc.level, biome);
 		}
 		return "";
 	}
@@ -33,7 +33,7 @@ public class NameSorting implements ISorting<String> {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.translate("string.naturescompass.name");
+		return I18n.get("string.naturescompass.name");
 	}
 
 }

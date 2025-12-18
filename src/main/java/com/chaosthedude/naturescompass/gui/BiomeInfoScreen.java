@@ -4,20 +4,20 @@ import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class BiomeInfoScreen extends Screen {
 
 	private NaturesCompassScreen parentScreen;
 	private Biome biome;
-	private ButtonWidget searchButton;
-	private ButtonWidget backButton;
+	private Button searchButton;
+	private Button backButton;
 	private String source;
 	private String tags;
 	//private String precipitation;
@@ -26,79 +26,79 @@ public class BiomeInfoScreen extends Screen {
 	//private String highHumidity;
 
 	public BiomeInfoScreen(NaturesCompassScreen parentScreen, Biome biome) {
-		super(Text.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)));
+		super(Component.translatable(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)));
 		this.parentScreen = parentScreen;
 		this.biome = biome;
 
-		source = BiomeUtils.getBiomeSource(parentScreen.world, biome);
+		source = BiomeUtils.getBiomeSource(parentScreen.level, biome);
 		
-		tags = BiomeUtils.getBiomeTags(parentScreen.world, biome);
+		tags = BiomeUtils.getBiomeTags(parentScreen.level, biome);
 		
-		if (biome.getTemperature() <= 0.5) {
-			temperature = I18n.translate("string.naturescompass.cold");
-		} else if (biome.getTemperature() <= 1.5) {
-			temperature = I18n.translate("string.naturescompass.medium");
+		if (biome.getBaseTemperature() <= 0.5) {
+			temperature = I18n.get("string.naturescompass.cold");
+		} else if (biome.getBaseTemperature() <= 1.5) {
+			temperature = I18n.get("string.naturescompass.medium");
 		} else {
-			temperature = I18n.translate("string.naturescompass.warm");
+			temperature = I18n.get("string.naturescompass.warm");
 		}
 
-		if (biome.weather.downfall() <= 0) {
-			rainfall = I18n.translate("string.naturescompass.none");
-		} else if (biome.weather.downfall() < 0.2) {
-			rainfall = I18n.translate("string.naturescompass.veryLow");
-		} else if (biome.weather.downfall() < 0.3) {
-			rainfall = I18n.translate("string.naturescompass.low");
-		} else if (biome.weather.downfall() < 0.5) {
-			rainfall = I18n.translate("string.naturescompass.average");
-		} else if (biome.weather.downfall() < 0.85) {
-			rainfall = I18n.translate("string.naturescompass.high");
+		if (biome.climateSettings.downfall() <= 0) {
+			rainfall = I18n.get("string.naturescompass.none");
+		} else if (biome.climateSettings.downfall() < 0.2) {
+			rainfall = I18n.get("string.naturescompass.veryLow");
+		} else if (biome.climateSettings.downfall() < 0.3) {
+			rainfall = I18n.get("string.naturescompass.low");
+		} else if (biome.climateSettings.downfall() < 0.5) {
+			rainfall = I18n.get("string.naturescompass.average");
+		} else if (biome.climateSettings.downfall() < 0.85) {
+			rainfall = I18n.get("string.naturescompass.high");
 		} else {
-			rainfall = I18n.translate("string.naturescompass.veryHigh");
+			rainfall = I18n.get("string.naturescompass.veryHigh");
 		}
 	}
 
 	@Override
 	public void init() {
-		clearChildren();
-		setupButtons();
+		setupWidgets();
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.render(context, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		
-		context.drawText(textRenderer, BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome), (width / 2) - (textRenderer.getWidth(BiomeUtils.getBiomeNameForDisplay(parentScreen.world, biome)) / 2), 20, 0xffffffff, false);
+		guiGraphics.drawString(font, BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome), (width / 2) - (font.width(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)) / 2), 20, 0xffffffff, false);
 
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffffff, false);
-		context.drawText(textRenderer, source, width / 2 - 100, 50, 0xff808080, false);
+		guiGraphics.drawString(font, Component.translatable("string.naturescompass.source"), width / 2 - 100, 40, 0xffffffff, false);
+		guiGraphics.drawString(font, source, width / 2 - 100, 50, 0xff808080, false);
 		
 		int tagsMaxWidth = width / 2 - 50; // Margin of 10 on the right side
 		String tagsLine = tags;
-		if (textRenderer.getWidth(tagsLine) > tagsMaxWidth) {
-			tagsLine = textRenderer.trimToWidth(tagsLine + "...", tagsMaxWidth) + "...";
+		if (font.width(tagsLine) > tagsMaxWidth) {
+			tagsLine = font.plainSubstrByWidth(tagsLine + "...", tagsMaxWidth) + "...";
 		}
 
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffffff, false);
-		context.drawText(textRenderer, tagsLine, width / 2 + 40, 50, 0xff808080, false);
+		guiGraphics.drawString(font, Component.translatable("string.naturescompass.tags"), width / 2 + 40, 40, 0xffffffff, false);
+		guiGraphics.drawString(font, tagsLine, width / 2 + 40, 50, 0xff808080, false);
 
-		//context.drawText(textRenderer, Text.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffffff, false);
-		//context.drawText(textRenderer, precipitation, width / 2 - 100, 80, 0xff808080, false);
+		//guiGraphics.drawString(font, Component.translatable("string.naturescompass.precipitation"), width / 2 - 100, 70, 0xffffffff, false);
+		//guiGraphics.drawString(font, precipitation, width / 2 - 100, 80, 0xff808080, false);
 		
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffffff, false);
-		context.drawText(textRenderer, rainfall, width / 2 + 40, 80, 0xff808080, false);
+		guiGraphics.drawString(font, Component.translatable("string.naturescompass.rainfall"), width / 2 + 40, 70, 0xffffffff, false);
+		guiGraphics.drawString(font, rainfall, width / 2 + 40, 80, 0xff808080, false);
 		
-		context.drawText(textRenderer, Text.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffffff, false);
-		context.drawText(textRenderer, temperature, width / 2 - 100, 110, 0xff808080, false);
+		guiGraphics.drawString(font, Component.translatable("string.naturescompass.temperature"), width / 2 - 100, 100, 0xffffffff, false);
+		guiGraphics.drawString(font, temperature, width / 2 - 100, 110, 0xff808080, false);
 		
-		//context.drawText(textRenderer, Text.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffffff, false);
-		//context.drawText(textRenderer, highHumidity, width / 2 + 40, 110, 0xff808080, false);
+		//context.drawString(font, Component.translatable("string.naturescompass.highHumidity"), width / 2 + 40, 100, 0xffffffff, false);
+		//context.drawString(font, highHumidity, width / 2 + 40, 110, 0xff808080, false);
 	}
 
-	private void setupButtons() {
-		backButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, Text.translatable("string.naturescompass.back"), (button) -> {
-			client.setScreen(parentScreen);
+	private void setupWidgets() {
+		clearWidgets();
+		backButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("string.naturescompass.back"), (button) -> {
+			minecraft.setScreen(parentScreen);
 		}));
-		searchButton = addDrawableChild(new TransparentButton(width - 120, height - 30, 110, 20, Text.translatable("string.naturescompass.search"), (button) -> {
+		searchButton = addRenderableWidget(new TransparentButton(width - 120, height - 30, 110, 20, Component.translatable("string.naturescompass.search"), (button) -> {
 			parentScreen.searchForBiome(biome);
 		}));
 	}

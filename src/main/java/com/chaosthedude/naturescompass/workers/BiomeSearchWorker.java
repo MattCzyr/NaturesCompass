@@ -5,29 +5,29 @@ import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeCoords;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.QuartPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	private final int sampleSpace;
 	private final int maxSamples;
 	public final int maxRadius;
-	private ServerWorld world;
+	private ServerLevel level;
 	private Identifier biomeID;
 	private BlockPos startPos;
 	private int samples;
 	private int nextLength;
 	private Direction direction;
 	private ItemStack stack;
-	private PlayerEntity player;
+	private Player player;
 	private int x;
 	private int z;
 	private int[] yValues;
@@ -35,23 +35,23 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private boolean finished;
 	private int lastRadiusThreshold;
 
-	public BiomeSearchWorker(ServerWorld world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
-		this.world = world;
+	public BiomeSearchWorker(ServerLevel level, Player player, ItemStack stack, Biome biome, BlockPos startPos) {
+		this.level = level;
 		this.player = player;
 		this.stack = stack;
 		this.startPos = startPos;
 		x = startPos.getX();
 		z = startPos.getZ();
-		yValues = MathHelper.stream(startPos.getY(), world.getBottomY() + 1, world.getBottomY() + world.getHeight(), 64).toArray();
-		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(world);
+		yValues = Mth.outFromOrigin(startPos.getY(), level.getMinY() + 1, level.getMinY() + level.getHeight(), 64).toArray();
+		sampleSpace = NaturesCompassConfig.sampleSpaceModifier * BiomeUtils.getBiomeSize(level);
 		maxSamples = NaturesCompassConfig.maxSamples;
-		maxRadius = NaturesCompassConfig.radiusModifier * BiomeUtils.getBiomeSize(world);
+		maxRadius = NaturesCompassConfig.radiusModifier * BiomeUtils.getBiomeSize(level);
 		nextLength = sampleSpace;
 		length = 0;
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeID = BiomeUtils.getIdentifierForBiome(world, biome);
+		biomeID = BiomeUtils.getIdentifierForBiome(level, biome);
 		lastRadiusThreshold = 0;
 	}
 
@@ -84,13 +84,13 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 				x -= sampleSpace;
 			}
 			
-			int sampleX = BiomeCoords.fromBlock(x);
-			int sampleZ = BiomeCoords.fromBlock(z);
+			int sampleX = QuartPos.fromBlock(x);
+			int sampleZ = QuartPos.fromBlock(z);
 
 			for (int y : yValues) {
-				int sampleY = BiomeCoords.fromBlock(y);
-				final Biome biomeAtPos = world.getChunkManager().getChunkGenerator().getBiomeSource().getBiome(sampleX, sampleY, sampleZ, world.getChunkManager().getNoiseConfig().getMultiNoiseSampler()).value();
-				final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(world, biomeAtPos);
+				int sampleY = QuartPos.fromBlock(y);
+				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
+				final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(level, biomeAtPos);
 				if (biomeAtPosID != null && biomeAtPosID.equals(biomeID)) {
 					succeed();
 					return false;
@@ -102,7 +102,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			if (length >= nextLength) {
 				if (direction != Direction.UP) {
 					nextLength += sampleSpace;
-					direction = direction.rotateYClockwise();
+					direction = direction.getClockWise();
 				} else {
 					direction = Direction.NORTH;
 				}

@@ -13,22 +13,22 @@ import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.item.property.numeric.NumericProperties;
-import net.minecraft.client.render.item.property.numeric.NumericProperty;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
 
 @Environment(EnvType.CLIENT)
-@Mixin(NumericProperties.class)
-public class NumericPropertiesMixin {
+@Mixin(RangeSelectItemModelProperties.class)
+public class RangeSelectItemModelPropertiesMixin {
 	
 	@Shadow
 	@Final
-	public static Codecs.IdMapper<Identifier, MapCodec<? extends NumericProperty>> ID_MAPPER;
+	public static ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends RangeSelectItemModelProperty>> ID_MAPPER;
 
 	@Inject(method = "bootstrap()V", at = @At(value = "TAIL"))
 	private static void registerCompassProperty(CallbackInfo info) {
-		ID_MAPPER.put(Identifier.of(NaturesCompass.MODID, "angle"), NaturesCompassAngle.MAP_CODEC);
+		ID_MAPPER.put(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "angle"), NaturesCompassAngle.MAP_CODEC);
 	}
 	
 }

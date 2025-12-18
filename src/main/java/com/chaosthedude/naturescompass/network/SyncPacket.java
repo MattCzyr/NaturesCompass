@@ -8,18 +8,18 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs, ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs) implements CustomPayload {
+public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs, ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs) implements CustomPacketPayload {
 
-	public static final CustomPayload.Id<SyncPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of(NaturesCompass.MODID, "sync"));
+public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
 	
-	public static final PacketCodec<RegistryByteBuf, SyncPacket> PACKET_CODEC = PacketCodec.of(SyncPacket::write, SyncPacket::read);
+	public static final StreamCodec<FriendlyByteBuf, SyncPacket> CODEC = StreamCodec.ofMember(SyncPacket::write, SyncPacket::read);
 
-	public static SyncPacket read(RegistryByteBuf buf) {
+	public static SyncPacket read(FriendlyByteBuf buf) {
 		boolean canTeleport = buf.readBoolean();
 		List<Identifier>allowedBiomeIDs = new ArrayList<Identifier>();
 		ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
@@ -41,7 +41,7 @@ public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs, 
 		return new SyncPacket(canTeleport, allowedBiomeIDs, dimensionIDsForAllowedBiomeIDs);
 	}
 	
-	public void write(RegistryByteBuf buf) {
+	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomeIDs.size());
 		for (Identifier biomeID : allowedBiomeIDs) {
@@ -55,9 +55,9 @@ public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomeIDs, 
 	}
 	
 	@Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
-    }
+	public Type<SyncPacket> type() {
+		return TYPE;
+	}
 
     public static void apply(SyncPacket packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {

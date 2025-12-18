@@ -5,41 +5,41 @@ import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.utils.ItemUtils;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 
-public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPayload {
+public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPacketPayload {
 	
-	public static final CustomPayload.Id<SearchPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of(NaturesCompass.MODID, "search"));
+	public static final Type<SearchPacket> TYPE = new Type<SearchPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "search"));
 	
-	public static final PacketCodec<RegistryByteBuf, SearchPacket> PACKET_CODEC = PacketCodec.of(SearchPacket::write, SearchPacket::read);
+	public static final StreamCodec<FriendlyByteBuf, SearchPacket> CODEC = StreamCodec.ofMember(SearchPacket::write, SearchPacket::read);
 	
-	public static SearchPacket read(RegistryByteBuf buf) {
+	public static SearchPacket read(FriendlyByteBuf buf) {
 		return new SearchPacket(buf.readIdentifier(), buf.readBlockPos());
 	}
 	
-	public void write(RegistryByteBuf buf) {
+	public void write(FriendlyByteBuf buf) {
 		buf.writeIdentifier(biomeID);
 		buf.writeBlockPos(pos);
 	}
 	
 	@Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
-    }
+	public Type<SearchPacket> type() {
+		return TYPE;
+	}
 
     public static void apply(SearchPacket packet, ServerPlayNetworking.Context context) {
     	context.server().execute(() -> {
 	    	final ItemStack stack = ItemUtils.getHeldNatureCompass(context.player());
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
-				final ServerWorld world = context.player().getEntityWorld();
-				natureCompass.searchForBiome(world, context.player(), packet.biomeID(), packet.pos(), stack);
+				final ServerLevel level = context.player().level();
+				natureCompass.searchForBiome(level, context.player(), packet.biomeID(), packet.pos(), stack);
 			}
 		});
 	}

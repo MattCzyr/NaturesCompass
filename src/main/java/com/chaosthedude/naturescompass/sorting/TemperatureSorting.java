@@ -2,8 +2,8 @@ package com.chaosthedude.naturescompass.sorting;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class TemperatureSorting implements ISorting<Float> {
@@ -15,7 +15,7 @@ public class TemperatureSorting implements ISorting<Float> {
 
 	@Override
 	public Float getValue(Biome biome) {
-		return biome.getTemperature();
+		return biome.getBaseTemperature();
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class TemperatureSorting implements ISorting<Float> {
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.translate("string.naturescompass.temperature");
+		return I18n.get("string.naturescompass.temperature");
 	}
 
 }

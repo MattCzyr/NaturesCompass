@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public interface ISorting<T> extends Comparator<Biome> {
