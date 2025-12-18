@@ -10,7 +10,7 @@ import com.chaosthedude.naturescompass.util.BiomeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.QuartPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +23,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private final int maxSamples;
 	private final int maxRadius;
 	private ServerLevel level;
-	private ResourceLocation biomeKey;
+	private Identifier biomeKey;
 	private BlockPos startPos;
 	private int samples;
 	private int nextLength;
@@ -92,7 +92,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			for (int y : yValues) {
 				int sampleY = QuartPos.fromBlock(y);
 				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
-				final Optional<ResourceLocation> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
+				final Optional<Identifier> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
 				if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 					succeed();
 					return false;

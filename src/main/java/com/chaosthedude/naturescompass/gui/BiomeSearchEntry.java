@@ -9,7 +9,6 @@ import com.chaosthedude.naturescompass.sorting.SourceSorting;
 import com.chaosthedude.naturescompass.sorting.TagsSorting;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -17,7 +16,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.biome.Biome;
 
@@ -43,7 +42,7 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 		Object value = parentScreen.getSortingCategory().getValue(biome);
 		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting || parentScreen.getSortingCategory() instanceof DimensionSorting) {
 			title = I18n.get("string.naturescompass.dimension");
-			Optional<ResourceLocation> biomeKey = BiomeUtils.getKeyForBiome(parentScreen.level, biome);
+			Optional<Identifier> biomeKey = BiomeUtils.getKeyForBiome(parentScreen.level, biome);
 			if (biomeKey.isPresent()) {
 				value = BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionKeysForAllowedBiomeKeys.get(biomeKey.get()));
 			} else {

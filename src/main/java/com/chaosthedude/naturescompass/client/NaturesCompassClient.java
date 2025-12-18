@@ -2,7 +2,7 @@ package com.chaosthedude.naturescompass.client;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -15,12 +15,12 @@ public class NaturesCompassClient {
 	
 	@SubscribeEvent
     public static void registerItemModelProperty(RegisterRangeSelectItemModelPropertyEvent event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "angle"), NaturesCompassAngle.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "angle"), NaturesCompassAngle.MAP_CODEC);
     }
 	
 	@SubscribeEvent
     public static void registerOverlay(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
+        event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "natures_compass"), new NaturesCompassOverlay());
     }
 
 }

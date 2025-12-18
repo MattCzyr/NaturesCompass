@@ -18,7 +18,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -56,8 +56,8 @@ public class NaturesCompass {
 	public static final DataComponentType<Boolean> DISPLAY_COORDS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
 	
 	public static boolean canTeleport;
-	public static List<ResourceLocation> allowedBiomes;
-	public static ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys;
+	public static List<Identifier> allowedBiomes;
+	public static ListMultimap<Identifier, Identifier> dimensionKeysForAllowedBiomeKeys;
 
 	public static NaturesCompass instance;
 
@@ -75,7 +75,7 @@ public class NaturesCompass {
 	}
 
 	private void preInit(FMLCommonSetupEvent event) {
-		allowedBiomes = new ArrayList<ResourceLocation>();
+		allowedBiomes = new ArrayList<Identifier>();
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
 

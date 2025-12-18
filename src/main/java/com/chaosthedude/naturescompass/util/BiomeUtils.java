@@ -15,17 +15,17 @@ import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -38,21 +38,21 @@ public class BiomeUtils {
 		return level.registryAccess().lookup(Registries.BIOME);
 	}
 
-	public static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
+	public static Optional<Identifier> getKeyForBiome(Level level, Biome biome) {
 		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
 	}
 
-	public static Optional<Biome> getBiomeForKey(Level level, ResourceLocation key) {
+	public static Optional<Biome> getBiomeForKey(Level level, Identifier key) {
 		return getBiomeRegistry(level).isPresent() ? getBiomeRegistry(level).get().getOptional(key) : Optional.empty();
 	}
 
-	public static List<ResourceLocation> getAllowedBiomeKeys(Level level) {
-		final List<ResourceLocation> biomeKeys = new ArrayList<ResourceLocation>();
+	public static List<Identifier> getAllowedBiomeKeys(Level level) {
+		final List<Identifier> biomeKeys = new ArrayList<Identifier>();
 		if (getBiomeRegistry(level).isPresent()) {
 			for (Map.Entry<ResourceKey<Biome>, Biome> entry : getBiomeRegistry(level).get().entrySet()) {
 				Biome biome = entry.getValue();
 				if (biome != null) {
-					Optional<ResourceLocation> optionalBiomeKey = getKeyForBiome(level, biome);
+					Optional<Identifier> optionalBiomeKey = getKeyForBiome(level, biome);
 					if (biome != null && optionalBiomeKey.isPresent() && !biomeKeyIsBlacklisted(level, optionalBiomeKey.get()) && !biomeKeyIsHidden(level, optionalBiomeKey.get())) {
 						biomeKeys.add(optionalBiomeKey.get());
 					}
@@ -63,22 +63,22 @@ public class BiomeUtils {
 		return biomeKeys;
 	}
 
-	public static List<ResourceLocation> getGeneratingDimensionKeys(ServerLevel serverLevel, Biome biome) {
-		final List<ResourceLocation> dimensions = new ArrayList<ResourceLocation>();
+	public static List<Identifier> getGeneratingDimensionKeys(ServerLevel serverLevel, Biome biome) {
+		final List<Identifier> dimensions = new ArrayList<Identifier>();
 		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
 		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
 			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
 			Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
 			if (biomeSet.contains(biomeHolder)) {
-				dimensions.add(level.dimension().location());
+				dimensions.add(level.dimension().identifier());
 			}
 		}
 		return dimensions;
 	}
 	
-	public static ListMultimap<ResourceLocation, ResourceLocation> getGeneratingDimensionsForAllowedBiomes(ServerLevel serverLevel) {
-		ListMultimap<ResourceLocation, ResourceLocation> dimensionsForAllowedStructures = ArrayListMultimap.create();
-		for (ResourceLocation biomeKey : getAllowedBiomeKeys(serverLevel)) {
+	public static ListMultimap<Identifier, Identifier> getGeneratingDimensionsForAllowedBiomes(ServerLevel serverLevel) {
+		ListMultimap<Identifier, Identifier> dimensionsForAllowedStructures = ArrayListMultimap.create();
+		for (Identifier biomeKey : getAllowedBiomeKeys(serverLevel)) {
 			Optional<Biome> optionalBiome = getBiomeForKey(serverLevel, biomeKey);
 			if (optionalBiome.isPresent()) {
 				dimensionsForAllowedStructures.putAll(biomeKey, getGeneratingDimensionKeys(serverLevel, optionalBiome.get()));
@@ -120,12 +120,12 @@ public class BiomeUtils {
 					if (fixedPath.contains("/")) {
 						fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
 					}
-					String biomeKey = Util.makeDescriptionId("biome", ResourceLocation.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+					String biomeKey = Util.makeDescriptionId("biome", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
 					String translatedBiomeKey = I18n.get(biomeKey);
 					if (!biomeKey.equals(translatedBiomeKey)) {
 						return translatedBiomeKey;
 					}
-					String categoryKey = Util.makeDescriptionId("category", ResourceLocation.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+					String categoryKey = Util.makeDescriptionId("category", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
 					String translatedCategoryKey = I18n.get(categoryKey);
 					if (!categoryKey.equals(translatedCategoryKey)) {
 						return translatedCategoryKey;
@@ -140,7 +140,7 @@ public class BiomeUtils {
 		return String.join(", ", biomeCategories);
 	}
 
-	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
+	public static String getBiomeNameForDisplay(Level level, Identifier biome) {
 		if (getBiomeForKey(level, biome).isPresent()) {
 			return getBiomeNameForDisplay(level, getBiomeForKey(level, biome).get());
 		}
@@ -174,7 +174,7 @@ public class BiomeUtils {
 		return getKeyForBiome(level, biome).isPresent() ? I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(level, biome).get())) : "";
 	}
 
-	public static String getBiomeName(Level level, ResourceLocation key) {
+	public static String getBiomeName(Level level, Identifier key) {
 		if (getBiomeForKey(level, key).isPresent()) {
 			return getBiomeName(level, getBiomeForKey(level, key).get());
 		}
@@ -196,7 +196,7 @@ public class BiomeUtils {
 		return modid;
 	}
 	
-	private static String getDimensionName(ResourceLocation dimensionKey) {
+	private static String getDimensionName(Identifier dimensionKey) {
 		String name = I18n.get(Util.makeDescriptionId("dimension", dimensionKey));
 		if (name.equals(Util.makeDescriptionId("dimension", dimensionKey))) {
 			name = dimensionKey.toString();
@@ -208,13 +208,13 @@ public class BiomeUtils {
 		return name;
 	}
 	
-	public static String dimensionKeysToString(List<ResourceLocation> dimensions) {
+	public static String dimensionKeysToString(List<Identifier> dimensions) {
 		Set<String> dimensionNames = new HashSet<String>();
 		dimensions.forEach((key) -> dimensionNames.add(getDimensionName(key)));
 		return String.join(", ", dimensionNames);
 	}
 
-	public static boolean biomeKeyIsBlacklisted(Level level, ResourceLocation biomeKey) {
+	public static boolean biomeKeyIsBlacklisted(Level level, Identifier biomeKey) {
 		final List<String> biomeBlacklist = ConfigHandler.GENERAL.biomeBlacklist.get();
 		for (String key : biomeBlacklist) {
 			if (biomeKey.toString().matches(convertToRegex(key))) {
@@ -224,7 +224,7 @@ public class BiomeUtils {
 		return false;
 	}
 	
-	public static boolean biomeKeyIsHidden(Level level, ResourceLocation biomeKey) {
+	public static boolean biomeKeyIsHidden(Level level, Identifier biomeKey) {
 		if (getBiomeRegistry(level).isPresent() && getBiomeForKey(level, biomeKey).isPresent()) {
 			final Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
 			final Biome biome = getBiomeForKey(level, biomeKey).get();

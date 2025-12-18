@@ -7,7 +7,7 @@ import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
 public class DimensionSorting implements ISorting<String> {
@@ -22,7 +22,7 @@ public class DimensionSorting implements ISorting<String> {
 	@Override
 	public String getValue(Biome biome) {
 		if (mc.level != null) {
-			Optional<ResourceLocation> optionalBiomeKey = BiomeUtils.getKeyForBiome(mc.level, biome);
+			Optional<Identifier> optionalBiomeKey = BiomeUtils.getKeyForBiome(mc.level, biome);
 			if (optionalBiomeKey.isPresent()) {
 				return BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionKeysForAllowedBiomeKeys.get(optionalBiomeKey.get()));
 			}

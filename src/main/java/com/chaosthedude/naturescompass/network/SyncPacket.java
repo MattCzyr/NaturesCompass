@@ -10,27 +10,27 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiomes, ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys) implements CustomPacketPayload {
+public record SyncPacket(boolean canTeleport, List<Identifier> allowedBiomes, ListMultimap<Identifier, Identifier> dimensionKeysForAllowedBiomeKeys) implements CustomPacketPayload {
 
-	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
+	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
 	
 	public static final StreamCodec<FriendlyByteBuf, SyncPacket> CODEC = StreamCodec.ofMember(SyncPacket::write, SyncPacket::read);
 	
 	public static SyncPacket read(FriendlyByteBuf buf) {
 		boolean canTeleport = buf.readBoolean();
-		List<ResourceLocation> allowedBiomes = new ArrayList<ResourceLocation>();
-		ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
+		List<Identifier> allowedBiomes = new ArrayList<Identifier>();
+		ListMultimap<Identifier, Identifier> dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 		
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			ResourceLocation biomeKey = buf.readResourceLocation();
+			Identifier biomeKey = buf.readIdentifier();
 			int numDimensions = buf.readInt();
-			List<ResourceLocation> dimensionKeys = new ArrayList<ResourceLocation>();
+			List<Identifier> dimensionKeys = new ArrayList<Identifier>();
 			for (int j = 0; j < numDimensions; j++) {
-				dimensionKeys.add(buf.readResourceLocation());
+				dimensionKeys.add(buf.readIdentifier());
 			}
 			
 			if (biomeKey != null) {
@@ -45,12 +45,12 @@ public record SyncPacket(boolean canTeleport, List<ResourceLocation> allowedBiom
 	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
 		buf.writeInt(allowedBiomes.size());
-		for (ResourceLocation biomeKey : allowedBiomes) {
-			buf.writeResourceLocation(biomeKey);
-			List<ResourceLocation> dimensionKeys = dimensionKeysForAllowedBiomeKeys.get(biomeKey);
+		for (Identifier biomeKey : allowedBiomes) {
+			buf.writeIdentifier(biomeKey);
+			List<Identifier> dimensionKeys = dimensionKeysForAllowedBiomeKeys.get(biomeKey);
 			buf.writeInt(dimensionKeys.size());
-			for (ResourceLocation dimensionKey : dimensionKeys) {
-				buf.writeResourceLocation(dimensionKey);
+			for (Identifier dimensionKey : dimensionKeys) {
+				buf.writeIdentifier(dimensionKey);
 			}
 		}
 	}

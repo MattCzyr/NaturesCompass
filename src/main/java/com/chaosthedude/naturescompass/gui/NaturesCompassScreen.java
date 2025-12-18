@@ -21,7 +21,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -44,7 +44,7 @@ public class NaturesCompassScreen extends Screen {
 	private BiomeSearchList selectionList;
 	private ISorting<?> sortingCategory;
 
-	public NaturesCompassScreen(Level level, Player player, ItemStack stack, NaturesCompassItem natureCompass, List<ResourceLocation> allowedBiomes) {
+	public NaturesCompassScreen(Level level, Player player, ItemStack stack, NaturesCompassItem natureCompass, List<Identifier> allowedBiomes) {
 		super(Component.translatable("string.naturescompass.selectBiome"));
 		this.level = level;
 		this.player = player;
@@ -187,9 +187,9 @@ public class NaturesCompassScreen extends Screen {
 		addRenderableWidget(selectionList);
 	}
 	
-	private void loadAllowedBiomes(List<ResourceLocation> allowedBiomeKeys) {
+	private void loadAllowedBiomes(List<Identifier> allowedBiomeKeys) {
 		this.allowedBiomes = new ArrayList<Biome>();
-		for (ResourceLocation biomeKey : allowedBiomeKeys) {
+		for (Identifier biomeKey : allowedBiomeKeys) {
 			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
 			if (optionalBiome.isPresent()) {
 				this.allowedBiomes.add(optionalBiome.get());

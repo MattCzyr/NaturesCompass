@@ -15,8 +15,8 @@ import com.chaosthedude.naturescompass.worker.BiomeSearchWorker;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -32,7 +32,7 @@ public class NaturesCompassItem extends Item {
 
 	public static final String NAME = "naturescompass";
 	
-	public static final ResourceKey<Item> KEY = ResourceKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath(NaturesCompass.MODID, NAME));
+	public static final ResourceKey<Item> KEY = ResourceKey.create(BuiltInRegistries.ITEM.key(), Identifier.fromNamespaceAndPath(NaturesCompass.MODID, NAME));
 	
 	private BiomeSearchWorker worker;
 
@@ -50,7 +50,7 @@ public class NaturesCompassItem extends Item {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.level().getServer(), player);
-				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
+				final List<Identifier> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
 				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
 			}
 		} else {
@@ -72,7 +72,7 @@ public class NaturesCompassItem extends Item {
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
-	public void searchForBiome(ServerLevel level, Player player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
+	public void searchForBiome(ServerLevel level, Player player, Identifier biomeKey, BlockPos pos, ItemStack stack) {
 		setSearching(stack, biomeKey, player);
 		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
 		if (optionalBiome.isPresent()) {
@@ -103,7 +103,7 @@ public class NaturesCompassItem extends Item {
 		return false;
 	}
 
-	public void setSearching(ItemStack stack, ResourceLocation biomeKey, Player player) {
+	public void setSearching(ItemStack stack, Identifier biomeKey, Player player) {
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
 			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
 			stack.set(NaturesCompass.COMPASS_STATE, CompassState.SEARCHING.getID());
@@ -151,7 +151,7 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public void setBiomeKey(ItemStack stack, ResourceLocation biomeKey, Player player) {
+	public void setBiomeKey(ItemStack stack, Identifier biomeKey, Player player) {
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
 			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
 		}
@@ -199,12 +199,12 @@ public class NaturesCompassItem extends Item {
 		return 0;
 	}
 
-	public ResourceLocation getBiomeKey(ItemStack stack) {
+	public Identifier getBiomeKey(ItemStack stack) {
 		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.BIOME_ID)) {
-			return ResourceLocation.parse(stack.get(NaturesCompass.BIOME_ID));
+			return Identifier.parse(stack.get(NaturesCompass.BIOME_ID));
 		}
 
-		return ResourceLocation.fromNamespaceAndPath("", "");
+		return Identifier.fromNamespaceAndPath("", "");
 	}
 
 	public int getSearchRadius(ItemStack stack) {
