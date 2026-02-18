@@ -9,7 +9,7 @@
     "string.naturescompass.info": "Інформація",
     "string.naturescompass.startSearch": "Почати пошук",
     "string.naturescompass.selectBiome": "Вибрати біом",
-    "string.naturescompass.sortBy": "Сорт. за",
+    "string.naturescompass.sortBy": "Сортувати за",
     "string.naturescompass.teleport": "Телепортуватися",
 
     "_comment": "STRINGS - CLIMATES",
@@ -39,7 +39,7 @@
     "string.naturescompass.searching": "Пошук",
     "string.naturescompass.source": "Джерело",
     "string.naturescompass.status": "Статус",
-    "string.naturescompass.tags": "Теги",
+    "string.naturescompass.tags": "Теґи",
 
     "_comment": "STRINGS - INFO",
     "string.naturescompass.baseHeight": "Початкова висота",
