@@ -1,6 +1,6 @@
 package com.chaosthedude.naturescompass.gui;
 
-import com.chaosthedude.naturescompass.utils.RenderUtils;
+import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

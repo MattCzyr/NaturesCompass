@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.utils;
+package com.chaosthedude.naturescompass.util;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 

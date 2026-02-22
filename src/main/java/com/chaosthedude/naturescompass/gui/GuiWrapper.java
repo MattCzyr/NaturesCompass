@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.gui;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;

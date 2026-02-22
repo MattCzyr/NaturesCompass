@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;

@@ -7,7 +7,7 @@ import com.chaosthedude.naturescompass.sorting.DimensionSorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
 import com.chaosthedude.naturescompass.sorting.SourceSorting;
 import com.chaosthedude.naturescompass.sorting.TagsSorting;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

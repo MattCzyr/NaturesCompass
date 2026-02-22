@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
-import com.chaosthedude.naturescompass.utils.CompassState;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.chaosthedude.naturescompass.util.CompassState;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;

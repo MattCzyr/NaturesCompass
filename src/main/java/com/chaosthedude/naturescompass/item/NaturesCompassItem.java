@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.items;
+package com.chaosthedude.naturescompass.item;
 
 import java.util.List;
 import java.util.Map;
@@ -8,11 +8,11 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
-import com.chaosthedude.naturescompass.utils.CompassState;
-import com.chaosthedude.naturescompass.utils.ItemUtils;
-import com.chaosthedude.naturescompass.utils.PlayerUtils;
-import com.chaosthedude.naturescompass.workers.BiomeSearchWorker;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.chaosthedude.naturescompass.util.CompassState;
+import com.chaosthedude.naturescompass.util.ItemUtils;
+import com.chaosthedude.naturescompass.util.PlayerUtils;
+import com.chaosthedude.naturescompass.worker.BiomeSearchWorker;
 import com.google.common.collect.ListMultimap;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

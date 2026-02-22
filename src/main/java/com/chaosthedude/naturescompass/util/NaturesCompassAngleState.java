@@ -1,9 +1,9 @@
-package com.chaosthedude.naturescompass.utils;
+package com.chaosthedude.naturescompass.util;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

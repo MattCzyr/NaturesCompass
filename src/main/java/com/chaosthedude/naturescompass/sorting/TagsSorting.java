@@ -1,6 +1,6 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;

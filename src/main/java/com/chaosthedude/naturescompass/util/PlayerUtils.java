@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.utils;
+package com.chaosthedude.naturescompass.util;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;

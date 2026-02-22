@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.mixins;
+package com.chaosthedude.naturescompass.mixin;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.utils.NaturesCompassAngle;
+import com.chaosthedude.naturescompass.util.NaturesCompassAngle;
 import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;

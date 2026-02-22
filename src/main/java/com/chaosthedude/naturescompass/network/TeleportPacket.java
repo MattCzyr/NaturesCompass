@@ -2,10 +2,10 @@ package com.chaosthedude.naturescompass.network;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.utils.CompassState;
-import com.chaosthedude.naturescompass.utils.ItemUtils;
-import com.chaosthedude.naturescompass.utils.PlayerUtils;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
+import com.chaosthedude.naturescompass.util.CompassState;
+import com.chaosthedude.naturescompass.util.ItemUtils;
+import com.chaosthedude.naturescompass.util.PlayerUtils;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;

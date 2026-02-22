@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.utils.OverlaySide;
+import com.chaosthedude.naturescompass.util.OverlaySide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

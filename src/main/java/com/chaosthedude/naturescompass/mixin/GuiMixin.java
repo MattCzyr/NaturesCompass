@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.mixins;
+package com.chaosthedude.naturescompass.mixin;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
-import com.chaosthedude.naturescompass.utils.CompassState;
-import com.chaosthedude.naturescompass.utils.ItemUtils;
-import com.chaosthedude.naturescompass.utils.RenderUtils;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.chaosthedude.naturescompass.util.CompassState;
+import com.chaosthedude.naturescompass.util.ItemUtils;
+import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

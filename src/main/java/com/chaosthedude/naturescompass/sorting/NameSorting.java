@@ -1,6 +1,6 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

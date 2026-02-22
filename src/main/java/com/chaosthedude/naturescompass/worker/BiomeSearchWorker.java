@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.workers;
+package com.chaosthedude.naturescompass.worker;
 
 import java.util.Optional;
 
@@ -6,8 +6,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
+import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

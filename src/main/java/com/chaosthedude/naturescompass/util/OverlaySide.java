@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.utils;
+package com.chaosthedude.naturescompass.util;
 
 public enum OverlaySide {
 
