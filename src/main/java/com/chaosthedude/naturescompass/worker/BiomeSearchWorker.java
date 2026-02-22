@@ -53,7 +53,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = BiomeUtils.getKeyForBiome(level, biome).isPresent() ? BiomeUtils.getKeyForBiome(level, biome).get() : null;
+		biomeKey = BiomeUtils.getIdForBiome(level, biome).isPresent() ? BiomeUtils.getIdForBiome(level, biome).get() : null;
 		lastRadiusThreshold = 0;
 	}
 
@@ -92,7 +92,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			for (int y : yValues) {
 				int sampleY = QuartPos.fromBlock(y);
 				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
-				final Optional<Identifier> optionalBiomeAtPosKey = BiomeUtils.getKeyForBiome(level, biomeAtPos);
+				final Optional<Identifier> optionalBiomeAtPosKey = BiomeUtils.getIdForBiome(level, biomeAtPos);
 				if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
 					succeed();
 					return false;

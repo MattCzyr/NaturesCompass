@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.items;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
@@ -12,6 +13,7 @@ import com.chaosthedude.naturescompass.util.CompassState;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 import com.chaosthedude.naturescompass.worker.BiomeSearchWorker;
+import com.google.common.collect.ListMultimap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,8 +52,11 @@ public class NaturesCompassItem extends Item {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.level().getServer(), player);
-				final List<Identifier> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
-				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
+				final boolean hasInfiniteXp = player.hasInfiniteMaterials();
+				final List<Identifier> allowedBiomeIds = BiomeUtils.getAllowedBiomeIds(level);
+				final Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(serverLevel, allowedBiomeIds);
+				final ListMultimap<Identifier, Identifier> generatingDimensions = BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel, allowedBiomeIds);
+				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, hasInfiniteXp, allowedBiomeIds, xpLevels, generatingDimensions));
 			}
 		} else {
 			if (worker != null) {
@@ -73,14 +78,22 @@ public class NaturesCompassItem extends Item {
 	}
 
 	public void searchForBiome(ServerLevel level, Player player, Identifier biomeKey, BlockPos pos, ItemStack stack) {
-		setSearching(stack, biomeKey, player);
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
+		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
 		if (optionalBiome.isPresent()) {
+			setSearching(stack, biomeKey, player);
+			
 			if (worker != null) {
 				worker.stop();
 			}
 			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
 			worker.start();
+			
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeKey);
+			if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+				player.giveExperienceLevels(-xpLevels);
+			}
+		} else {
+			setNotFound(stack, player, 0, 0);
 		}
 	}
 	

@@ -77,7 +77,7 @@ public class NaturesCompassScreen extends Screen {
 			removeWidget(selectionList);
 			loadAllowedBiomes(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
+			selectionList = new BiomeSearchList(this, minecraft, player, width + 110, height - 50, 40, 50);
 			addRenderableWidget(selectionList);
 		}
 	}
@@ -114,8 +114,8 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void searchForBiome(Biome biome) {
-		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			ClientPacketDistributor.sendToServer(new SearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
+		if (BiomeUtils.getIdForBiome(level, biome).isPresent()) {
+			ClientPacketDistributor.sendToServer(new SearchPacket(BiomeUtils.getIdForBiome(level, biome).get(), player.blockPosition()));
 		}
 		minecraft.setScreen(null);
 	}
@@ -182,7 +182,7 @@ public class NaturesCompassScreen extends Screen {
 		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
 		
 		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, minecraft, width + 110, height - 40, 40, 45);
+			selectionList = new BiomeSearchList(this, minecraft, player, width + 110, height - 50, 40, 50);
 		}
 		addRenderableWidget(selectionList);
 	}
@@ -190,7 +190,7 @@ public class NaturesCompassScreen extends Screen {
 	private void loadAllowedBiomes(List<Identifier> allowedBiomeKeys) {
 		this.allowedBiomes = new ArrayList<Biome>();
 		for (Identifier biomeKey : allowedBiomeKeys) {
-			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
+			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
 			if (optionalBiome.isPresent()) {
 				this.allowedBiomes.add(optionalBiome.get());
 			}

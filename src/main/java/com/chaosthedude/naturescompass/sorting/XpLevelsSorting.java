@@ -10,7 +10,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
-public class DimensionSorting implements ISorting<String> {
+public class XpLevelsSorting implements ISorting<String> {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -24,7 +24,7 @@ public class DimensionSorting implements ISorting<String> {
 		if (mc.level != null) {
 			Optional<Identifier> optionalBiomeKey = BiomeUtils.getIdForBiome(mc.level, biome);
 			if (optionalBiomeKey.isPresent()) {
-				return BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(optionalBiomeKey.get()));
+				return String.valueOf(NaturesCompass.xpLevelsForAllowedBiomes.get(optionalBiomeKey.get()));
 			}
 		}
 		return "";
@@ -32,12 +32,12 @@ public class DimensionSorting implements ISorting<String> {
 
 	@Override
 	public ISorting<?> next() {
-		return new XpLevelsSorting();
+		return new RainfallSorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.get("string.naturescompass.dimension");
+		return I18n.get("string.naturescompass.levels");
 	}
 
 }
