@@ -187,10 +187,10 @@ public class NaturesCompassScreen extends Screen {
 		addRenderableWidget(selectionList);
 	}
 	
-	private void loadAllowedBiomes(List<Identifier> allowedBiomeKeys) {
+	private void loadAllowedBiomes(List<Identifier> allowedBiomeIds) {
 		this.allowedBiomes = new ArrayList<Biome>();
-		for (Identifier biomeKey : allowedBiomeKeys) {
-			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
+		for (Identifier biomeId : allowedBiomeIds) {
+			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
 			if (optionalBiome.isPresent()) {
 				this.allowedBiomes.add(optionalBiome.get());
 			}

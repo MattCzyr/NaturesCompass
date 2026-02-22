@@ -77,10 +77,10 @@ public class NaturesCompassItem extends Item {
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
-	public void searchForBiome(ServerLevel level, Player player, Identifier biomeKey, BlockPos pos, ItemStack stack) {
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
+	public void searchForBiome(ServerLevel level, Player player, Identifier biomeId, BlockPos pos, ItemStack stack) {
+		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
 		if (optionalBiome.isPresent()) {
-			setSearching(stack, biomeKey, player);
+			setSearching(stack, biomeId, player);
 			
 			if (worker != null) {
 				worker.stop();
@@ -88,7 +88,7 @@ public class NaturesCompassItem extends Item {
 			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
 			worker.start();
 			
-			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeKey);
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
 			if (!player.hasInfiniteMaterials() && xpLevels > 0) {
 				player.giveExperienceLevels(-xpLevels);
 			}
@@ -116,9 +116,9 @@ public class NaturesCompassItem extends Item {
 		return false;
 	}
 
-	public void setSearching(ItemStack stack, Identifier biomeKey, Player player) {
+	public void setSearching(ItemStack stack, Identifier biomeId, Player player) {
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
+			stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
 			stack.set(NaturesCompass.COMPASS_STATE, CompassState.SEARCHING.getID());
 		}
 	}
@@ -164,9 +164,9 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public void setBiomeKey(ItemStack stack, Identifier biomeKey, Player player) {
+	public void setBiomeId(ItemStack stack, Identifier biomeId, Player player) {
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.BIOME_ID, biomeKey.toString());
+			stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
 		}
 	}
 
@@ -212,7 +212,7 @@ public class NaturesCompassItem extends Item {
 		return 0;
 	}
 
-	public Identifier getBiomeKey(ItemStack stack) {
+	public Identifier getBiomeId(ItemStack stack) {
 		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.BIOME_ID)) {
 			return Identifier.parse(stack.get(NaturesCompass.BIOME_ID));
 		}

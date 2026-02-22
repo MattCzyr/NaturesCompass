@@ -54,9 +54,9 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 		
 		// Get XP levels to consume
 		this.xpLevels = 0;
-		Optional<Identifier> biomeKey = BiomeUtils.getIdForBiome(parentScreen.level, biome);
-		if (biomeKey.isPresent() && NaturesCompass.xpLevelsForAllowedBiomes.containsKey(biomeKey.get())) {
-			int xpLevels = NaturesCompass.xpLevelsForAllowedBiomes.get(biomeKey.get());
+		Optional<Identifier> biomeId = BiomeUtils.getIdForBiome(parentScreen.level, biome);
+		if (biomeId.isPresent() && NaturesCompass.xpLevelsForAllowedBiomes.containsKey(biomeId.get())) {
+			int xpLevels = NaturesCompass.xpLevelsForAllowedBiomes.get(biomeId.get());
 			if (xpLevels > 3) {
 				xpLevels = 3;
 			}
@@ -70,9 +70,9 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 		Object value = parentScreen.getSortingCategory().getValue(biome);
 		if (parentScreen.getSortingCategory() instanceof NameSorting || parentScreen.getSortingCategory() instanceof SourceSorting || parentScreen.getSortingCategory() instanceof TagsSorting || parentScreen.getSortingCategory() instanceof DimensionSorting) {
 			title = I18n.get("string.naturescompass.dimension");
-			Optional<Identifier> biomeKey = BiomeUtils.getIdForBiome(parentScreen.level, biome);
-			if (biomeKey.isPresent()) {
-				value = BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeKey.get()));
+			Optional<Identifier> biomeId = BiomeUtils.getIdForBiome(parentScreen.level, biome);
+			if (biomeId.isPresent()) {
+				value = BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeId.get()));
 			} else {
 				value = "";
 			}
@@ -116,10 +116,6 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 	public void searchForBiome() {
 		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		parentScreen.searchForBiome(biome);
-	}
-
-	public void viewInfo() {
-		mc.setScreen(new BiomeInfoScreen(parentScreen, biome));
 	}
 	
 	public boolean isEnabled() {

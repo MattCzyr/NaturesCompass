@@ -23,7 +23,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private final int maxSamples;
 	private final int maxRadius;
 	private ServerLevel level;
-	private Identifier biomeKey;
+	private Identifier biomeId;
 	private BlockPos startPos;
 	private int samples;
 	private int nextLength;
@@ -53,7 +53,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeKey = BiomeUtils.getIdForBiome(level, biome).isPresent() ? BiomeUtils.getIdForBiome(level, biome).get() : null;
+		biomeId = BiomeUtils.getIdForBiome(level, biome).isPresent() ? BiomeUtils.getIdForBiome(level, biome).get() : null;
 		lastRadiusThreshold = 0;
 	}
 
@@ -70,7 +70,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	@Override
 	public boolean hasWork() {
-		return biomeKey != null && !finished && getRadius() <= maxRadius && samples <= maxSamples;
+		return biomeId != null && !finished && getRadius() <= maxRadius && samples <= maxSamples;
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			for (int y : yValues) {
 				int sampleY = QuartPos.fromBlock(y);
 				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
-				final Optional<Identifier> optionalBiomeAtPosKey = BiomeUtils.getIdForBiome(level, biomeAtPos);
-				if (optionalBiomeAtPosKey.isPresent() && optionalBiomeAtPosKey.get().equals(biomeKey)) {
+				final Optional<Identifier> optionalBiomeAtPosId = BiomeUtils.getIdForBiome(level, biomeAtPos);
+				if (optionalBiomeAtPosId.isPresent() && optionalBiomeAtPosId.get().equals(biomeId)) {
 					succeed();
 					return false;
 				}

@@ -33,7 +33,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.searching"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, ARGB.opaque(0xFFFFFF), 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeId(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
 					
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.radius"), 5, 5, ARGB.opaque(0xFFFFFF), 6);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(compass.getSearchRadius(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 7);
@@ -42,7 +42,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.found"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, ARGB.opaque(0xFFFFFF), 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeId(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
 
 					if (compass.shouldDisplayCoordinates(stack)) {
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.coordinates"), 5, 5, ARGB.opaque(0xFFFFFF), 6);
@@ -56,7 +56,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.notFound"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, ARGB.opaque(0xFFFFFF), 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeKey(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(mc.level, compass.getBiomeId(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 4);
 
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.radius"), 5, 5, ARGB.opaque(0xFFFFFF), 6);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(compass.getSearchRadius(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 7);
