@@ -1,7 +1,7 @@
 package com.chaosthedude.naturescompass.network;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.ItemUtils;
 
 import net.minecraft.core.BlockPos;

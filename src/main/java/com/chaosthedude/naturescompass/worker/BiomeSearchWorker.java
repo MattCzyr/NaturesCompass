@@ -6,7 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.ConfigHandler;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.core.BlockPos;

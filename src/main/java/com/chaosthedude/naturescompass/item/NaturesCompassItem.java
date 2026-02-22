@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.items;
+package com.chaosthedude.naturescompass.item;
 
 import java.util.List;
 import java.util.Map;

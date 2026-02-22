@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISorting;

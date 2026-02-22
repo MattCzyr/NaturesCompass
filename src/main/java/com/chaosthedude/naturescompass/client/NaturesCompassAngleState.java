@@ -3,7 +3,7 @@ package com.chaosthedude.naturescompass.client;
 import javax.annotation.Nullable;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.item.NaturesCompassItem;
 import com.chaosthedude.naturescompass.util.CompassState;
 
 import net.minecraft.client.multiplayer.ClientLevel;
