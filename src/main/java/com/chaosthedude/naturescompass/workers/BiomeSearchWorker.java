@@ -1,5 +1,7 @@
 package com.chaosthedude.naturescompass.workers;
 
+import java.util.Optional;
+
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
@@ -51,7 +53,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeID = BiomeUtils.getIdentifierForBiome(level, biome);
+		biomeID = BiomeUtils.getIdForBiome(level, biome).isPresent() ? BiomeUtils.getIdForBiome(level, biome).get() : null;
 		lastRadiusThreshold = 0;
 	}
 
@@ -68,7 +70,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	@Override
 	public boolean hasWork() {
-		return !finished && getRadius() <= maxRadius && samples <= maxSamples;
+		return biomeID != null && !finished && getRadius() <= maxRadius && samples <= maxSamples;
 	}
 
 	@Override
@@ -90,8 +92,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 			for (int y : yValues) {
 				int sampleY = QuartPos.fromBlock(y);
 				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
-				final Identifier biomeAtPosID = BiomeUtils.getIdentifierForBiome(level, biomeAtPos);
-				if (biomeAtPosID != null && biomeAtPosID.equals(biomeID)) {
+				final Optional<Identifier> biomeAtPosID = BiomeUtils.getIdForBiome(level, biomeAtPos);
+				if (biomeAtPosID.isPresent() && biomeAtPosID.get().equals(biomeID)) {
 					succeed();
 					return false;
 				}

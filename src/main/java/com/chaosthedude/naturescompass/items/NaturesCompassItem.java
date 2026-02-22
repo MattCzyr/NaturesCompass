@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.items;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
@@ -12,6 +13,7 @@ import com.chaosthedude.naturescompass.utils.CompassState;
 import com.chaosthedude.naturescompass.utils.ItemUtils;
 import com.chaosthedude.naturescompass.utils.PlayerUtils;
 import com.chaosthedude.naturescompass.workers.BiomeSearchWorker;
+import com.google.common.collect.ListMultimap;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -49,9 +51,12 @@ public class NaturesCompassItem extends Item {
 			} else {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
-				final boolean canTeleport = NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(serverLevel.getServer(), player);
-				final List<Identifier> allowedBiomeIDs = BiomeUtils.getAllowedBiomeIDs(level);
-				ServerPlayNetworking.send(serverPlayer, new SyncPacket(canTeleport, allowedBiomeIDs, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
+				final boolean canTeleport = NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(serverPlayer.level().getServer(), player);
+				final boolean hasInfiniteXp = player.hasInfiniteMaterials();
+				final List<Identifier> allowedBiomeIds = BiomeUtils.getAllowedBiomes(level);
+				final Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(serverLevel, allowedBiomeIds);
+				final ListMultimap<Identifier, Identifier> generatingDimensions = BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel, allowedBiomeIds);
+				ServerPlayNetworking.send(serverPlayer, new SyncPacket(canTeleport, hasInfiniteXp, allowedBiomeIds, xpLevels, generatingDimensions));
 			}
 		} else {
 			if (worker != null) {
@@ -63,16 +68,24 @@ public class NaturesCompassItem extends Item {
 		return InteractionResult.CONSUME;
 	}
 
-	public void searchForBiome(ServerLevel level, Player player, Identifier biomeID, BlockPos pos, ItemStack stack) {
-		setSearching(stack, biomeID, player);
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(level, biomeID);
- 		if (optionalBiome.isPresent()) {
- 			if (worker != null) {
- 				worker.stop();
- 			}
- 			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
- 			worker.start();
- 		}
+	public void searchForBiome(ServerLevel level, Player player, Identifier biomeKey, BlockPos pos, ItemStack stack) {
+		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
+		if (optionalBiome.isPresent()) {
+			setSearching(stack, biomeKey, player);
+			
+			if (worker != null) {
+				worker.stop();
+			}
+			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
+			worker.start();
+			
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeKey);
+			if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+				player.giveExperienceLevels(-xpLevels);
+			}
+		} else {
+			setNotFound(stack, player, 0, 0);
+		}
 	}
 	
 	public void succeed(ItemStack stack, Player player, int x, int z, int samples, boolean displayCoordinates) {

@@ -6,7 +6,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.utils.OverlaySide;
@@ -26,6 +28,8 @@ public class NaturesCompassConfig {
 	public static int radiusModifier = 2500;
 	public static int sampleSpaceModifier = 16;
 	public static List<String> biomeBlacklist = new ArrayList<String>();
+	public static int defaultXpLevels = 0;
+	public static Map<String, Integer> xpLevelOverrides;
 	
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
@@ -46,6 +50,8 @@ public class NaturesCompassConfig {
 				radiusModifier = data.common.radiusModifier;
 				sampleSpaceModifier = data.common.sampleSpaceModifier;
 				biomeBlacklist = data.common.biomeBlacklist;
+				defaultXpLevels = data.common.defaultXpLevels;
+				xpLevelOverrides = data.common.xpLevelOverrides;
 				
 				displayWithChatOpen = data.client.displayWithChatOpen;
 				fixBiomeNames = data.client.fixBiomeNames;
@@ -63,7 +69,7 @@ public class NaturesCompassConfig {
 	public static void save() {
 		try {
 			Writer writer = Files.newBufferedWriter(getFilePath());
-			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
+			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, xpLevelOverrides), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
 			gson.toJson(data, writer);
 			writer.close();
 		} catch (IOException e) {
@@ -107,6 +113,12 @@ public class NaturesCompassConfig {
 			private final String biomeBlacklistComment = "A list of biomes that the compass will not be able to search for, specified by resource location. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex (ignore backslashes): [\"minecraft:savanna\", \"minecraft:desert\", \"minecraft:*ocean*\"]";
 			private final List<String> biomeBlacklist;
 			
+			private final String defaultXpLevelsComment = "The default number of XP levels consumed when searching for a biome. Individual biomes can be configured via xpLevelOverrides. Max of 3 levels.";
+			private final int defaultXpLevels;
+			
+			private final String xpLevelOverridesComment = "A map of biome-specific XP level costs that override defaultXpLevels. Biomes not listed here use defaultXpLevels. Max of 3 levels. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: {\"minecraft:deep_dark\":3, \"minecraft:end*\":2, \"minecraft:*caves\":3}";
+			private final Map<String, Integer> xpLevelOverrides;
+			
 			private Common() {
 				allowTeleport = true;
 				displayCoordinates = true;
@@ -114,15 +126,19 @@ public class NaturesCompassConfig {
 				radiusModifier = 2500;
 				sampleSpaceModifier = 16;
 				biomeBlacklist = new ArrayList<String>();
+				defaultXpLevels = 0;
+				xpLevelOverrides = new HashMap<String, Integer>();
 			}
 			
-			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist) {
+			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> xpLevelOverrides) {
 				this.allowTeleport = allowTeleport;
 				this.displayCoordinates = displayCoordinates;
 				this.maxSamples = maxSamples;
 				this.radiusModifier = radiusModifier;
 				this.sampleSpaceModifier = sampleSpaceModifier;
 				this.biomeBlacklist = biomeBlacklist;
+				this.defaultXpLevels = defaultXpLevels;
+				this.xpLevelOverrides = xpLevelOverrides;
 			}
 		}
 		

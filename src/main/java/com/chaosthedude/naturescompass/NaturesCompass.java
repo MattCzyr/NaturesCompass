@@ -1,7 +1,9 @@
 package com.chaosthedude.naturescompass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,8 +45,10 @@ public class NaturesCompass implements ModInitializer {
 	public static final DataComponentType<Boolean> DISPLAY_COORDS_COMPONENT = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
 
 	public static boolean canTeleport;
+	public static boolean infiniteXp;
 	public static List<Identifier> allowedBiomes;
-	public static ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs;
+	public static Map<Identifier, Integer> xpLevelsForAllowedBiomes;
+	public static ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes;
 
 	@Override
 	public void onInitialize() {
@@ -70,7 +74,8 @@ public class NaturesCompass implements ModInitializer {
 		ServerPlayNetworking.registerGlobalReceiver(TeleportPacket.TYPE, TeleportPacket::apply);
 
 		allowedBiomes = new ArrayList<Identifier>();
-		dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
+		xpLevelsForAllowedBiomes = new HashMap<Identifier, Integer>();
+		dimensionsForAllowedBiomes = ArrayListMultimap.create();
 	}
 
 }

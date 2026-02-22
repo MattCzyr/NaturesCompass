@@ -5,15 +5,12 @@ import java.util.Optional;
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
-@Environment(EnvType.CLIENT)
-public class DimensionSorting implements ISorting<String> {
+public class XpLevelsSorting implements ISorting<String> {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -25,9 +22,9 @@ public class DimensionSorting implements ISorting<String> {
 	@Override
 	public String getValue(Biome biome) {
 		if (mc.level != null) {
-			Optional<Identifier> biomeID = BiomeUtils.getIdForBiome(mc.level, biome);
-			if (biomeID.isPresent()) {
-				return BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeID.get()));
+			Optional<Identifier> optionalBiomeKey = BiomeUtils.getIdForBiome(mc.level, biome);
+			if (optionalBiomeKey.isPresent()) {
+				return String.valueOf(NaturesCompass.xpLevelsForAllowedBiomes.get(optionalBiomeKey.get()));
 			}
 		}
 		return "";
@@ -35,12 +32,12 @@ public class DimensionSorting implements ISorting<String> {
 
 	@Override
 	public ISorting<?> next() {
-		return new XpLevelsSorting();
+		return new RainfallSorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.get("string.naturescompass.dimension");
+		return I18n.get("string.naturescompass.levels");
 	}
 
 }
