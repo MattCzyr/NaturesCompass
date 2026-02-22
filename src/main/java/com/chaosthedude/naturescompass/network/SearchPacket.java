@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
-public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPacketPayload {
+public record SearchPacket(Identifier biomeId, BlockPos pos) implements CustomPacketPayload {
 	
 	public static final Type<SearchPacket> TYPE = new Type<SearchPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "search"));
 	
@@ -24,7 +24,7 @@ public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPa
 	}
 	
 	public void write(FriendlyByteBuf buf) {
-		buf.writeIdentifier(biomeID);
+		buf.writeIdentifier(biomeId);
 		buf.writeBlockPos(pos);
 	}
 	
@@ -39,7 +39,7 @@ public record SearchPacket(Identifier biomeID, BlockPos pos) implements CustomPa
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
 				final ServerLevel level = context.player().level();
-				natureCompass.searchForBiome(level, context.player(), packet.biomeID(), packet.pos(), stack);
+				natureCompass.searchForBiome(level, context.player(), packet.biomeId(), packet.pos(), stack);
 			}
 		});
 	}

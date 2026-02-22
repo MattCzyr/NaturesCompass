@@ -72,7 +72,7 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 			title = I18n.get("string.naturescompass.dimension");
 			Optional<Identifier> biomeKey = BiomeUtils.getIdForBiome(parentScreen.level, biome);
 			if (biomeKey.isPresent()) {
-				value = BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeKey.get()));
+				value = BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeKey.get()));
 			} else {
 				value = "";
 			}
@@ -116,10 +116,6 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 	public void searchForBiome() {
 		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		parentScreen.searchForBiome(biome);
-	}
-
-	public void viewInfo() {
-		mc.setScreen(new BiomeInfoScreen(parentScreen, biome));
 	}
 	
 	public boolean isEnabled() {

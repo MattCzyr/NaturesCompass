@@ -15,7 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionKeysForAllowedBiomes) implements CustomPacketPayload {
+public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes) implements CustomPacketPayload {
 
 	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
 	
@@ -27,26 +27,26 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 		
 		List<Identifier> allowedBiomes = new ArrayList<Identifier>();
 		Map<Identifier, Integer> xpLevelsForAllowedBiomes = new HashMap<Identifier, Integer>();
-		ListMultimap<Identifier, Identifier> dimensionKeysForAllowedBiomes = ArrayListMultimap.create();
+		ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes = ArrayListMultimap.create();
 		int listSize = buf.readInt();
 		for (int i = 0; i < listSize; i++) {
-			Identifier biomeKey = buf.readIdentifier();
+			Identifier biomeId = buf.readIdentifier();
 			int numDimensions = buf.readInt();
-			List<Identifier> dimensionKeys = new ArrayList<Identifier>();
+			List<Identifier> dimensionIds = new ArrayList<Identifier>();
 			for (int j = 0; j < numDimensions; j++) {
-				dimensionKeys.add(buf.readIdentifier());
+				dimensionIds.add(buf.readIdentifier());
 			}
 			
 			int xpLevels = buf.readInt();
 			
-			if (biomeKey != null) {
-				allowedBiomes.add(biomeKey);
-				xpLevelsForAllowedBiomes.put(biomeKey, xpLevels);
-				dimensionKeysForAllowedBiomes.putAll(biomeKey, dimensionKeys);
+			if (biomeId != null) {
+				allowedBiomes.add(biomeId);
+				xpLevelsForAllowedBiomes.put(biomeId, xpLevels);
+				dimensionsForAllowedBiomes.putAll(biomeId, dimensionIds);
 			}
 		}
 		
-		return new SyncPacket(canTeleport, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionKeysForAllowedBiomes);
+		return new SyncPacket(canTeleport, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionsForAllowedBiomes);
 	}
 
 	public void write(FriendlyByteBuf buf) {
@@ -54,15 +54,14 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 		buf.writeBoolean(infiniteXp);
 		
 		buf.writeInt(allowedBiomes.size());
-		for (Identifier biomeKey : allowedBiomes) {
-			buf.writeIdentifier(biomeKey);
-			System.out.println("allowed: " + biomeKey.toString());
-			List<Identifier> dimensionKeys = dimensionKeysForAllowedBiomes.get(biomeKey);
-			buf.writeInt(dimensionKeys.size());
-			for (Identifier dimensionKey : dimensionKeys) {
-				buf.writeIdentifier(dimensionKey);
+		for (Identifier biomeId : allowedBiomes) {
+			buf.writeIdentifier(biomeId);
+			List<Identifier> dimensionIds = dimensionsForAllowedBiomes.get(biomeId);
+			buf.writeInt(dimensionIds.size());
+			for (Identifier dimensionId : dimensionIds) {
+				buf.writeIdentifier(dimensionId);
 			}
-			int xpLevels = xpLevelsForAllowedBiomes.get(biomeKey);
+			int xpLevels = xpLevelsForAllowedBiomes.get(biomeId);
 			buf.writeInt(xpLevels);
 		}
 	}
@@ -73,7 +72,7 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 			NaturesCompass.infiniteXp = packet.infiniteXp;
 			NaturesCompass.allowedBiomes = packet.allowedBiomes;
 			NaturesCompass.xpLevelsForAllowedBiomes = packet.xpLevelsForAllowedBiomes;
-			NaturesCompass.dimensionsForAllowedBiomes = packet.dimensionKeysForAllowedBiomes;
+			NaturesCompass.dimensionsForAllowedBiomes = packet.dimensionsForAllowedBiomes;
 		});
 	}
 	

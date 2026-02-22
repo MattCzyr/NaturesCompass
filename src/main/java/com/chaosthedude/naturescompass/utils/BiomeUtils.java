@@ -56,7 +56,7 @@ public class BiomeUtils {
 				Biome biome = entry.getValue();
 				if (biome != null) {
 					Optional<Identifier> biomeID = getIdForBiome(level, biome);
-					if (biomeID.isPresent() && !biomeIDIsBlacklisted(level, biomeID.get()) && !biomeIDIsHidden(level, biomeID.get())) {
+					if (biomeID.isPresent() && !biomeIsBlacklisted(level, biomeID.get()) && !biomeIsHidden(level, biomeID.get())) {
 						biomeIDs.add(biomeID.get());
 					}
 				}
@@ -66,11 +66,11 @@ public class BiomeUtils {
 		return biomeIDs;
 	}
 	
-	public static int getXpLevelsForBiome(ServerLevel serverLevel, Identifier biomeKey) {
+	public static int getXpLevelsForBiome(ServerLevel serverLevel, Identifier biomeId) {
 		int xpLevels = NaturesCompassConfig.defaultXpLevels;
 		if (getBiomeRegistry(serverLevel).isPresent()) {
 			for (String biomeRegex : NaturesCompassConfig.xpLevelOverrides.keySet()) {
-				if (biomeKey.toString().matches(convertToRegex(biomeRegex))) {
+				if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
 					xpLevels = NaturesCompassConfig.xpLevelOverrides.get(biomeRegex);
 					if (xpLevels > 3) {
 						xpLevels = 3;
@@ -85,9 +85,9 @@ public class BiomeUtils {
 	public static Map<Identifier, Integer> getXpLevelsForAllowedBiomes(ServerLevel serverLevel, List<Identifier> allowedBiomes) {
 		final Map<Identifier, Integer> xpLevels = new HashMap<Identifier, Integer>();
 		if (getBiomeRegistry(serverLevel).isPresent()) {
-			for (Identifier biomeKey : allowedBiomes) {
-				int levels = getXpLevelsForBiome(serverLevel, biomeKey);
-				xpLevels.put(biomeKey, levels);
+			for (Identifier biomeId : allowedBiomes) {
+				int levels = getXpLevelsForBiome(serverLevel, biomeId);
+				xpLevels.put(biomeId, levels);
 			}
 		}
 		
@@ -150,15 +150,15 @@ public class BiomeUtils {
 				if (fixedPath.contains("/")) {
 					fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
 				}
-				String biomeKey = Util.makeDescriptionId("biome", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
-				String translatedBiomeKey = I18n.get(biomeKey);
-				if (!biomeKey.equals(translatedBiomeKey)) {
-					return translatedBiomeKey;
+				String biomeId = Util.makeDescriptionId("biome", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+				String translatedBiomeId = I18n.get(biomeId);
+				if (!biomeId.equals(translatedBiomeId)) {
+					return translatedBiomeId;
 				}
-				String categoryKey = Util.makeDescriptionId("category", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
-				String translatedCategoryKey = I18n.get(categoryKey);
-				if (!categoryKey.equals(translatedCategoryKey)) {
-					return translatedCategoryKey;
+				String categoryId = Util.makeDescriptionId("category", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+				String translatedCategoryId = I18n.get(categoryId);
+				if (!categoryId.equals(translatedCategoryId)) {
+					return translatedCategoryId;
 				}
 				biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
 			}
@@ -243,26 +243,26 @@ public class BiomeUtils {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static String dimensionKeysToString(List<Identifier> dimensions) {
+	public static String dimensionIdsToString(List<Identifier> dimensions) {
 		Set<String> dimensionNames = new HashSet<String>();
-		dimensions.forEach((key) -> dimensionNames.add(getDimensionName(key)));
+		dimensions.forEach((id) -> dimensionNames.add(getDimensionName(id)));
 		return String.join(", ", dimensionNames);
 	}
 
-	public static boolean biomeIDIsBlacklisted(Level level, Identifier biomeID) {
+	public static boolean biomeIsBlacklisted(Level level, Identifier biomeId) {
 		final List<String> biomeBlacklist = NaturesCompassConfig.biomeBlacklist;
-		for (String biomeKey : biomeBlacklist) {
- 			if (biomeID.toString().matches(convertToRegex(biomeKey))) {
+		for (String biomeRegex : biomeBlacklist) {
+ 			if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
  				return true;
  			}
  		}
  		return false;
 	}
 	
-	public static boolean biomeIDIsHidden(Level level, Identifier biomeID) {
-		if (getBiomeRegistry(level).isPresent() && getBiomeForId(level, biomeID).isPresent()) {
+	public static boolean biomeIsHidden(Level level, Identifier biomeId) {
+		if (getBiomeRegistry(level).isPresent() && getBiomeForId(level, biomeId).isPresent()) {
 			final Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
-			final Biome biome = getBiomeForId(level, biomeID).get();
+			final Biome biome = getBiomeForId(level, biomeId).get();
 			if (biomeRegistry.wrapAsHolder(biome) != null) {
 				return biomeRegistry.wrapAsHolder(biome).tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
 			}

@@ -27,7 +27,7 @@ public class DimensionSorting implements ISorting<String> {
 		if (mc.level != null) {
 			Optional<Identifier> biomeID = BiomeUtils.getIdForBiome(mc.level, biome);
 			if (biomeID.isPresent()) {
-				return BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeID.get()));
+				return BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeID.get()));
 			}
 		}
 		return "";
