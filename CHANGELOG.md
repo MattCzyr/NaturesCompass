@@ -1,3 +1,13 @@
+## Version 3.1.0
+#### NeoForge 1.21.11
+- Added config options to make the compass consume XP levels when searching for a biome
+- Minor improvements to biome selection GUI
+
+## Version 2.3.0
+#### Fabric 1.21.11
+- Added config options to make the compass consume XP levels when searching for a biome
+- Minor improvements to biome selection GUI
+
 ## Version 3.0.5
 #### NeoForge 1.21.11, 1.21.10, 1.21.8, 1.21.7, 1.12.6
 - Updated to NeoForge 1.21.11
