@@ -29,7 +29,7 @@ public class NaturesCompassConfig {
 	public static int sampleSpaceModifier = 16;
 	public static List<String> biomeBlacklist = new ArrayList<String>();
 	public static int defaultXpLevels = 0;
-	public static Map<String, Integer> xpLevelOverrides;
+	public static Map<String, Integer> perBiomeXpLevels;
 	
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
@@ -51,7 +51,7 @@ public class NaturesCompassConfig {
 				sampleSpaceModifier = data.common.sampleSpaceModifier;
 				biomeBlacklist = data.common.biomeBlacklist;
 				defaultXpLevels = data.common.defaultXpLevels;
-				xpLevelOverrides = data.common.xpLevelOverrides;
+				perBiomeXpLevels = data.common.perBiomeXpLevels;
 				
 				displayWithChatOpen = data.client.displayWithChatOpen;
 				fixBiomeNames = data.client.fixBiomeNames;
@@ -69,7 +69,7 @@ public class NaturesCompassConfig {
 	public static void save() {
 		try {
 			Writer writer = Files.newBufferedWriter(getFilePath());
-			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, xpLevelOverrides), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
+			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
 			gson.toJson(data, writer);
 			writer.close();
 		} catch (IOException e) {
@@ -116,8 +116,8 @@ public class NaturesCompassConfig {
 			private final String defaultXpLevelsComment = "The default number of XP levels consumed when searching for a biome. Individual biomes can be configured via xpLevelOverrides. Max of 3 levels.";
 			private final int defaultXpLevels;
 			
-			private final String xpLevelOverridesComment = "A map of biome-specific XP level costs that override defaultXpLevels. Biomes not listed here use defaultXpLevels. Max of 3 levels. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: {\"minecraft:deep_dark\":3, \"minecraft:end*\":2, \"minecraft:*caves\":3}";
-			private final Map<String, Integer> xpLevelOverrides;
+			private final String perBiomeXpLevelsComment = "A map of per-biome XP level costs that override defaultXpLevels. Biomes not listed here use defaultXpLevels. Max of 3 levels. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: {\"minecraft:deep_dark\":3, \"minecraft:end*\":2, \"minecraft:*caves\":3}";
+			private final Map<String, Integer> perBiomeXpLevels;
 			
 			private Common() {
 				allowTeleport = true;
@@ -127,10 +127,10 @@ public class NaturesCompassConfig {
 				sampleSpaceModifier = 16;
 				biomeBlacklist = new ArrayList<String>();
 				defaultXpLevels = 0;
-				xpLevelOverrides = new HashMap<String, Integer>();
+				perBiomeXpLevels = new HashMap<String, Integer>();
 			}
 			
-			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> xpLevelOverrides) {
+			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels) {
 				this.allowTeleport = allowTeleport;
 				this.displayCoordinates = displayCoordinates;
 				this.maxSamples = maxSamples;
@@ -138,7 +138,7 @@ public class NaturesCompassConfig {
 				this.sampleSpaceModifier = sampleSpaceModifier;
 				this.biomeBlacklist = biomeBlacklist;
 				this.defaultXpLevels = defaultXpLevels;
-				this.xpLevelOverrides = xpLevelOverrides;
+				this.perBiomeXpLevels = perBiomeXpLevels;
 			}
 		}
 		

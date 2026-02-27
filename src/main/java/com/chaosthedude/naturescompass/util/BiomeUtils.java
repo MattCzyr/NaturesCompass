@@ -69,9 +69,9 @@ public class BiomeUtils {
 	public static int getXpLevelsForBiome(ServerLevel serverLevel, Identifier biomeId) {
 		int xpLevels = NaturesCompassConfig.defaultXpLevels;
 		if (getBiomeRegistry(serverLevel).isPresent()) {
-			for (String biomeRegex : NaturesCompassConfig.xpLevelOverrides.keySet()) {
+			for (String biomeRegex : NaturesCompassConfig.perBiomeXpLevels.keySet()) {
 				if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
-					xpLevels = NaturesCompassConfig.xpLevelOverrides.get(biomeRegex);
+					xpLevels = NaturesCompassConfig.perBiomeXpLevels.get(biomeRegex);
 					if (xpLevels > 3) {
 						xpLevels = 3;
 					}
