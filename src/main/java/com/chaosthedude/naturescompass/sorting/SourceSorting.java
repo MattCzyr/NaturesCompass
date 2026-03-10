@@ -6,22 +6,22 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class SourceSorting implements ISorting<String> {
-	
+
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
-	public int compare(Biome biome1, Biome biome2) {
-		return getValue(biome1).compareTo(getValue(biome2));
+	public int compare(Identifier biomeId1, Identifier biomeId2) {
+		return getValue(biomeId1).compareTo(getValue(biomeId2));
 	}
 
 	@Override
-	public String getValue(Biome biome) {
+	public String getValue(Identifier biomeId) {
 		if (mc.level != null) {
-			return BiomeUtils.getBiomeSource(mc.level, biome);
+			return BiomeUtils.getBiomeSource(mc.level, biomeId);
 		}
 		return null;
 	}

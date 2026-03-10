@@ -1,7 +1,5 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import java.util.Optional;
-
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.util.BiomeUtils;
 
@@ -10,25 +8,21 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class DimensionSorting implements ISorting<String> {
-	
+
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
-	public int compare(Biome biome1, Biome biome2) {
-		return getValue(biome1).compareTo(getValue(biome2));
+	public int compare(Identifier biomeId1, Identifier biomeId2) {
+		return getValue(biomeId1).compareTo(getValue(biomeId2));
 	}
 
 	@Override
-	public String getValue(Biome biome) {
+	public String getValue(Identifier biomeId) {
 		if (mc.level != null) {
-			Optional<Identifier> biomeID = BiomeUtils.getIdForBiome(mc.level, biome);
-			if (biomeID.isPresent()) {
-				return BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeID.get()));
-			}
+			return BiomeUtils.dimensionIdsToString(NaturesCompass.dimensionsForAllowedBiomes.get(biomeId));
 		}
 		return "";
 	}

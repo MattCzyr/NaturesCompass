@@ -35,7 +35,7 @@ public class ItemInHandRendererMixin {
 		if (newMainStack.getItem() instanceof NaturesCompassItem && mainHandItem.getItem() instanceof NaturesCompassItem) {
 			NaturesCompassItem newMainCompass = (NaturesCompassItem) newMainStack.getItem();
 			NaturesCompassItem mainCompass = (NaturesCompassItem) mainHandItem.getItem();
-			if (newMainCompass.getState(newMainStack) == mainCompass.getState(mainHandItem)) {
+			if (newMainCompass.getCompassState(newMainStack) == mainCompass.getCompassState(mainHandItem)) {
 				mainHandItem = newMainStack;
 			}
 		}
@@ -44,7 +44,7 @@ public class ItemInHandRendererMixin {
 		if (newOffStack.getItem() instanceof NaturesCompassItem && offHandItem.getItem() instanceof NaturesCompassItem) {
 			NaturesCompassItem newOffCompass = (NaturesCompassItem) newOffStack.getItem();
 			NaturesCompassItem offCompass = (NaturesCompassItem) offHandItem.getItem();
-			if (newOffCompass.getState(newOffStack) == offCompass.getState(offHandItem)) {
+			if (newOffCompass.getCompassState(newOffStack) == offCompass.getCompassState(offHandItem)) {
 				offHandItem = newOffStack;
 			}
 		}

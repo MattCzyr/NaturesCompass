@@ -132,6 +132,14 @@ public class BiomeUtils {
 	}
 	
 	@Environment(EnvType.CLIENT)
+	public static String getBiomeTags(Level level, Identifier biomeId) {
+		if (getBiomeForId(level, biomeId).isPresent()) {
+			return getBiomeTags(level, getBiomeForId(level, biomeId).get());
+		}
+		return I18n.get("string.naturescompass.none");
+	}
+
+	@Environment(EnvType.CLIENT)
 	public static String getBiomeTags(Level level, Biome biome) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
 		List<String> tagPathsToIgnore = List.of("is_overworld");
@@ -167,6 +175,14 @@ public class BiomeUtils {
 			biomeCategories.add(I18n.get("string.naturescompass.none"));
 		}
 		return String.join(", ", biomeCategories);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeNameForDisplay(Level level, Identifier biomeId) {
+		if (getBiomeForId(level, biomeId).isPresent()) {
+			return getBiomeNameForDisplay(level, getBiomeForId(level, biomeId).get());
+		}
+		return "";
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -210,6 +226,19 @@ public class BiomeUtils {
 			return getBiomeName(level, getBiomeForId(level, biomeID).get());
 		}
 		return "";
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeSource(Level level, Identifier biomeId) {
+		String modid = biomeId.getNamespace();
+		if (modid.equals("minecraft")) {
+			return "Minecraft";
+		}
+		Optional<ModContainer> sourceContainer = FabricLoader.getInstance().getModContainer(modid);
+		if (sourceContainer.isPresent()) {
+			return sourceContainer.get().getMetadata().getName();
+		}
+		return modid;
 	}
 
 	@Environment(EnvType.CLIENT)

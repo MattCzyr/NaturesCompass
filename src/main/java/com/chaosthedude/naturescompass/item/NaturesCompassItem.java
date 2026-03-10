@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,17 +32,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 public class NaturesCompassItem extends Item {
-	
+
 	public static final String NAME = "naturescompass";
-	
+
 	public static final ResourceKey<Item> KEY = ResourceKey.create(BuiltInRegistries.ITEM.key(), Identifier.fromNamespaceAndPath(NaturesCompass.MODID, NAME));
-	
+
 	private BiomeSearchWorker worker;
-	
+
 	public NaturesCompassItem() {
         super(new Properties().setId(KEY).stacksTo(1));
     }
-	
+
 	@Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (!player.isCrouching()) {
@@ -52,34 +53,36 @@ public class NaturesCompassItem extends Item {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(serverPlayer.level().getServer(), player);
+				final int maxNextSearches = NaturesCompassConfig.maxNextSearches;
 				final boolean hasInfiniteXp = player.hasInfiniteMaterials();
 				final List<Identifier> allowedBiomeIds = BiomeUtils.getAllowedBiomes(level);
 				final Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(serverLevel, allowedBiomeIds);
 				final ListMultimap<Identifier, Identifier> generatingDimensions = BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel, allowedBiomeIds);
-				ServerPlayNetworking.send(serverPlayer, new SyncPacket(canTeleport, hasInfiniteXp, allowedBiomeIds, xpLevels, generatingDimensions));
+				ServerPlayNetworking.send(serverPlayer, new SyncPacket(canTeleport, maxNextSearches, hasInfiniteXp, allowedBiomeIds, xpLevels, generatingDimensions));
 			}
 		} else {
 			if (worker != null) {
 				worker.stop();
 				worker = null;
 			}
-			setState(player.getItemInHand(hand), null, CompassState.INACTIVE, player);
+			setCompassState(player.getItemInHand(hand), null, CompassState.INACTIVE, player);
 		}
 		return InteractionResult.CONSUME;
 	}
 
-	public void searchForBiome(ServerLevel level, Player player, Identifier biomeKey, BlockPos pos, ItemStack stack) {
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeKey);
+	public void searchForBiome(ServerLevel level, Player player, Identifier biomeId, BlockPos pos, ItemStack stack) {
+		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
 		if (optionalBiome.isPresent()) {
-			setSearching(stack, biomeKey, player);
-			
+			setSearching(stack, biomeId, player);
+
 			if (worker != null) {
 				worker.stop();
 			}
-			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
+			List<BlockPos> prevPos = new ArrayList<BlockPos>();
+			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
 			worker.start();
-			
-			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeKey);
+
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
 			if (!player.hasInfiniteMaterials() && xpLevels > 0) {
 				player.giveExperienceLevels(-xpLevels);
 			}
@@ -87,13 +90,38 @@ public class NaturesCompassItem extends Item {
 			setNotFound(stack, player, 0, 0);
 		}
 	}
-	
-	public void succeed(ItemStack stack, Player player, int x, int z, int samples, boolean displayCoordinates) {
+
+	public void searchForNextBiome(ServerLevel level, Player player, BlockPos pos, ItemStack stack) {
+		List<BlockPos> prevPos = getPrevPos(stack);
+		Identifier biomeId = getBiomeId(stack);
+		if (prevPos != null && biomeId != null) {
+			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
+			if (optionalBiome.isPresent()) {
+				setSearching(stack, biomeId, player);
+
+				if (worker != null) {
+					worker.stop();
+				}
+				worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
+				worker.start();
+
+				int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+				if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+					player.giveExperienceLevels(-xpLevels);
+				}
+			} else {
+				setNotFound(stack, player, 0, 0);
+			}
+		}
+	}
+
+	public void succeed(ItemStack stack, Player player, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
 		setFound(stack, x, z, samples, player);
 		setDisplayCoordinates(stack, displayCoordinates);
+		setPrevPos(stack, prevPos);
 		worker = null;
 	}
-	
+
 	public void fail(ItemStack stack, Player player, int searchRadius, int samples) {
 		setNotFound(stack, player, searchRadius, samples);
 		worker = null;
@@ -101,15 +129,21 @@ public class NaturesCompassItem extends Item {
 
 	public boolean isActive(ItemStack stack) {
 		if (ItemUtils.isCompass(stack)) {
-			return getState(stack) != CompassState.INACTIVE;
+			return getCompassState(stack) != CompassState.INACTIVE;
 		}
 
 		return false;
 	}
 
-	public void setSearching(ItemStack stack, Identifier biomeID, Player player) {
+	public void setPrevPos(ItemStack stack, List<BlockPos> prevPos) {
 		if (ItemUtils.isCompass(stack)) {
-			stack.set(NaturesCompass.BIOME_ID_COMPONENT, biomeID.toString());
+			stack.set(NaturesCompass.PREV_POS_COMPONENT, prevPos);
+		}
+	}
+
+	public void setSearching(ItemStack stack, Identifier biomeId, Player player) {
+		if (ItemUtils.isCompass(stack)) {
+			stack.set(NaturesCompass.BIOME_ID_COMPONENT, biomeId.toString());
 			stack.set(NaturesCompass.COMPASS_STATE_COMPONENT, CompassState.SEARCHING.getID());
 			stack.set(NaturesCompass.SEARCH_RADIUS_COMPONENT, 0);
 		}
@@ -138,12 +172,12 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public void setState(ItemStack stack, BlockPos pos, CompassState state, Player player) {
+	public void setCompassState(ItemStack stack, BlockPos pos, CompassState state, Player player) {
 		if (ItemUtils.isCompass(stack)) {
 			stack.set(NaturesCompass.COMPASS_STATE_COMPONENT, state.getID());
 		}
 	}
-	
+
 	public void setDisplayCoordinates(ItemStack stack, boolean displayPosition) {
   		if (ItemUtils.isCompass(stack)) {
   			stack.set(NaturesCompass.DISPLAY_COORDS_COMPONENT, displayPosition);
@@ -162,9 +196,9 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public void setBiomeID(ItemStack stack, Identifier biomeID, Player player) {
+	public void setBiomeId(ItemStack stack, Identifier biomeId, Player player) {
 		if (ItemUtils.isCompass(stack)) {
-			stack.set(NaturesCompass.BIOME_ID_COMPONENT, biomeID.toString());
+			stack.set(NaturesCompass.BIOME_ID_COMPONENT, biomeId.toString());
 		}
 	}
 
@@ -180,7 +214,7 @@ public class NaturesCompassItem extends Item {
 		}
 	}
 
-	public CompassState getState(ItemStack stack) {
+	public CompassState getCompassState(ItemStack stack) {
 		if (ItemUtils.isCompass(stack) && stack.has(NaturesCompass.COMPASS_STATE_COMPONENT)) {
 			return CompassState.fromID(stack.get(NaturesCompass.COMPASS_STATE_COMPONENT));
 		}
@@ -204,7 +238,7 @@ public class NaturesCompassItem extends Item {
 		return 0;
 	}
 
-	public Identifier getBiomeID(ItemStack stack) {
+	public Identifier getBiomeId(ItemStack stack) {
 		if (ItemUtils.isCompass(stack) && stack.has(NaturesCompass.BIOME_ID_COMPONENT)) {
 			return Identifier.parse(stack.get(NaturesCompass.BIOME_ID_COMPONENT));
 		}
@@ -227,7 +261,15 @@ public class NaturesCompassItem extends Item {
 
 		return -1;
 	}
-	
+
+	public List<BlockPos> getPrevPos(ItemStack stack) {
+		if (ItemUtils.isCompass(stack) && stack.has(NaturesCompass.PREV_POS_COMPONENT)) {
+			return stack.get(NaturesCompass.PREV_POS_COMPONENT);
+		}
+
+		return null;
+	}
+
 	public boolean shouldDisplayCoordinates(ItemStack stack) {
   		if (ItemUtils.isCompass(stack) && stack.has(NaturesCompass.DISPLAY_COORDS_COMPONENT)) {
   			return stack.get(NaturesCompass.DISPLAY_COORDS_COMPONENT);

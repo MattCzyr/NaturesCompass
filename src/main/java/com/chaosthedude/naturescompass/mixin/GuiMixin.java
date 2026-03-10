@@ -40,21 +40,21 @@ public class GuiMixin {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (stack != null && stack.getItem() instanceof NaturesCompassItem) {
 				final NaturesCompassItem compass = (NaturesCompassItem) stack.getItem();
-				if (compass.getState(stack) == CompassState.SEARCHING) {
+				if (compass.getCompassState(stack) == CompassState.SEARCHING) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, 0xffffffff, 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.searching"), 5, 5, 0xffaaaaaa, 1);
 	
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, 0xffffffff, 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeID(stack)), 5, 5, 0xffaaaaaa, 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeId(stack)), 5, 5, 0xffaaaaaa, 4);
 	
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.radius"), 5, 5, 0xffffffff, 6);
  					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xffaaaaaa, 7);
-				} else if (compass.getState(stack) == CompassState.FOUND) {
+				} else if (compass.getCompassState(stack) == CompassState.FOUND) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, 0xffffffff, 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.found"), 5, 5, 0xffaaaaaa, 1);
 	
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, 0xffffffff, 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeID(stack)), 5, 5, 0xffaaaaaa, 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeId(stack)), 5, 5, 0xffaaaaaa, 4);
 	
 					if (compass.shouldDisplayCoordinates(stack)) {
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.coordinates"), 5, 5, 0xffffffff, 6);
@@ -63,12 +63,12 @@ public class GuiMixin {
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.distance"), 5, 5, 0xffffffff, 9);
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, 0xffaaaaaa, 10);
 					}
-				} else if (compass.getState(stack) == CompassState.NOT_FOUND) {
+				} else if (compass.getCompassState(stack) == CompassState.NOT_FOUND) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, 0xffffffff, 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.notFound"), 5, 5, 0xffaaaaaa, 1);
 	
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.biome"), 5, 5, 0xffffffff, 3);
-					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeID(stack)), 5, 5, 0xffaaaaaa, 4);
+					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, BiomeUtils.getBiomeName(minecraft.level, compass.getBiomeId(stack)), 5, 5, 0xffaaaaaa, 4);
 	
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.radius"), 5, 5, 0xffffffff, 6);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(compass.getSearchRadius(stack)), 5, 5, 0xffaaaaaa, 7);

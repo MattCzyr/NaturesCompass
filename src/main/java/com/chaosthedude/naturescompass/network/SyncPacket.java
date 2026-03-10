@@ -15,16 +15,17 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes) implements CustomPacketPayload {
+public record SyncPacket(boolean canTeleport, int maxNextSearches, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes) implements CustomPacketPayload {
 
 	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
-	
+
 	public static final StreamCodec<FriendlyByteBuf, SyncPacket> CODEC = StreamCodec.ofMember(SyncPacket::write, SyncPacket::read);
-	
+
 	public static SyncPacket read(FriendlyByteBuf buf) {
 		boolean canTeleport = buf.readBoolean();
+		int maxNextSearches = buf.readInt();
 		boolean infiniteXp = buf.readBoolean();
-		
+
 		List<Identifier> allowedBiomes = new ArrayList<Identifier>();
 		Map<Identifier, Integer> xpLevelsForAllowedBiomes = new HashMap<Identifier, Integer>();
 		ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes = ArrayListMultimap.create();
@@ -36,23 +37,24 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 			for (int j = 0; j < numDimensions; j++) {
 				dimensionIds.add(buf.readIdentifier());
 			}
-			
+
 			int xpLevels = buf.readInt();
-			
+
 			if (biomeId != null) {
 				allowedBiomes.add(biomeId);
 				xpLevelsForAllowedBiomes.put(biomeId, xpLevels);
 				dimensionsForAllowedBiomes.putAll(biomeId, dimensionIds);
 			}
 		}
-		
-		return new SyncPacket(canTeleport, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionsForAllowedBiomes);
+
+		return new SyncPacket(canTeleport, maxNextSearches, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionsForAllowedBiomes);
 	}
 
 	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
+		buf.writeInt(maxNextSearches);
 		buf.writeBoolean(infiniteXp);
-		
+
 		buf.writeInt(allowedBiomes.size());
 		for (Identifier biomeId : allowedBiomes) {
 			buf.writeIdentifier(biomeId);
@@ -68,14 +70,16 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 
 	public static void apply(SyncPacket packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
+			NaturesCompass.synced = true;
 			NaturesCompass.canTeleport = packet.canTeleport;
+			NaturesCompass.maxNextSearches = packet.maxNextSearches;
 			NaturesCompass.infiniteXp = packet.infiniteXp;
 			NaturesCompass.allowedBiomes = packet.allowedBiomes;
 			NaturesCompass.xpLevelsForAllowedBiomes = packet.xpLevelsForAllowedBiomes;
 			NaturesCompass.dimensionsForAllowedBiomes = packet.dimensionsForAllowedBiomes;
 		});
 	}
-	
+
 	@Override
 	public Type<SyncPacket> type() {
 		return TYPE;

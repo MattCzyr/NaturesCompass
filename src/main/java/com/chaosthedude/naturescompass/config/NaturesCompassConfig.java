@@ -23,6 +23,7 @@ public class NaturesCompassConfig {
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	
 	public static boolean allowTeleport = true;
+	public static int maxNextSearches = 25;
 	public static boolean displayCoordinates = true;
 	public static int maxSamples = 50000;
 	public static int radiusModifier = 2500;
@@ -45,6 +46,7 @@ public class NaturesCompassConfig {
 				Data data = gson.fromJson(reader, Data.class);
 				
 				allowTeleport = data.common.allowTeleport;
+				maxNextSearches = data.common.maxNextSearches;
 				displayCoordinates = data.common.displayCoordinates;
 				maxSamples = data.common.maxSamples;
 				radiusModifier = data.common.radiusModifier;
@@ -69,7 +71,7 @@ public class NaturesCompassConfig {
 	public static void save() {
 		try {
 			Writer writer = Files.newBufferedWriter(getFilePath());
-			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
+			Data data = new Data(new Data.Common(allowTeleport, maxNextSearches, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
 			gson.toJson(data, writer);
 			writer.close();
 		} catch (IOException e) {
@@ -97,7 +99,10 @@ public class NaturesCompassConfig {
 		private static class Common {
 			private final String allowTeleportComment = "Allows a player to teleport to a located biome when in creative mode, opped, or in cheat mode.";
 			private final boolean allowTeleport;
-			
+
+			private final String maxNextSearchesComment = "The maximum number of times a player can search for the next instance of a located biome. Set to 0 to disable searching for additional biome instances and make the compass always locate the nearest biome.";
+			private final int maxNextSearches;
+
 			private final String displayCoordinatesComment = "Allows players to view the precise coordinates and distance of a located structure on the HUD, rather than relying on the direction the compass is pointing.";
 			private final boolean displayCoordinates;
 			
@@ -121,6 +126,7 @@ public class NaturesCompassConfig {
 			
 			private Common() {
 				allowTeleport = true;
+				maxNextSearches = 25;
 				displayCoordinates = true;
 				maxSamples = 50000;
 				radiusModifier = 2500;
@@ -130,8 +136,9 @@ public class NaturesCompassConfig {
 				perBiomeXpLevels = new HashMap<String, Integer>();
 			}
 			
-			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels) {
+			private Common(boolean allowTeleport, int maxNextSearches, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels) {
 				this.allowTeleport = allowTeleport;
+				this.maxNextSearches = maxNextSearches;
 				this.displayCoordinates = displayCoordinates;
 				this.maxSamples = maxSamples;
 				this.radiusModifier = radiusModifier;

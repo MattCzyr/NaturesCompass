@@ -36,7 +36,7 @@ public record TeleportPacket() implements CustomPacketPayload {
 			if (!stack.isEmpty()) {
 				final NaturesCompassItem natureCompass = (NaturesCompassItem) stack.getItem();
 				if (NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(context.player().level().getServer(), context.player())) {
-					if (natureCompass.getState(stack) == CompassState.FOUND) {
+					if (natureCompass.getCompassState(stack) == CompassState.FOUND) {
 						final int x = natureCompass.getFoundBiomeX(stack);
 						final int z = natureCompass.getFoundBiomeZ(stack);
 						final int y = findValidTeleportHeight(context.player().level(), x, z);
