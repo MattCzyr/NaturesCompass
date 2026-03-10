@@ -35,8 +35,6 @@ public class NaturesCompassScreen extends Screen {
 	private Player player;
 	private List<Identifier> allowedBiomes;
 	private List<Identifier> biomesMatchingSearch;
-	private ItemStack stack;
-	private NaturesCompassItem natureCompass;
 	private Identifier foundBiomeId;
 	private Button searchForBiomeButton;
 	private Button searchForNextButton;
@@ -51,15 +49,16 @@ public class NaturesCompassScreen extends Screen {
 		super(Component.translatable("string.naturescompass.selectBiome"));
 		this.level = level;
 		this.player = player;
-		this.stack = stack;
-		this.natureCompass = natureCompass;
 		this.allowedBiomes = new ArrayList<Identifier>(allowedBiomes);
 
 		sortingCategory = new NameSorting();
 		biomesMatchingSearch = new ArrayList<Identifier>(allowedBiomes);
 		
 		if (natureCompass.getCompassState(stack) == CompassState.FOUND) {
-			foundBiomeId = natureCompass.getBiomeId(stack);
+			String foundBiomeIdStr = stack.getOrDefault(NaturesCompass.BIOME_ID, null);
+			if (foundBiomeIdStr != null) {
+				foundBiomeId = Identifier.parse(foundBiomeIdStr);
+			}
 		}
 	}
 

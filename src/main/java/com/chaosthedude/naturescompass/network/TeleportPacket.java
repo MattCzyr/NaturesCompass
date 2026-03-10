@@ -39,8 +39,8 @@ public record TeleportPacket() implements CustomPacketPayload {
 					final ServerPlayer player = (ServerPlayer) context.player();
 					if (ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(player.level().getServer(), player)) {
 						if (natureCompass.getCompassState(stack) == CompassState.FOUND) {
-							final int x = natureCompass.getFoundBiomeX(stack);
-							final int z = natureCompass.getFoundBiomeZ(stack);
+							final int x = stack.getOrDefault(NaturesCompass.FOUND_X, 0);
+							final int z = stack.getOrDefault(NaturesCompass.FOUND_Z, 0);
 							final int y = packet.findValidTeleportHeight(context.player().level(), x, z);
 	
 							player.stopRiding();

@@ -65,7 +65,9 @@ public class NaturesCompassItem extends Item {
 				worker.stop();
 				worker = null;
 			}
-			setCompassState(player.getItemInHand(hand), null, CompassState.INACTIVE, player);
+			ItemStack stack = player.getItemInHand(hand);
+			clearCompassData(stack);
+			setCompassState(stack, CompassState.INACTIVE);
 		}
 
 		return InteractionResult.CONSUME;
@@ -82,7 +84,7 @@ public class NaturesCompassItem extends Item {
 	public void searchForBiome(ServerLevel level, Player player, Identifier biomeId, BlockPos pos, ItemStack stack) {
 		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
 		if (optionalBiome.isPresent()) {
-			setSearching(stack, biomeId, player);
+			search(stack, biomeId);
 			
 			if (worker != null) {
 				worker.stop();
@@ -96,198 +98,82 @@ public class NaturesCompassItem extends Item {
 				player.giveExperienceLevels(-xpLevels);
 			}
 		} else {
-			setNotFound(stack, player, 0, 0);
+			fail(stack, 0, 0);
 		}
 	}
 	
 	public void searchForNextBiome(ServerLevel level, Player player, BlockPos pos, ItemStack stack) {
-		List<BlockPos> prevPos = getPrevPos(stack);
-		Identifier biomeId = getBiomeId(stack);
-		if (prevPos != null && biomeId != null) {
-			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
-			if (optionalBiome.isPresent()) {
-				setSearching(stack, biomeId, player);
-				
-				if (worker != null) {
-					worker.stop();
+		if (stack.getItem() == NaturesCompass.naturesCompass) {
+			List<BlockPos> prevPos = stack.getOrDefault(NaturesCompass.PREV_POS, null);
+			String biomeIdStr = stack.getOrDefault(NaturesCompass.BIOME_ID, null);
+			if (prevPos != null && biomeIdStr != null) {
+				Identifier biomeId = Identifier.parse(biomeIdStr);
+				Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
+				if (optionalBiome.isPresent()) {
+					search(stack, biomeId);
+					
+					if (worker != null) {
+						worker.stop();
+					}
+					worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
+					worker.start();
+					
+					int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+					if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+						player.giveExperienceLevels(-xpLevels);
+					}
+				} else {
+					fail(stack, 0, 0);
 				}
-				worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
-				worker.start();
-				
-				int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
-				if (!player.hasInfiniteMaterials() && xpLevels > 0) {
-					player.giveExperienceLevels(-xpLevels);
-				}
-			} else {
-				setNotFound(stack, player, 0, 0);
 			}
 		}
 	}
 	
-	public void succeed(ItemStack stack, Player player, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
-		setFound(stack, x, z, samples, player);
-		setDisplayCoordinates(stack, displayCoordinates);
-		setPrevPos(stack, prevPos);
-		worker = null;
-	}
-	
-	public void fail(ItemStack stack, Player player, int radius, int samples) {
-		setNotFound(stack, player, radius, samples);
-		worker = null;
-	}
-
-	public boolean isActive(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			return getCompassState(stack) != CompassState.INACTIVE;
-		}
-
-		return false;
-	}
-	
-	public void setPrevPos(ItemStack stack, List<BlockPos> prevPos) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.PREV_POS, prevPos);
-		}
-	}
-
-	public void setSearching(ItemStack stack, Identifier biomeId, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
-			stack.set(NaturesCompass.COMPASS_STATE, CompassState.SEARCHING.getID());
-		}
-	}
-
-	public void setFound(ItemStack stack, int x, int z, int samples, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.COMPASS_STATE, CompassState.FOUND.getID());
-			stack.set(NaturesCompass.FOUND_X, x);
-			stack.set(NaturesCompass.FOUND_Z, z);
-			stack.set(NaturesCompass.SAMPLES, samples);
-		}
-	}
-
-	public void setNotFound(ItemStack stack, Player player, int searchRadius, int samples) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.COMPASS_STATE, CompassState.NOT_FOUND.getID());
-			stack.set(NaturesCompass.SEARCH_RADIUS, searchRadius);
-			stack.set(NaturesCompass.SAMPLES, samples);
-		}
-	}
-
-	public void setInactive(ItemStack stack, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.COMPASS_STATE, CompassState.INACTIVE.getID());
-		}
-	}
-
-	public void setCompassState(ItemStack stack, BlockPos pos, CompassState state, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.COMPASS_STATE, state.getID());
-		}
-	}
-
-	public void setFoundBiomeX(ItemStack stack, int x, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.FOUND_X, x);
-		}
-	}
-
-	public void setFoundBiomeZ(ItemStack stack, int z, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.FOUND_Z, z);
-		}
-	}
-
-	public void setBiomeId(ItemStack stack, Identifier biomeId, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
-		}
-	}
-
-	public void setSearchRadius(ItemStack stack, int searchRadius, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.SEARCH_RADIUS, searchRadius);
-		}
-	}
-
-	public void setSamples(ItemStack stack, int samples, Player player) {
-		if (stack.getItem() == NaturesCompass.naturesCompass) {
-			stack.set(NaturesCompass.SAMPLES, samples);
-		}
+	public void setCompassState(ItemStack stack, CompassState state) {
+		stack.set(NaturesCompass.COMPASS_STATE, state.getID());
 	}
 
 	public CompassState getCompassState(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.COMPASS_STATE)) {
-			return CompassState.fromID(stack.get(NaturesCompass.COMPASS_STATE));
-		}
-
-		return null;
+		return CompassState.fromID(stack.getOrDefault(NaturesCompass.COMPASS_STATE, null));
 	}
 	
-	public void setDisplayCoordinates(ItemStack stack, boolean displayPosition) {
- 		if (stack.getItem() == NaturesCompass.naturesCompass) {
- 			stack.set(NaturesCompass.DISPLAY_COORDS, displayPosition);
- 		}
- 	}
-
-	public int getFoundBiomeX(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.FOUND_X)) {
-			return stack.get(NaturesCompass.FOUND_X);
-		}
-
-		return 0;
-	}
-
-	public int getFoundBiomeZ(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.FOUND_Z)) {
-			return stack.get(NaturesCompass.FOUND_Z);
-		}
-
-		return 0;
-	}
-
-	public Identifier getBiomeId(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.BIOME_ID)) {
-			return Identifier.parse(stack.get(NaturesCompass.BIOME_ID));
-		}
-
-		return Identifier.fromNamespaceAndPath("", "");
-	}
-
-	public int getSearchRadius(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.SEARCH_RADIUS)) {
-			return stack.get(NaturesCompass.SEARCH_RADIUS);
-		}
-
-		return -1;
-	}
-
-	public int getSamples(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.SAMPLES)) {
-			return stack.get(NaturesCompass.SAMPLES);
-		}
-
-		return -1;
+	public void succeed(ItemStack stack, Identifier biomeId, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
+		clearCompassData(stack);
+		setCompassState(stack, CompassState.FOUND);
+		stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
+		stack.set(NaturesCompass.FOUND_X, x);
+		stack.set(NaturesCompass.FOUND_Z, z);
+		stack.set(NaturesCompass.PREV_POS, prevPos);
+		stack.set(NaturesCompass.SAMPLES, samples);
+		stack.set(NaturesCompass.DISPLAY_COORDS, displayCoordinates);
+		worker = null;
 	}
 	
-	public List<BlockPos> getPrevPos(ItemStack stack) {
-		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.PREV_POS)) {
-			return stack.get(NaturesCompass.PREV_POS);
-		}
-
-		return null;
-	}
-
-	public int getDistanceToBiome(Player player, ItemStack stack) {
-		return BiomeUtils.getDistanceToBiome(player, getFoundBiomeX(stack), getFoundBiomeZ(stack));
+	public void fail(ItemStack stack, int radius, int samples) {
+		clearCompassData(stack);
+		setCompassState(stack, CompassState.NOT_FOUND);
+		stack.set(NaturesCompass.SEARCH_RADIUS, radius);
+		stack.set(NaturesCompass.SAMPLES, samples);
+		worker = null;
 	}
 	
-	public boolean shouldDisplayCoordinates(ItemStack stack) {
- 		if (stack.getItem() == NaturesCompass.naturesCompass && stack.has(NaturesCompass.DISPLAY_COORDS)) {
- 			return stack.get(NaturesCompass.DISPLAY_COORDS);
- 		}
-
- 		return true;
- 	}
+	private void search(ItemStack stack, Identifier biomeId) {
+		clearCompassData(stack);
+		setCompassState(stack, CompassState.SEARCHING);
+		stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
+		stack.set(NaturesCompass.SAMPLES, 0);
+		stack.set(NaturesCompass.SEARCH_RADIUS, 0);
+	}
+	
+	private void clearCompassData(ItemStack stack) {
+		stack.remove(NaturesCompass.COMPASS_STATE);
+		stack.remove(NaturesCompass.BIOME_ID);
+		stack.remove(NaturesCompass.FOUND_X);
+		stack.remove(NaturesCompass.FOUND_Z);
+		stack.remove(NaturesCompass.PREV_POS);
+		stack.remove(NaturesCompass.SAMPLES);
+		stack.remove(NaturesCompass.SEARCH_RADIUS);
+		stack.remove(NaturesCompass.DISPLAY_COORDS);
+	}
 
 }

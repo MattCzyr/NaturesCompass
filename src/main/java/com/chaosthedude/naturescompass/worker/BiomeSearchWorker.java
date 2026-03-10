@@ -231,7 +231,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		int radius = getRadius();
 		if (radius > 500 && radius / 500 > lastRadiusThreshold) {
 			if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-				((NaturesCompassItem) stack.getItem()).setSearchRadius(stack, roundRadius(radius, 500), player);
+				stack.set(NaturesCompass.SEARCH_RADIUS, roundRadius(radius, 500));
 			}
 			lastRadiusThreshold = radius / 500;
 		}
@@ -240,7 +240,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private void succeed() {
 		NaturesCompass.LOGGER.info("BiomeSearchWorker " + id + ": Search succeeded: " + getRadius() + " radius, " + samples + " samples");
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-			((NaturesCompassItem) stack.getItem()).succeed(stack, player, x, z, prevPos, samples, ConfigHandler.GENERAL.displayCoordinates.get());
+			((NaturesCompassItem) stack.getItem()).succeed(stack, biomeId, x, z, prevPos, samples, ConfigHandler.GENERAL.displayCoordinates.get());
 		} else {
 			NaturesCompass.LOGGER.error("BiomeSearchWorker " + id + ": Invalid compass after search");
 		}
@@ -250,7 +250,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private void fail() {
 		NaturesCompass.LOGGER.info("BiomeSearchWorker " + id + ": Search failed: " + getRadius() + " radius, " + samples + " samples");
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.naturesCompass) {
-			((NaturesCompassItem) stack.getItem()).fail(stack, player, roundRadius(getRadius(), 500), samples);
+			((NaturesCompassItem) stack.getItem()).fail(stack, roundRadius(getRadius(), 500), samples);
 		} else {
 			NaturesCompass.LOGGER.error("Invalid compass after search");
 		}
