@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionIdsForAllowedBiomes) implements CustomPacketPayload {
+public record SyncPacket(boolean canTeleport, int maxNextSearches, boolean infiniteXp, List<Identifier> allowedBiomes, Map<Identifier, Integer> xpLevelsForAllowedBiomes, ListMultimap<Identifier, Identifier> dimensionIdsForAllowedBiomes) implements CustomPacketPayload {
 
 	public static final Type<SyncPacket> TYPE = new Type<SyncPacket>(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "sync"));
 	
@@ -23,6 +23,7 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 	
 	public static SyncPacket read(FriendlyByteBuf buf) {
 		boolean canTeleport = buf.readBoolean();
+		int maxNextSearches = buf.readInt();
 		boolean infiniteXp = buf.readBoolean();
 		
 		List<Identifier> allowedBiomes = new ArrayList<Identifier>();
@@ -46,11 +47,12 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 			}
 		}
 		
-		return new SyncPacket(canTeleport, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionIdsForAllowedBiomes);
+		return new SyncPacket(canTeleport, maxNextSearches, infiniteXp, allowedBiomes, xpLevelsForAllowedBiomes, dimensionIdsForAllowedBiomes);
 	}
 
 	public void write(FriendlyByteBuf buf) {
 		buf.writeBoolean(canTeleport);
+		buf.writeInt(maxNextSearches);
 		buf.writeBoolean(infiniteXp);
 		
 		buf.writeInt(allowedBiomes.size());
@@ -69,7 +71,9 @@ public record SyncPacket(boolean canTeleport, boolean infiniteXp, List<Identifie
 	public static void handle(SyncPacket packet, IPayloadContext context) {
 		if (context.flow().isClientbound()) {
 			context.enqueueWork(() -> {
+				NaturesCompass.synced = true;
 				NaturesCompass.canTeleport = packet.canTeleport;
+				NaturesCompass.maxNextSearches = packet.maxNextSearches;
 				NaturesCompass.infiniteXp = packet.infiniteXp;
 				NaturesCompass.allowedBiomes = packet.allowedBiomes;
 				NaturesCompass.xpLevelsForAllowedBiomes = packet.xpLevelsForAllowedBiomes;

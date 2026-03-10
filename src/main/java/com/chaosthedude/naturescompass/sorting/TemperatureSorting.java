@@ -1,18 +1,28 @@
 package com.chaosthedude.naturescompass.sorting;
 
+import com.chaosthedude.naturescompass.util.BiomeUtils;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
 public class TemperatureSorting implements ISorting<Float> {
+	
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
-	public int compare(Biome biome1, Biome biome2) {
-		return getValue(biome1).compareTo(getValue(biome2));
+	public int compare(Identifier biomeId1, Identifier biomeId2) {
+		return getValue(biomeId1).compareTo(getValue(biomeId2));
 	}
 
 	@Override
-	public Float getValue(Biome biome) {
-		return biome.getBaseTemperature();
+	public Float getValue(Identifier biomeId) {
+		if (mc.level != null && BiomeUtils.getBiomeForId(mc.level, biomeId).isPresent()) {
+			Biome biome = BiomeUtils.getBiomeForId(mc.level, biomeId).get();
+			return biome.getBaseTemperature();
+		}
+		return 0F;
 	}
 
 	@Override

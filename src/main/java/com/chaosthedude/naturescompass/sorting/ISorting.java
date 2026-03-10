@@ -2,14 +2,14 @@ package com.chaosthedude.naturescompass.sorting;
 
 import java.util.Comparator;
 
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.resources.Identifier;
 
-public interface ISorting<T> extends Comparator<Biome> {
+public interface ISorting<T> extends Comparator<Identifier> {
 
 	@Override
-	public int compare(Biome biome1, Biome biome2);
+	public int compare(Identifier biomeId1, Identifier biomeId2);
 
-	public T getValue(Biome biome);
+	public T getValue(Identifier biomeId);
 
 	public ISorting<?> next();
 

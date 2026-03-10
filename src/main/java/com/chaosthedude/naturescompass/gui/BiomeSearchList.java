@@ -5,20 +5,20 @@ import com.chaosthedude.naturescompass.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.biome.Biome;
 
 public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	private final NaturesCompassScreen parentScreen;
 	private Player player;
 
-	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, Player player, int width, int height, int y, int itemHeight) {
+	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, Player player, Identifier biomeIdToSelect, int width, int height, int y, int itemHeight) {
 		super(mc, width, height, y, itemHeight);
 		this.parentScreen = parentScreen;
 		this.player = player;
-		refreshList();
+		refreshList(biomeIdToSelect);
 	}
 
 	@Override
@@ -74,25 +74,31 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 			guiGraphics.fill(left, top, right, top + height, scrollbarFillColor);
 		}
 	}
-
-	public void refreshList() {
-		clearEntries();
-		for (Biome biome : parentScreen.sortBiomes()) {
-			addEntry(new BiomeSearchEntry(this, biome, player));
+	
+	@Override
+	public void setSelected(BiomeSearchEntry entry) {
+		if (entry == null || entry.isEnabled()) {
+			super.setSelected(entry);
 		}
-		selectBiome(null);
+	}
+	
+	public void refreshList(Identifier biomeIdToSelect) {
+		clearEntries();
+		for (Identifier biomeId : parentScreen.sortBiomes()) {
+			BiomeSearchEntry entry = new BiomeSearchEntry(this, biomeId, player);
+			addEntry(entry);
+			if (biomeId.equals(biomeIdToSelect)) {
+				setSelected(entry);
+			}
+		}
 		setScrollAmount(0);
 	}
-
-	public boolean selectBiome(BiomeSearchEntry entry) {
-		if (entry == null || entry.isEnabled()) {
-			setSelected(entry);
-			parentScreen.selectBiome(entry);
-			return true;
-		}
-		return false;
+	
+	public void refreshList(boolean maintainSelection) {
+		Identifier select = maintainSelection && hasSelection() ? getSelected().getBiomeId() : null;
+		refreshList(select);
 	}
-
+	
 	public boolean hasSelection() {
 		return getSelected() != null;
 	}

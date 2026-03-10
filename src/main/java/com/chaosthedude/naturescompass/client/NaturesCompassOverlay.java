@@ -28,7 +28,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (stack != null && stack.getItem() instanceof NaturesCompassItem) {
 				final NaturesCompassItem compass = (NaturesCompassItem) stack.getItem();
-				if (compass.getState(stack) == CompassState.SEARCHING) {
+				if (compass.getCompassState(stack) == CompassState.SEARCHING) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, ARGB.opaque(0xFFFFFF), 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.searching"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 
@@ -37,7 +37,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 					
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.radius"), 5, 5, ARGB.opaque(0xFFFFFF), 6);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(compass.getSearchRadius(stack)), 5, 5, ARGB.opaque(0xAAAAAA), 7);
-				} else if (compass.getState(stack) == CompassState.FOUND) {
+				} else if (compass.getCompassState(stack) == CompassState.FOUND) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, ARGB.opaque(0xFFFFFF), 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.found"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 
@@ -51,7 +51,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.distance"), 5, 5, ARGB.opaque(0xFFFFFF), 9);
 						RenderUtils.drawConfiguredStringOnHUD(guiGraphics, String.valueOf(BiomeUtils.getDistanceToBiome(player, compass.getFoundBiomeX(stack), compass.getFoundBiomeZ(stack))), 5, 5, ARGB.opaque(0xAAAAAA), 10);
 					}
-				} else if (compass.getState(stack) == CompassState.NOT_FOUND) {
+				} else if (compass.getCompassState(stack) == CompassState.NOT_FOUND) {
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.status"), 5, 5, ARGB.opaque(0xFFFFFF), 0);
 					RenderUtils.drawConfiguredStringOnHUD(guiGraphics, I18n.get("string.naturescompass.notFound"), 5, 5, ARGB.opaque(0xAAAAAA), 1);
 

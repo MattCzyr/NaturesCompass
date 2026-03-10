@@ -154,7 +154,7 @@ public class BiomeUtils {
 		return (int) Mth.sqrt((float) startPos.distSqr(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
 
-	public static String getBiomeTags(Level level, Biome biome) {
+	public static String getBiomeTags(Level level, Identifier biomeId) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it
 		// altogether for clarity
 		List<String> tagPathsToIgnore = List.of("is_overworld");
@@ -162,29 +162,32 @@ public class BiomeUtils {
 		Set<String> biomeCategories = new TreeSet<String>();
 		if (getBiomeRegistry(level).isPresent()) {
 			Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
-			if (biomeRegistry.wrapAsHolder(biome) != null) {
-				Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
-				// Extremely hacky way of extracting a biome's categories from its tags
-				List<TagKey<Biome>> categoryTags = biomeHolder.tags().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
-				for (TagKey<Biome> tag : categoryTags) {
-					if (tagPathsToIgnore.contains(tag.location().getPath())) {
-						continue;
+			if (getBiomeForId(level, biomeId).isPresent()) {
+				Biome biome = getBiomeForId(level, biomeId).get();
+				if (biomeRegistry.wrapAsHolder(biome) != null) {
+					Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
+					// Extremely hacky way of extracting a biome's categories from its tags
+					List<TagKey<Biome>> categoryTags = biomeHolder.tags().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
+					for (TagKey<Biome> tag : categoryTags) {
+						if (tagPathsToIgnore.contains(tag.location().getPath())) {
+							continue;
+						}
+						String fixedPath = tag.location().getPath().replaceFirst("is_", "");
+						if (fixedPath.contains("/")) {
+							fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
+						}
+						String biomeTranslationKey = Util.makeDescriptionId("biome", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+						String translatedBiome = I18n.get(biomeTranslationKey);
+						if (!biomeTranslationKey.equals(translatedBiome)) {
+							return translatedBiome;
+						}
+						String categoryTranslationKey = Util.makeDescriptionId("category", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
+						String translatedCategory = I18n.get(categoryTranslationKey);
+						if (!categoryTranslationKey.equals(translatedCategory)) {
+							return translatedCategory;
+						}
+						biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
 					}
-					String fixedPath = tag.location().getPath().replaceFirst("is_", "");
-					if (fixedPath.contains("/")) {
-						fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
-					}
-					String biomeId = Util.makeDescriptionId("biome", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
-					String translatedBiomeId = I18n.get(biomeId);
-					if (!biomeId.equals(translatedBiomeId)) {
-						return translatedBiomeId;
-					}
-					String categoryId = Util.makeDescriptionId("category", Identifier.fromNamespaceAndPath(tag.location().getNamespace(), fixedPath));
-					String translatedCategoryId = I18n.get(categoryId);
-					if (!categoryId.equals(translatedCategoryId)) {
-						return translatedCategoryId;
-					}
-					biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
 				}
 			}
 		}
@@ -194,52 +197,30 @@ public class BiomeUtils {
 		return String.join(", ", biomeCategories);
 	}
 
-	public static String getBiomeNameForDisplay(Level level, Identifier biome) {
-		if (getBiomeForId(level, biome).isPresent()) {
-			return getBiomeNameForDisplay(level, getBiomeForId(level, biome).get());
-		}
-		return "";
-	}
-
-	public static String getBiomeNameForDisplay(Level level, Biome biome) {
-		if (biome != null) {
-			if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
-				final String original = getBiomeName(level, biome);
-				String fixed = "";
-				char pre = ' ';
-				for (int i = 0; i < original.length(); i++) {
-					final char c = original.charAt(i);
-					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-						fixed = fixed + " ";
-					}
-					fixed = fixed + String.valueOf(c);
-					pre = c;
+	public static String getBiomeNameForDisplay(Level level, Identifier biomeId) {
+		if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
+			final String original = getBiomeName(level, biomeId);
+			String fixed = "";
+			char pre = ' ';
+			for (int i = 0; i < original.length(); i++) {
+				final char c = original.charAt(i);
+				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+					fixed = fixed + " ";
 				}
-				return fixed;
+				fixed = fixed + String.valueOf(c);
+				pre = c;
 			}
-			if (getIdForBiome(level, biome) != null) {
-				return I18n.get(getIdForBiome(level, biome).toString());
-			}
+			return fixed;
 		}
-		return "";
-	}
-
-	public static String getBiomeName(Level level, Biome biome) {
-		return getIdForBiome(level, biome).isPresent() ? I18n.get(Util.makeDescriptionId("biome", getIdForBiome(level, biome).get())) : "";
+		return I18n.get(biomeId.toString());
 	}
 
 	public static String getBiomeName(Level level, Identifier biomeId) {
-		if (getBiomeForId(level, biomeId).isPresent()) {
-			return getBiomeName(level, getBiomeForId(level, biomeId).get());
-		}
-		return "";
+		return I18n.get(Util.makeDescriptionId("biome", biomeId));
 	}
 
-	public static String getBiomeSource(Level level, Biome biome) {
-		if (getIdForBiome(level, biome).isEmpty()) {
-			return "";
-		}
-		String modid = getIdForBiome(level, biome).get().getNamespace();
+	public static String getBiomeSource(Level level, Identifier biomeId) {
+		String modid = biomeId.getNamespace();
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
 		}

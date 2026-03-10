@@ -33,7 +33,7 @@ public class NaturesCompassAngleState extends NeedleDirectionHelper {
 		GlobalPos pos = level.getRespawnData().globalPos();
 		if (stack.getItem() == NaturesCompass.naturesCompass) {
 			NaturesCompassItem compassItem = (NaturesCompassItem) stack.getItem();
-			if (compassItem.getState(stack) == CompassState.FOUND) {
+			if (compassItem.getCompassState(stack) == CompassState.FOUND) {
 				pos = new GlobalPos(level.dimension(), new BlockPos(compassItem.getFoundBiomeX(stack), 0, compassItem.getFoundBiomeZ(stack)));
 			}
 		}

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.item.NaturesCompassItem;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
@@ -18,6 +19,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
@@ -56,8 +58,11 @@ public class NaturesCompass {
 	public static final DataComponentType<Integer> SEARCH_RADIUS = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
 	public static final DataComponentType<Integer> SAMPLES = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
 	public static final DataComponentType<Boolean> DISPLAY_COORDS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
+	public static final DataComponentType<List<BlockPos>> PREV_POS = DataComponentType.<List<BlockPos>>builder().persistent(BlockPos.CODEC.listOf().xmap(ArrayList::new, list -> list)).networkSynchronized(ByteBufCodecs.collection(ArrayList::new, BlockPos.STREAM_CODEC)).build();
 	
+	public static boolean synced;
 	public static boolean canTeleport;
+	public static int maxNextSearches;
 	public static boolean infiniteXp;
 	public static List<Identifier> allowedBiomes;
 	public static Map<Identifier, Integer> xpLevelsForAllowedBiomes;
@@ -93,6 +98,7 @@ public class NaturesCompass {
 	private void registerPayloads(RegisterPayloadHandlersEvent event) {
 	    final PayloadRegistrar registrar = event.registrar(MODID);
 	    registrar.playToServer(SearchPacket.TYPE, SearchPacket.CODEC, SearchPacket::handle);
+	    registrar.playToServer(SearchForNextPacket.TYPE, SearchForNextPacket.CODEC, SearchForNextPacket::handle);
 	    registrar.playToServer(TeleportPacket.TYPE, TeleportPacket.CODEC, TeleportPacket::handle);
 	    registrar.playToClient(SyncPacket.TYPE, SyncPacket.CODEC, SyncPacket::handle);
 	}
