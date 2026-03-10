@@ -1,3 +1,13 @@
+## Version 3.2.0
+#### NeoForge 1.21.11
+- Added feature to search for the next instance of an already located biome
+- More minor improvements to biome selection GUI
+
+## Version 2.4.0
+#### Fabric 1.21.11
+- Added feature to search for the next instance of an already located biome
+- More minor improvements to biome selection GUI
+
 ## Version 3.1.0
 #### NeoForge 1.21.11
 - Added config options to make the compass consume XP levels when searching for a biome
