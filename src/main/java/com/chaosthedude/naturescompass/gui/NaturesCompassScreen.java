@@ -41,7 +41,7 @@ public class NaturesCompassScreen extends Screen {
 	private Button teleportButton;
 	private Button cancelButton;
 	private Button sortByButton;
-	private TransparentTextField searchTextField;
+	private TransparentEditBox searchBox;
 	private BiomeSearchList selectionList;
 	private ISorting<?> sortingCategory;
 
@@ -107,7 +107,7 @@ public class NaturesCompassScreen extends Screen {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		boolean ret = super.keyPressed(event);
-		if (searchTextField.isFocused()) {
+		if (searchBox.isFocused()) {
 			processSearchTerm();
 			return true;
 		}
@@ -117,7 +117,7 @@ public class NaturesCompassScreen extends Screen {
 	@Override
 	public boolean charTyped(CharacterEvent event) {
 		boolean ret = super.charTyped(event);
-		if (searchTextField.isFocused()) {
+		if (searchBox.isFocused()) {
 			processSearchTerm();
 			return true;
 		}
@@ -147,7 +147,7 @@ public class NaturesCompassScreen extends Screen {
 
 	public void processSearchTerm() {
 		biomesMatchingSearch = new ArrayList<Identifier>();
-		String searchTerm = searchTextField.getValue().toLowerCase();
+		String searchTerm = searchBox.getValue().toLowerCase();
 		for (Identifier biomeId : allowedBiomes) {
 			if (searchTerm.startsWith("$")) {
 				if (BiomeUtils.getBiomeTags(level, biomeId).toLowerCase().contains(searchTerm.substring(1))) {
@@ -207,7 +207,8 @@ public class NaturesCompassScreen extends Screen {
 			minecraft.setScreen(null);
 		}));
 		
-		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
+		searchBox = addRenderableWidget(new TransparentEditBox(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
+        searchBox.setHint(Component.translatable("string.naturescompass.search"));
 		
 		if (selectionList == null) {
 			selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeId, width + 110, height - 50, 40, 50);
