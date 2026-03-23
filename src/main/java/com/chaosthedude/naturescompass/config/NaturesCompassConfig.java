@@ -31,7 +31,8 @@ public class NaturesCompassConfig {
 	public static List<String> biomeBlacklist = new ArrayList<String>();
 	public static int defaultXpLevels = 0;
 	public static Map<String, Integer> perBiomeXpLevels;
-	
+	public static int compassDurability = 0;
+
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
 	public static int overlayLineOffset = 1;
@@ -54,8 +55,9 @@ public class NaturesCompassConfig {
 				biomeBlacklist = data.common.biomeBlacklist;
 				defaultXpLevels = data.common.defaultXpLevels;
 				perBiomeXpLevels = data.common.perBiomeXpLevels;
-				
-				displayWithChatOpen = data.client.displayWithChatOpen;
+			compassDurability = data.common.compassDurability;
+
+			displayWithChatOpen = data.client.displayWithChatOpen;
 				fixBiomeNames = data.client.fixBiomeNames;
 				overlayLineOffset = data.client.overlayLineOffset;
 				overlaySide = data.client.overlaySide;
@@ -71,7 +73,7 @@ public class NaturesCompassConfig {
 	public static void save() {
 		try {
 			Writer writer = Files.newBufferedWriter(getFilePath());
-			Data data = new Data(new Data.Common(allowTeleport, maxNextSearches, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
+			Data data = new Data(new Data.Common(allowTeleport, maxNextSearches, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels, compassDurability), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
 			gson.toJson(data, writer);
 			writer.close();
 		} catch (IOException e) {
@@ -123,7 +125,10 @@ public class NaturesCompassConfig {
 			
 			private final String perBiomeXpLevelsComment = "A map of per-biome XP level costs that override defaultXpLevels. Biomes not listed here use defaultXpLevels. Max of 3 levels. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: {\"minecraft:deep_dark\":3, \"minecraft:end*\":2, \"minecraft:*caves\":3}";
 			private final Map<String, Integer> perBiomeXpLevels;
-			
+
+			private final String compassDurabilityComment = "The number of successful biome searches before the compass breaks and must be repaired. Set to 0 to disable durability.";
+			private final int compassDurability;
+
 			private Common() {
 				allowTeleport = true;
 				maxNextSearches = 25;
@@ -134,9 +139,10 @@ public class NaturesCompassConfig {
 				biomeBlacklist = new ArrayList<String>();
 				defaultXpLevels = 0;
 				perBiomeXpLevels = new HashMap<String, Integer>();
+				compassDurability = 0;
 			}
-			
-			private Common(boolean allowTeleport, int maxNextSearches, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels) {
+
+			private Common(boolean allowTeleport, int maxNextSearches, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels, int compassDurability) {
 				this.allowTeleport = allowTeleport;
 				this.maxNextSearches = maxNextSearches;
 				this.displayCoordinates = displayCoordinates;
@@ -146,6 +152,7 @@ public class NaturesCompassConfig {
 				this.biomeBlacklist = biomeBlacklist;
 				this.defaultXpLevels = defaultXpLevels;
 				this.perBiomeXpLevels = perBiomeXpLevels;
+				this.compassDurability = compassDurability;
 			}
 		}
 		

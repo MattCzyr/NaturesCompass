@@ -250,7 +250,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private void fail() {
 		NaturesCompass.LOGGER.info("BiomeSearchWorker " + id + ": Search failed: " + getRadius() + " radius, " + samples + " samples");
 		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
-			((NaturesCompassItem) stack.getItem()).fail(stack, roundRadius(getRadius(), 500), samples);
+			((NaturesCompassItem) stack.getItem()).fail(stack, biomeId, roundRadius(getRadius(), 500), samples);
 		} else {
 			NaturesCompass.LOGGER.error("Invalid compass after search");
 		}

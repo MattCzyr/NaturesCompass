@@ -1,0 +1,11 @@
+{
+  "type": "crafting_shapeless",
+  "group": "tools",
+  "ingredients": [
+    "naturescompass:naturescompass",
+    "minecraft:compass"
+  ],
+  "result": {
+    "id": "naturescompass:naturescompass"
+  }
+}

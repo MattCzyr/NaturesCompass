@@ -14,8 +14,8 @@
             },
             {
                 "model": {
-                    "type": "minecraft:model",
-                    "model": "naturescompass:item/naturescompass_17"
+                  "type": "minecraft:model",
+                  "model": "naturescompass:item/naturescompass_17"
                 },
                 "threshold": 0.5
             },
