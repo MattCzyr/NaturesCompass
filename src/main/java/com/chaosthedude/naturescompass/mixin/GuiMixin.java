@@ -37,7 +37,7 @@ public class GuiMixin {
 
 	@Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At(value = "TAIL"))
 	private void renderCompassInfo(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
-		if (minecraft.player != null && minecraft.level != null && !minecraft.options.hideGui && !minecraft.getDebugOverlay().showDebugScreen() && (minecraft.screen == null || (NaturesCompassConfig.displayWithChatOpen && minecraft.screen instanceof ChatScreen))) {
+		if (minecraft.player != null && minecraft.level != null && !minecraft.options.hideGui && !minecraft.debugEntries.isOverlayVisible() && (minecraft.screen == null || (NaturesCompassConfig.displayWithChatOpen && minecraft.screen instanceof ChatScreen))) {
 			final Player player = minecraft.player;
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 			if (stack != null && stack.getItem() instanceof NaturesCompassItem) {
