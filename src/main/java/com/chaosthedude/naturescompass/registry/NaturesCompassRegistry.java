@@ -28,6 +28,7 @@ public class NaturesCompassRegistry {
 	    	registry.register(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "samples"), NaturesCompass.SAMPLES);
 	    	registry.register(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "display_coords"), NaturesCompass.DISPLAY_COORDS);
 	    	registry.register(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "prev_pos"), NaturesCompass.PREV_POS);
+	    	registry.register(Identifier.fromNamespaceAndPath(NaturesCompass.MODID, "damage"), NaturesCompass.DAMAGE);
 	    });
 	}
 

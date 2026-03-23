@@ -28,6 +28,7 @@ public class ConfigHandler {
 		public final ModConfigSpec.IntValue defaultXpLevels;
 		public final ModConfigSpec.ConfigValue<List<String>> perBiomeXpLevels;
 		public final ModConfigSpec.IntValue maxSamples;
+		public final ModConfigSpec.IntValue compassDurability;
 
 		General(ModConfigSpec.Builder builder) {
 			String desc;
@@ -59,6 +60,9 @@ public class ConfigHandler {
 
 			desc = "The maximum number of samples to be taken when searching for a biome.";
 			maxSamples = builder.comment(desc).defineInRange("maxSamples", 50000, 0, 1000000);
+
+			desc = "The number of successful biome searches before the compass breaks and must be repaired. Set to 0 to disable durability.";
+			compassDurability = builder.comment(desc).defineInRange("compassDurability", 0, 0, 10000);
 
 			builder.pop();
 		}
