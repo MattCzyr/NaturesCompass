@@ -49,10 +49,11 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private int connectionsCheckSamples;
 	private int consecutiveNonMatchingSamples;
 
-	public BiomeSearchWorker(ServerLevel level, Player player, ItemStack stack, Biome biome, BlockPos startPos, List<BlockPos> prevPos) {
+	public BiomeSearchWorker(ServerLevel level, Player player, ItemStack stack, Identifier biomeId, BlockPos startPos, List<BlockPos> prevPos) {
 		this.level = level;
 		this.player = player;
 		this.stack = stack;
+        this.biomeId = biomeId;
 		this.startPos = startPos;
 		this.prevPos = prevPos;
 		x = startPos.getX();
@@ -66,7 +67,6 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		samples = 0;
 		direction = Direction.UP;
 		finished = false;
-		biomeId = BiomeUtils.getIdForBiome(level, biome).isPresent() ? BiomeUtils.getIdForBiome(level, biome).get() : null;
 		lastRadiusThreshold = 0;
 	}
 

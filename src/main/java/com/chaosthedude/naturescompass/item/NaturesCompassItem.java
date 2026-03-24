@@ -116,23 +116,18 @@ public class NaturesCompassItem extends Item {
 
 	public void searchForBiome(ServerLevel level, Player player, Identifier biomeId, BlockPos pos, ItemStack stack) {
         if (!isBroken(stack)) {
-            Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
-            if (optionalBiome.isPresent()) {
-                search(stack, biomeId);
+            search(stack, biomeId);
 
-                if (worker != null) {
-                    worker.stop();
-                }
-                List<BlockPos> prevPos = new ArrayList<BlockPos>();
-                worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
-                worker.start();
+            if (worker != null) {
+                worker.stop();
+            }
+            List<BlockPos> prevPos = new ArrayList<BlockPos>();
+            worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
+            worker.start();
 
-                int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
-                if (!player.hasInfiniteMaterials() && xpLevels > 0) {
-                    player.giveExperienceLevels(-xpLevels);
-                }
-            } else {
-                fail(stack, biomeId, 0, 0);
+            int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+            if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+                player.giveExperienceLevels(-xpLevels);
             }
         }
 	}
@@ -143,23 +138,18 @@ public class NaturesCompassItem extends Item {
 			String biomeIdStr = stack.getOrDefault(NaturesCompass.BIOME_ID, null);
 			if (prevPos != null && biomeIdStr != null) {
 				Identifier biomeId = Identifier.parse(biomeIdStr);
-				Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
-				if (optionalBiome.isPresent()) {
-					search(stack, biomeId);
-					
-					if (worker != null) {
-						worker.stop();
-					}
-					worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
-					worker.start();
-					
-					int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
-					if (!player.hasInfiniteMaterials() && xpLevels > 0) {
-						player.giveExperienceLevels(-xpLevels);
-					}
-				} else {
-					fail(stack, biomeId, 0, 0);
-				}
+                search(stack, biomeId);
+
+                if (worker != null) {
+                    worker.stop();
+                }
+                worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
+                worker.start();
+
+                int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+                if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+                    player.giveExperienceLevels(-xpLevels);
+                }
 			}
 		}
 	}

@@ -39,9 +39,9 @@ public class BiomeUtils {
 		return level.registryAccess().lookup(Registries.BIOME);
 	}
 
-	public static Optional<Identifier> getIdForBiome(Level level, Biome biome) {
-		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
-	}
+    public static Optional<Identifier> getIdForBiome(Level level, Biome biome) {
+        return getBiomeRegistry(level).isPresent() && getBiomeRegistry(level).get().getResourceKey(biome).isPresent() ? Optional.of(getBiomeRegistry(level).get().getResourceKey(biome).get().identifier()) : Optional.empty();
+    }
 
 	public static Optional<Biome> getBiomeForId(Level level, Identifier id) {
 		return getBiomeRegistry(level).isPresent() ? getBiomeRegistry(level).get().getOptional(id) : Optional.empty();
@@ -51,12 +51,10 @@ public class BiomeUtils {
 		final List<Identifier> biomeIds = new ArrayList<Identifier>();
 		if (getBiomeRegistry(level).isPresent()) {
 			for (Map.Entry<ResourceKey<Biome>, Biome> entry : getBiomeRegistry(level).get().entrySet()) {
+                Identifier biomeId = entry.getKey().identifier();
 				Biome biome = entry.getValue();
-				if (biome != null) {
-					Optional<Identifier> optionalBiomeId = getIdForBiome(level, biome);
-					if (biome != null && optionalBiomeId.isPresent() && !biomeIsBlacklisted(level, optionalBiomeId.get()) && !biomeIsHidden(level, optionalBiomeId.get())) {
-						biomeIds.add(optionalBiomeId.get());
-					}
+				if (biomeId != null && biome != null && !biomeIsBlacklisted(level, biomeId) && !biomeIsHidden(level, biomeId)) {
+                    biomeIds.add(biomeId);
 				}
 			}
 		}
@@ -119,14 +117,16 @@ public class BiomeUtils {
 
 	public static List<Identifier> getGeneratingDimensions(ServerLevel serverLevel, Biome biome) {
 		final List<Identifier> dimensions = new ArrayList<Identifier>();
-		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
-		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
-			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
-			Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
-			if (biomeSet.contains(biomeHolder)) {
-				dimensions.add(level.dimension().identifier());
-			}
-		}
+        if (getBiomeRegistry(serverLevel).isPresent()) {
+            final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
+            for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+                Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
+                Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
+                if (biomeSet.contains(biomeHolder)) {
+                    dimensions.add(level.dimension().identifier());
+                }
+            }
+        }
 		return dimensions;
 	}
 	
