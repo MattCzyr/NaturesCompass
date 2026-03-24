@@ -3,7 +3,7 @@ package com.chaosthedude.naturescompass.gui;
 import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -32,16 +32,16 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	}
 	
 	@Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         enableScissor(guiGraphics);
-        renderListBackground(guiGraphics);
-        renderListItems(guiGraphics, mouseX, mouseY, partialTicks);
+        extractListBackground(guiGraphics);
+        extractListItems(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.disableScissor();
-        renderScrollbar(guiGraphics, mouseX, mouseY);
+        extractScrollbar(guiGraphics, mouseX, mouseY);
     }
 	
 	@Override
-	protected void renderListBackground(GuiGraphics guiGraphics) {
+	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
 		for (int i = 0; i < getItemCount(); ++i) {
 			if (getRowBottom(i) >= getY() && getRowTop(i) <= getBottom()) {
 				BiomeSearchEntry entry = children().get(i);
@@ -52,13 +52,13 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	}
 	
 	@Override
-	protected void renderSelection(GuiGraphics guiGraphics, BiomeSearchEntry entry, int backgroundColor) {
+	protected void extractSelection(GuiGraphicsExtractor guiGraphics, BiomeSearchEntry entry, int backgroundColor) {
 		// Selection is rendered in renderListBackground()
 	}
 	
 	@Override
-	protected void renderScrollbar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (scrollbarVisible()) {
+	protected void extractScrollbar(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+		if (scrollable()) {
 			int left = scrollBarX();
 			int right = left + 6;
 			int height = (int) ((float) ((getBottom() - getY()) * (getBottom() - getY())) / (float) contentHeight());

@@ -1,6 +1,7 @@
 {
   "pack": {
-    "pack_format": 71,
-    "description": "Nature's Compass resources"
+    "description": "Nature's Compass resources",
+    "min_format": 101,
+    "max_format": 101
   }
 }

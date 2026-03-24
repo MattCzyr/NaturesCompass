@@ -10,7 +10,7 @@ import com.chaosthedude.naturescompass.util.RenderUtils;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
@@ -24,7 +24,7 @@ public class NaturesCompassOverlay implements GuiLayer {
 	public static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
-	public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		if (mc.player != null && mc.level != null && !mc.options.hideGui && !mc.debugEntries.isOverlayVisible() && (mc.screen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.screen instanceof ChatScreen))) {
 			final Player player = mc.player;
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
