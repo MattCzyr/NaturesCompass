@@ -64,30 +64,26 @@ public class BiomeUtils {
 		return biomeIDs;
 	}
 	
-	public static int getXpLevelsForBiome(ServerLevel serverLevel, Identifier biomeId) {
+	public static int getXpLevelsForBiome(Identifier biomeId) {
 		int xpLevels = NaturesCompassConfig.defaultXpLevels;
-		if (getBiomeRegistry(serverLevel).isPresent()) {
-			for (String biomeRegex : NaturesCompassConfig.perBiomeXpLevels.keySet()) {
-				if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
-					xpLevels = NaturesCompassConfig.perBiomeXpLevels.get(biomeRegex);
-					if (xpLevels > 3) {
-						xpLevels = 3;
-					}
-					break;
-				}
-			}
-		}
+        for (String biomeRegex : NaturesCompassConfig.perBiomeXpLevels.keySet()) {
+            if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
+                xpLevels = NaturesCompassConfig.perBiomeXpLevels.get(biomeRegex);
+                if (xpLevels > 3) {
+                    xpLevels = 3;
+                }
+                break;
+            }
+        }
 		return xpLevels;
 	}
 	
-	public static Map<Identifier, Integer> getXpLevelsForAllowedBiomes(ServerLevel serverLevel, List<Identifier> allowedBiomes) {
+	public static Map<Identifier, Integer> getXpLevelsForAllowedBiomes(List<Identifier> allowedBiomes) {
 		final Map<Identifier, Integer> xpLevels = new HashMap<Identifier, Integer>();
-		if (getBiomeRegistry(serverLevel).isPresent()) {
-			for (Identifier biomeId : allowedBiomes) {
-				int levels = getXpLevelsForBiome(serverLevel, biomeId);
-				xpLevels.put(biomeId, levels);
-			}
-		}
+        for (Identifier biomeId : allowedBiomes) {
+            int levels = getXpLevelsForBiome(biomeId);
+            xpLevels.put(biomeId, levels);
+        }
 		
 		return xpLevels;
 	}
@@ -145,8 +141,8 @@ public class BiomeUtils {
 		List<String> tagPathsToIgnore = List.of("is_overworld");
 		// This will ignore duplicates and keep things sorted alphabetically
 		Set<String> biomeCategories = new TreeSet<String>();
-		Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
-		if (biomeRegistry.wrapAsHolder(biome) != null) {
+        if (getBiomeRegistry(level).isPresent()) {
+		    Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
 			Holder<Biome> biomeEntry = biomeRegistry.wrapAsHolder(biome);
 			// Extremely hacky way of extracting a biome's categories from its tags
 			List<TagKey<Biome>> categoryTags = biomeEntry.tags().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
@@ -249,9 +245,7 @@ public class BiomeUtils {
 		if (getBiomeRegistry(level).isPresent() && getBiomeForId(level, biomeId).isPresent()) {
 			final Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
 			final Biome biome = getBiomeForId(level, biomeId).get();
-			if (biomeRegistry.wrapAsHolder(biome) != null) {
-				return biomeRegistry.wrapAsHolder(biome).tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
-			}
+            return biomeRegistry.wrapAsHolder(biome).tags().anyMatch(tag -> tag.location().toString().equals("c:hidden_from_locator_selection"));
 		}
 		return false;
 	}

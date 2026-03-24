@@ -58,7 +58,7 @@ public class NaturesCompassItem extends Item {
 				final int maxNextSearches = NaturesCompassConfig.maxNextSearches;
 				final boolean hasInfiniteXp = player.hasInfiniteMaterials();
 				final List<Identifier> allowedBiomeIds = BiomeUtils.getAllowedBiomes(level);
-				final Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(serverLevel, allowedBiomeIds);
+				final Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(allowedBiomeIds);
 				final ListMultimap<Identifier, Identifier> generatingDimensions = BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel, allowedBiomeIds);
 				ServerPlayNetworking.send(serverPlayer, new SyncPacket(canTeleport, maxNextSearches, hasInfiniteXp, allowedBiomeIds, xpLevels, generatingDimensions));
 			}
@@ -113,7 +113,7 @@ public class NaturesCompassItem extends Item {
             worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
             worker.start();
 
-            int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+            int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeId);
             if (!player.hasInfiniteMaterials() && xpLevels > 0) {
                 player.giveExperienceLevels(-xpLevels);
             }
@@ -134,7 +134,7 @@ public class NaturesCompassItem extends Item {
                 worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
                 worker.start();
 
-                int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+                int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeId);
                 if (!player.hasInfiniteMaterials() && xpLevels > 0) {
                     player.giveExperienceLevels(-xpLevels);
                 }
