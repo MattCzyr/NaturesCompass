@@ -42,8 +42,8 @@ public class BiomeUtils {
 	}
 
 	public static Optional<Identifier> getIdForBiome(Level level, Biome biome) {
-		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
-	}
+        return getBiomeRegistry(level).isPresent() && getBiomeRegistry(level).get().getResourceKey(biome).isPresent() ? Optional.of(getBiomeRegistry(level).get().getResourceKey(biome).get().identifier()) : Optional.empty();
+    }
 
 	public static Optional<Biome> getBiomeForId(Level level, Identifier key) {
 		return getBiomeRegistry(level).isPresent() ? getBiomeRegistry(level).get().getOptional(key) : Optional.empty();
@@ -53,12 +53,10 @@ public class BiomeUtils {
 		final List<Identifier> biomeIDs = new ArrayList<Identifier>();
 		if (getBiomeRegistry(level).isPresent()) {
 			for (Map.Entry<ResourceKey<Biome>, Biome> entry : getBiomeRegistry(level).get().entrySet()) {
+                Identifier biomeID = entry.getKey().identifier();
 				Biome biome = entry.getValue();
-				if (biome != null) {
-					Optional<Identifier> biomeID = getIdForBiome(level, biome);
-					if (biomeID.isPresent() && !biomeIsBlacklisted(level, biomeID.get()) && !biomeIsHidden(level, biomeID.get())) {
-						biomeIDs.add(biomeID.get());
-					}
+				if (biomeID != null && biome != null && !biomeIsBlacklisted(level, biomeID) && !biomeIsHidden(level, biomeID)) {
+					biomeIDs.add(biomeID);
 				}
 			}
 		}
@@ -96,14 +94,16 @@ public class BiomeUtils {
 	
 	public static List<Identifier> getGeneratingDimensions(ServerLevel serverLevel, Biome biome) {
 		final List<Identifier> dimensions = new ArrayList<Identifier>();
-		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
-		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
-			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
-			Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
-			if (biomeSet.contains(biomeHolder)) {
-				dimensions.add(level.dimension().identifier());
-			}
-		}
+        if (getBiomeRegistry(serverLevel).isPresent()) {
+            final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
+            for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+                Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
+                Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
+                if (biomeSet.contains(biomeHolder)) {
+                    dimensions.add(level.dimension().identifier());
+                }
+            }
+        }
 		return dimensions;
 	}
 
@@ -178,75 +178,32 @@ public class BiomeUtils {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static String getBiomeNameForDisplay(Level level, Identifier biomeId) {
-		if (getBiomeForId(level, biomeId).isPresent()) {
-			return getBiomeNameForDisplay(level, getBiomeForId(level, biomeId).get());
-		}
-		return "";
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static String getBiomeNameForDisplay(Level level, Biome biome) {
-		if (biome != null) {
-			if (NaturesCompassConfig.fixBiomeNames) {
-				final String original = getBiomeName(level, biome);
-				String fixed = "";
-				char pre = ' ';
-				for (int i = 0; i < original.length(); i++) {
-					final char c = original.charAt(i);
-					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-						fixed = fixed + " ";
-					}
-					fixed = fixed + String.valueOf(c);
-					pre = c;
-				}
-
-				return fixed;
-			}
-
-			if (getIdForBiome(level, biome).isPresent()) {
-				return I18n.get(getIdForBiome(level, biome).get().toString());
-			}
-		}
-
-		return "";
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static String getBiomeName(Level level, Biome biome) {
-		if (getIdForBiome(level, biome).isPresent()) {
-			return I18n.get(Util.makeDescriptionId("biome", getIdForBiome(level, biome).get()));
-		}
-		return "";
-	}
+    public static String getBiomeNameForDisplay(Level level, Identifier biomeId) {
+        if (NaturesCompassConfig.fixBiomeNames) {
+            final String original = getBiomeName(level, biomeId);
+            String fixed = "";
+            char pre = ' ';
+            for (int i = 0; i < original.length(); i++) {
+                final char c = original.charAt(i);
+                if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+                    fixed = fixed + " ";
+                }
+                fixed = fixed + String.valueOf(c);
+                pre = c;
+            }
+            return fixed;
+        }
+        return I18n.get(biomeId.toString());
+    }
 
 	@Environment(EnvType.CLIENT)
 	public static String getBiomeName(Level level, Identifier biomeID) {
-		if (getBiomeForId(level, biomeID).isPresent()) {
-			return getBiomeName(level, getBiomeForId(level, biomeID).get());
-		}
-		return "";
+        return I18n.get(Util.makeDescriptionId("biome", biomeID));
 	}
 
 	@Environment(EnvType.CLIENT)
 	public static String getBiomeSource(Level level, Identifier biomeId) {
-		String modid = biomeId.getNamespace();
-		if (modid.equals("minecraft")) {
-			return "Minecraft";
-		}
-		Optional<ModContainer> sourceContainer = FabricLoader.getInstance().getModContainer(modid);
-		if (sourceContainer.isPresent()) {
-			return sourceContainer.get().getMetadata().getName();
-		}
-		return modid;
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static String getBiomeSource(Level level, Biome biome) {
-		if (getIdForBiome(level, biome).isEmpty()) {
-			return "";
-		}
-		String registryEntry = getIdForBiome(level, biome).get().toString();
+		String registryEntry = biomeId.toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
 			return "Minecraft";

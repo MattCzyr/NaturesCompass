@@ -1,10 +1,5 @@
 package com.chaosthedude.naturescompass.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
@@ -15,22 +10,24 @@ import com.chaosthedude.naturescompass.util.ItemUtils;
 import com.chaosthedude.naturescompass.util.PlayerUtils;
 import com.chaosthedude.naturescompass.worker.BiomeSearchWorker;
 import com.google.common.collect.ListMultimap;
-
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class NaturesCompassItem extends Item {
 
@@ -107,23 +104,18 @@ public class NaturesCompassItem extends Item {
 
 	public void searchForBiome(ServerLevel level, Player player, Identifier biomeId, BlockPos pos, ItemStack stack) {
         if (!isBroken(stack)) {
-            Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
-            if (optionalBiome.isPresent()) {
-                search(stack, biomeId);
+            search(stack, biomeId);
 
-                if (worker != null) {
-                    worker.stop();
-                }
-                List<BlockPos> prevPos = new ArrayList<BlockPos>();
-                worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
-                worker.start();
+            if (worker != null) {
+                worker.stop();
+            }
+            List<BlockPos> prevPos = new ArrayList<BlockPos>();
+            worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
+            worker.start();
 
-                int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
-                if (!player.hasInfiniteMaterials() && xpLevels > 0) {
-                    player.giveExperienceLevels(-xpLevels);
-                }
-            } else {
-                fail(stack, biomeId, 0, 0);
+            int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+            if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+                player.giveExperienceLevels(-xpLevels);
             }
         }
 	}
@@ -134,23 +126,18 @@ public class NaturesCompassItem extends Item {
 			String biomeIdStr = stack.getOrDefault(NaturesCompass.BIOME_ID, null);
 			if (prevPos != null && biomeIdStr != null) {
 				Identifier biomeId = Identifier.parse(biomeIdStr);
-				Optional<Biome> optionalBiome = BiomeUtils.getBiomeForId(level, biomeId);
-				if (optionalBiome.isPresent()) {
-					search(stack, biomeId);
+                search(stack, biomeId);
 
-					if (worker != null) {
-						worker.stop();
-					}
-					worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos, prevPos);
-					worker.start();
+                if (worker != null) {
+                    worker.stop();
+                }
+                worker = new BiomeSearchWorker(level, player, stack, biomeId, pos, prevPos);
+                worker.start();
 
-					int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
-					if (!player.hasInfiniteMaterials() && xpLevels > 0) {
-						player.giveExperienceLevels(-xpLevels);
-					}
-				} else {
-					fail(stack, biomeId, 0, 0);
-				}
+                int xpLevels = BiomeUtils.getXpLevelsForBiome(level, biomeId);
+                if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+                    player.giveExperienceLevels(-xpLevels);
+                }
 			}
 		}
 	}
