@@ -3,7 +3,7 @@ license="CC BY-NC-SA 4.0"
 
 [[mods]]
     modId="naturescompass"
-    version="1.21.11-3.2.0-neoforge"
+    version="1.21.11-3.3.0-neoforge"
     displayName="Nature's Compass"
     displayURL="https://github.com/MattCzyr/NaturesCompass"
     authors="ChaosTheDude"
