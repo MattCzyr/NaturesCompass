@@ -206,7 +206,7 @@ public class BiomeUtils {
 			}
 			return fixed;
 		}
-		return I18n.get(biomeId.toString());
+		return getBiomeName(level, biomeId);
 	}
 
 	public static String getBiomeName(Level level, Identifier biomeId) {
