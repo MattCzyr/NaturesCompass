@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +20,6 @@ import com.google.common.collect.ListMultimap;
 import com.mojang.serialization.Codec;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -72,12 +72,12 @@ public class NaturesCompass implements ModInitializer {
 		Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(MODID, "prev_pos"), PREV_POS);
 		Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(MODID, "damage"), DAMAGE);
 
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> entries.accept(NATURES_COMPASS_ITEM));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> entries.accept(NATURES_COMPASS_ITEM));
 
-		PayloadTypeRegistry.playC2S().register(SearchPacket.TYPE, SearchPacket.CODEC);
-		PayloadTypeRegistry.playC2S().register(SearchForNextPacket.TYPE, SearchForNextPacket.CODEC);
-		PayloadTypeRegistry.playC2S().register(TeleportPacket.TYPE, TeleportPacket.CODEC);
-		PayloadTypeRegistry.playS2C().register(SyncPacket.TYPE, SyncPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(SearchPacket.TYPE, SearchPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(SearchForNextPacket.TYPE, SearchForNextPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(TeleportPacket.TYPE, TeleportPacket.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(SyncPacket.TYPE, SyncPacket.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SearchPacket.TYPE, SearchPacket::apply);
 		ServerPlayNetworking.registerGlobalReceiver(SearchForNextPacket.TYPE, SearchForNextPacket::apply);

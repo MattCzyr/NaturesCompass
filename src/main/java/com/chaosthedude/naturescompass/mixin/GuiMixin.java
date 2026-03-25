@@ -1,5 +1,6 @@
 package com.chaosthedude.naturescompass.mixin;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +21,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
@@ -35,8 +35,8 @@ public class GuiMixin {
 	@Final
 	private Minecraft minecraft;
 
-	@Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At(value = "TAIL"))
-	private void renderCompassInfo(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
+	@Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At(value = "TAIL"))
+	private void renderCompassInfo(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
 		if (minecraft.player != null && minecraft.level != null && !minecraft.options.hideGui && !minecraft.debugEntries.isOverlayVisible() && (minecraft.screen == null || (NaturesCompassConfig.displayWithChatOpen && minecraft.screen instanceof ChatScreen))) {
 			final Player player = minecraft.player;
 			final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
