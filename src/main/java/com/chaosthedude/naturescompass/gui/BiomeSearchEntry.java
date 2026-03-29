@@ -60,10 +60,10 @@ public class BiomeSearchEntry extends ObjectSelectionList.Entry<BiomeSearchEntry
 			tagsLine = mc.font.plainSubstrByWidth(tagsLine + "...", biomesList.getRowWidth()) + "...";
 		}
 
-		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), left + 1, top + 1, 0xffffff);
-		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), left + 1, top + mc.font.lineHeight + 3, 0x808080);
-		guiGraphics.drawString(mc.font, Component.literal(tagsLine), left + 1, top + mc.font.lineHeight + 14, 0x808080);
-		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), left + 1, top + mc.font.lineHeight + 25, 0x808080);
+		guiGraphics.drawString(mc.font, Component.literal(BiomeUtils.getBiomeNameForDisplay(parentScreen.level, biome)), left + 5, top + (height / 2) - ((mc.font.lineHeight + 2) * 2), 0xffffff);
+		guiGraphics.drawString(mc.font, Component.literal(title + ": " + value), left + 5, top + (height / 2) - ((mc.font.lineHeight + 2) * 1), 0x808080);
+		guiGraphics.drawString(mc.font, Component.literal(tagsLine), left + 5, top + (height / 2) - ((mc.font.lineHeight + 2) * 0), 0x808080);
+		guiGraphics.drawString(mc.font, Component.translatable("string.naturescompass.source").append(Component.literal(": " + BiomeUtils.getBiomeSource(parentScreen.level, biome))), left + 5, top + (height / 2) + ((mc.font.lineHeight + 2) * 1), 0x808080);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 

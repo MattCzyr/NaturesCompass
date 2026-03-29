@@ -17,23 +17,19 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
+		setLeftPos(130);
 		this.parentScreen = parentScreen;
 		refreshList();
 	}
 
 	@Override
 	protected int getScrollbarPosition() {
-		return super.getScrollbarPosition() + 20;
+		return x1;
 	}
 
 	@Override
 	public int getRowWidth() {
 		return super.getRowWidth() + 50;
-	}
-
-	@Override
-	protected boolean isSelectedItem(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelected()) : false;
 	}
 
 	@Override
@@ -43,18 +39,20 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	@Override
 	protected void renderList(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        enableScissor(guiGraphics);
 		for (int i = 0; i < getItemCount(); ++i) {
 			int top = getRowTop(i);
 			int bottom = getRowBottom(i);
 			if (bottom >= y0 && top <= y1) {
+                guiGraphics.fill(x0, top, x1, bottom, 255 / 2 << 24);
 				BiomeSearchEntry entry = getEntry(i);
 				if (isSelectedItem(i)) {
-					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					guiGraphics.fill(insideLeft - 4, top - 4, insideLeft + getRowWidth() + 4, top + itemHeight, 255 / 2 << 24);
+					guiGraphics.fill(x0, top, x1, bottom, 255 / 2 << 24);
 				}
-				entry.render(guiGraphics, i, top, getRowLeft(), getRowWidth(), itemHeight - 4, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
+				entry.render(guiGraphics, i, top, getRowLeft(), getRowWidth(), itemHeight, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
 			}
 		}
+        guiGraphics.disableScissor();
 
 		if (getMaxScroll() > 0) {
 			int left = getScrollbarPosition();
@@ -66,16 +64,17 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 				top = y0;
 			}
 			
-			guiGraphics.fill(left, y0, right, y1, (int) (2.35F * 255.0F) / 2 << 24);
-			guiGraphics.fill(left, top, right, top + height, (int) (1.9F * 255.0F) / 2 << 24);
+			guiGraphics.fill(left, y0, right, y1, 255 / 2 << 24);
+			guiGraphics.fill(left, top, right, top + height, 255 / 2 << 24);
 		}
 	}
 
-	protected int getRowBottom(int itemIndex) {
-		return getRowTop(itemIndex) + itemHeight;
-	}
+    @Override
+    public int getRowLeft() {
+        return x0;
+    }
 
-	public void refreshList() {
+    public void refreshList() {
 		clearEntries();
 		for (Biome biome : parentScreen.sortBiomes()) {
 			addEntry(new BiomeSearchEntry(this, biome));
