@@ -14,10 +14,11 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	private final NaturesCompassScreen parentScreen;
 	private Player player;
 
-	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, Player player, Identifier biomeIdToSelect, int width, int height, int y, int itemHeight) {
+	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, Player player, Identifier biomeIdToSelect, int x, int y, int width, int height, int itemHeight) {
 		super(mc, width, height, y, itemHeight);
 		this.parentScreen = parentScreen;
 		this.player = player;
+        setX(x);
 		refreshList(biomeIdToSelect);
 	}
 
@@ -28,7 +29,7 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	@Override
 	public int getRowWidth() {
-		return 270;
+		return getWidth();
 	}
 	
 	@Override
