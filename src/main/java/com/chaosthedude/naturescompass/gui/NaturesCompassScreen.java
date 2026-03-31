@@ -61,11 +61,6 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double par1, double par2, double par3, double par4) {
-		return selectionList.mouseScrolled(par1, par2, par3, par4);
-	}
-
-	@Override
 	protected void init() {
 		setupWidgets();
 	}
@@ -81,8 +76,7 @@ public class NaturesCompassScreen extends Screen {
 			removeWidget(selectionList);
 			allowedBiomes = new ArrayList<Identifier>(NaturesCompass.allowedBiomes);
 			biomesMatchingSearch = new ArrayList<Identifier>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeId, width + 110, height - 50, 40, 50);
-			addRenderableWidget(selectionList);
+            selectionList = addRenderableWidget(new BiomeSearchList(this, minecraft, player, foundBiomeId, 130, 40, width - 140, height - 50, 50));
 
 			teleportButton.visible = NaturesCompass.canTeleport;
 			searchForNextButton.visible = NaturesCompass.maxNextSearches > 0;
@@ -205,10 +199,7 @@ public class NaturesCompassScreen extends Screen {
 
 		searchBox = addRenderableWidget(new TransparentEditBox(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search").withColor(0xff808080)));
 
-		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeId, width + 110, height - 50, 40, 50);
-		}
-		addRenderableWidget(selectionList);
+        selectionList = addRenderableWidget(new BiomeSearchList(this, minecraft, player, foundBiomeId, 130, 40, width - 140, height - 50, 50));
 	}
 
 }
