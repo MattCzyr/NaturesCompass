@@ -13,6 +13,7 @@ public class TransparentEditBox extends EditBox {
 
     public TransparentEditBox(Font font, int x, int y, int width, int height, Component label) {
         super(font, x, y, width, height, label);
+        setHint(label);
     }
 
     @Override

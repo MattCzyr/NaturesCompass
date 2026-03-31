@@ -203,8 +203,7 @@ public class NaturesCompassScreen extends Screen {
 			minecraft.setScreen(null);
 		}));
 
-		searchBox = addRenderableWidget(new TransparentEditBox(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
-        searchBox.setHint(Component.translatable("string.naturescompass.search"));
+		searchBox = addRenderableWidget(new TransparentEditBox(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search").withColor(0xff808080)));
 
 		if (selectionList == null) {
 			selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeId, width + 110, height - 50, 40, 50);
