@@ -153,7 +153,7 @@ public class NaturesCompassItem extends Item {
         return null;
 	}
 
-	public void succeed(ItemStack stack, Identifier biomeId, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
+	public void succeed(Player player, ItemStack stack, Identifier biomeId, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
 		clearSearchData(stack);
 		setCompassState(stack, CompassState.FOUND);
 		stack.set(NaturesCompass.BIOME_ID, biomeId.toString());
@@ -162,13 +162,13 @@ public class NaturesCompassItem extends Item {
 		stack.set(NaturesCompass.PREV_POS, prevPos);
 		stack.set(NaturesCompass.SAMPLES, samples);
 		stack.set(NaturesCompass.DISPLAY_COORDS, displayCoordinates);
-		damageCompass(stack);
+		damageCompass(player, stack);
 		worker = null;
 	}
 
-	private void damageCompass(ItemStack stack) {
+	private void damageCompass(Player player, ItemStack stack) {
 		int max = NaturesCompassConfig.compassDurability;
-		if (max > 0) {
+		if (!player.hasInfiniteMaterials() && max > 0) {
             int damage = stack.getOrDefault(NaturesCompass.DAMAGE, 0) + 1;
             stack.set(NaturesCompass.DAMAGE, damage);
         }
