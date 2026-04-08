@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "뒤로",
     "string.naturescompass.info": "정보",
-    "string.naturescompass.startSearch": "검색 시작",
+    "string.naturescompass.searchForNext": "검색 시작",
     "string.naturescompass.selectBiome": "생물군계 선택",
     "string.naturescompass.sortBy": "분류 기준",
     "string.naturescompass.teleport": "순간이동",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "검색",
     "string.naturescompass.searching": "검색중",
     "string.naturescompass.source": "소스",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "상태",
     "string.naturescompass.tags": "태그",
 

@@ -8,32 +8,28 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class DimensionSorting implements ISorting<String> {
-	
+
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 
 	@Override
-	public int compare(Biome biome1, Biome biome2) {
-		return getValue(biome1).compareTo(getValue(biome2));
+	public int compare(Identifier biomeId1, Identifier biomeId2) {
+		return getValue(biomeId1).compareTo(getValue(biomeId2));
 	}
 
 	@Override
-	public String getValue(Biome biome) {
+	public String getValue(Identifier biomeId) {
 		if (client.world != null) {
-			Identifier biomeID = BiomeUtils.getIdentifierForBiome(client.world, biome);
-			if (biomeID != null) {
-				return BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionIDsForAllowedBiomeIDs.get(biomeID));
-			}
+			return BiomeUtils.dimensionKeysToString(NaturesCompass.dimensionIDsForAllowedBiomeIDs.get(biomeId));
 		}
 		return "";
 	}
 
 	@Override
 	public ISorting<?> next() {
-		return new RainfallSorting();
+		return new XpLevelsSorting();
 	}
 
 	@Override

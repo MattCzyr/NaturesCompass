@@ -7,7 +7,7 @@
   "_comment": "STRINGS - BUTTONS",
   "string.naturescompass.back": "Reen",
   "string.naturescompass.info": "Informo",
-  "string.naturescompass.startSearch": "Komencu Serĉon",
+  "string.naturescompass.searchForNext": "Komencu Serĉon",
   "string.naturescompass.selectBiome": "Elektu Biomo",
   "string.naturescompass.sortBy": "Ordigi Laŭ",
   "string.naturescompass.teleport": "Teletransporti",
@@ -38,6 +38,7 @@
   "string.naturescompass.search": "Serĉo",
   "string.naturescompass.searching": "Serĉado",
   "string.naturescompass.source": "Fonto",
+  "string.naturescompass.levels": "Levels",
   "string.naturescompass.status": "Stato",
   "string.naturescompass.tags": "Etikedoj",
 

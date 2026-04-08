@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "Հետ",
     "string.naturescompass.info": "Տեղեկություն",
-    "string.naturescompass.startSearch": "Սկսել Որոնումը",
+    "string.naturescompass.searchForNext": "Սկսել Որոնումը",
     "string.naturescompass.selectBiome": "Ընտրել Բիոմը",
     "string.naturescompass.sortBy": "Դասավորել ըստ",
     "string.naturescompass.teleport": "Տելեպորտ",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Որոնել",
     "string.naturescompass.searching": "Որոնում",
     "string.naturescompass.source": "Աղբյուր",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Կարգավիճակ",
     "string.naturescompass.tags": "Պիտակներ",
 

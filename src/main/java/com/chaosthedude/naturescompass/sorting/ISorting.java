@@ -4,15 +4,15 @@ import java.util.Comparator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public interface ISorting<T> extends Comparator<Biome> {
+public interface ISorting<T> extends Comparator<Identifier> {
 
 	@Override
-	public int compare(Biome biome1, Biome biome2);
+	public int compare(Identifier biomeId1, Identifier biomeId2);
 
-	public T getValue(Biome biome);
+	public T getValue(Identifier biomeId);
 
 	public ISorting<?> next();
 

@@ -6,7 +6,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.utils.OverlaySide;
@@ -21,12 +23,16 @@ public class NaturesCompassConfig {
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	
 	public static boolean allowTeleport = true;
+	public static int maxNextSearches = 25;
 	public static boolean displayCoordinates = true;
 	public static int maxSamples = 50000;
 	public static int radiusModifier = 2500;
 	public static int sampleSpaceModifier = 16;
 	public static List<String> biomeBlacklist = new ArrayList<String>();
-	
+	public static int defaultXpLevels = 0;
+	public static Map<String, Integer> perBiomeXpLevels = new HashMap<String, Integer>();
+	public static int compassDurability = 0;
+
 	public static boolean displayWithChatOpen = true;
 	public static boolean fixBiomeNames = true;
 	public static int overlayLineOffset = 1;
@@ -41,12 +47,16 @@ public class NaturesCompassConfig {
 				Data data = gson.fromJson(reader, Data.class);
 				
 				allowTeleport = data.common.allowTeleport;
+				maxNextSearches = data.common.maxNextSearches;
 				displayCoordinates = data.common.displayCoordinates;
 				maxSamples = data.common.maxSamples;
 				radiusModifier = data.common.radiusModifier;
 				sampleSpaceModifier = data.common.sampleSpaceModifier;
 				biomeBlacklist = data.common.biomeBlacklist;
-				
+				defaultXpLevels = data.common.defaultXpLevels;
+				perBiomeXpLevels = data.common.perBiomeXpLevels;
+				compassDurability = data.common.compassDurability;
+
 				displayWithChatOpen = data.client.displayWithChatOpen;
 				fixBiomeNames = data.client.fixBiomeNames;
 				overlayLineOffset = data.client.overlayLineOffset;
@@ -63,7 +73,7 @@ public class NaturesCompassConfig {
 	public static void save() {
 		try {
 			Writer writer = Files.newBufferedWriter(getFilePath());
-			Data data = new Data(new Data.Common(allowTeleport, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
+			Data data = new Data(new Data.Common(allowTeleport, maxNextSearches, displayCoordinates, maxSamples, radiusModifier, sampleSpaceModifier, biomeBlacklist, defaultXpLevels, perBiomeXpLevels, compassDurability), new Data.Client(displayWithChatOpen, fixBiomeNames, overlayLineOffset, overlaySide));
 			gson.toJson(data, writer);
 			writer.close();
 		} catch (IOException e) {
@@ -91,38 +101,58 @@ public class NaturesCompassConfig {
 		private static class Common {
 			private final String allowTeleportComment = "Allows a player to teleport to a located biome when in creative mode, opped, or in cheat mode.";
 			private final boolean allowTeleport;
-			
+
+			private final String maxNextSearchesComment = "The maximum number of times a player can search for the next instance of a located biome. Set to 0 to disable searching for additional biome instances and make the compass always locate the nearest biome.";
+			private final int maxNextSearches;
+
 			private final String displayCoordinatesComment = "Allows players to view the precise coordinates and distance of a located structure on the HUD, rather than relying on the direction the compass is pointing.";
 			private final boolean displayCoordinates;
-			
+
 			private final String maxSamplesComment = "The maximum number of samples to be taken when searching for a biome.";
 			private final int maxSamples;
-			
+
 			private final String radiusModifierComment = "biomeSize * radiusModifier = maxSearchRadius. Raising this value will increase search accuracy but will potentially make the process more resource .";
 			private final int radiusModifier;
-			
+
 			private final String sampleSpaceModifierComment = "biomeSize * sampleSpaceModifier = sampleSpace. Lowering this value will increase search accuracy but will make the process more resource intensive.";
 			private final int sampleSpaceModifier;
-			
+
 			private final String biomeBlacklistComment = "A list of biomes that the compass will not be able to search for, specified by resource location. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex (ignore backslashes): [\"minecraft:savanna\", \"minecraft:desert\", \"minecraft:*ocean*\"]";
 			private final List<String> biomeBlacklist;
-			
+
+			private final String defaultXpLevelsComment = "The default number of XP levels consumed when searching for a biome. Individual biomes can be configured via perBiomeXpLevels. Max of 3 levels.";
+			private final int defaultXpLevels;
+
+			private final String perBiomeXpLevelsComment = "A map of per-biome XP level costs that override defaultXpLevels. Biomes not listed here use defaultXpLevels. Max of 3 levels. The wildcard character * can be used to match any number of characters, and ? can be used to match one character. Ex: {\"minecraft:deep_dark\":3, \"minecraft:end*\":2, \"minecraft:*caves\":3}";
+			private final Map<String, Integer> perBiomeXpLevels;
+
+			private final String compassDurabilityComment = "The number of successful biome searches before the compass breaks and must be repaired. Set to 0 to disable durability.";
+			private final int compassDurability;
+
 			private Common() {
 				allowTeleport = true;
+				maxNextSearches = 25;
 				displayCoordinates = true;
 				maxSamples = 50000;
 				radiusModifier = 2500;
 				sampleSpaceModifier = 16;
 				biomeBlacklist = new ArrayList<String>();
+				defaultXpLevels = 0;
+				perBiomeXpLevels = new HashMap<String, Integer>();
+				compassDurability = 0;
 			}
-			
-			private Common(boolean allowTeleport, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist) {
+
+			private Common(boolean allowTeleport, int maxNextSearches, boolean displayCoordinates, int maxSamples, int radiusModifier, int sampleSpaceModifier, List<String> biomeBlacklist, int defaultXpLevels, Map<String, Integer> perBiomeXpLevels, int compassDurability) {
 				this.allowTeleport = allowTeleport;
+				this.maxNextSearches = maxNextSearches;
 				this.displayCoordinates = displayCoordinates;
 				this.maxSamples = maxSamples;
 				this.radiusModifier = radiusModifier;
 				this.sampleSpaceModifier = sampleSpaceModifier;
 				this.biomeBlacklist = biomeBlacklist;
+				this.defaultXpLevels = defaultXpLevels;
+				this.perBiomeXpLevels = perBiomeXpLevels;
+				this.compassDurability = compassDurability;
 			}
 		}
 		

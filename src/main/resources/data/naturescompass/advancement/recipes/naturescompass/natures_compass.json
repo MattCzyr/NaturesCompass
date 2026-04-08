@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:compass"
+            ]
+          }
+        ]
+      }
+    },
+    "has_recipe": {
+       "trigger": "minecraft:recipe_unlocked",
+       "conditions": {
+         "recipe": "naturescompass:natures_compass"
+       }
+     }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "naturescompass:natures_compass"
+    ]
+  }
+}

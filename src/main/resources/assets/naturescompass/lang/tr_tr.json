@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "Geri",
     "string.naturescompass.info": "İpucu",
-    "string.naturescompass.startSearch": "Aramayı Başlat",
+    "string.naturescompass.searchForNext": "Aramayı Başlat",
     "string.naturescompass.selectBiome": "Biyom Şeç",
     "string.naturescompass.sortBy": "Sırala",
     "string.naturescompass.teleport": "Işınlan",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Ara",
     "string.naturescompass.searching": "Aranıyor",
     "string.naturescompass.source": "Kaynak",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Statüs",
     "string.naturescompass.tags": "Etiketler",
 

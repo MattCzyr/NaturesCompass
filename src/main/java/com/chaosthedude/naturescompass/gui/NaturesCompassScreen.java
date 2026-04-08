@@ -3,10 +3,10 @@ package com.chaosthedude.naturescompass.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISorting;
@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,24 +27,25 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT)
 public class NaturesCompassScreen extends Screen {
 
 	public World world;
 	private PlayerEntity player;
-	private List<Biome> allowedBiomes;
-	private List<Biome> biomesMatchingSearch;
+	private List<Identifier> allowedBiomes;
+	private List<Identifier> biomesMatchingSearch;
+	private Identifier foundBiomeId;
 	private ItemStack stack;
 	private NaturesCompassItem natureCompass;
-	private ButtonWidget startSearchButton;
+	private ButtonWidget searchForBiomeButton;
+	private ButtonWidget searchForNextButton;
 	private ButtonWidget teleportButton;
 	private ButtonWidget cancelButton;
 	private ButtonWidget sortByButton;
-	private TextFieldWidget searchTextField;
+	private TransparentTextField searchTextField;
 	private BiomeSearchList selectionList;
-	private ISorting sortingCategory;
+	private ISorting<?> sortingCategory;
 
 	public NaturesCompassScreen(World world, PlayerEntity player, ItemStack stack, NaturesCompassItem natureCompass, List<Identifier> allowedBiomes) {
 		super(Text.translatable("string.naturescompass.selectBiome"));
@@ -53,11 +53,14 @@ public class NaturesCompassScreen extends Screen {
 		this.player = player;
 		this.stack = stack;
 		this.natureCompass = natureCompass;
-		this.allowedBiomes = new ArrayList<Biome>();
-		loadAllowedBiomes(allowedBiomes);
+		this.allowedBiomes = new ArrayList<Identifier>(allowedBiomes);
 
 		sortingCategory = new NameSorting();
-		biomesMatchingSearch = new ArrayList<Biome>(this.allowedBiomes);
+		biomesMatchingSearch = new ArrayList<Identifier>(this.allowedBiomes);
+
+		if (natureCompass.getState(stack) == CompassState.FOUND) {
+			foundBiomeId = natureCompass.getBiomeID(stack);
+		}
 	}
 
 	@Override
@@ -67,27 +70,32 @@ public class NaturesCompassScreen extends Screen {
 
 	@Override
 	protected void init() {
-		clearChildren();
-		setupButtons();
-		setupTextFields();
-		if (selectionList == null) {
-			selectionList = new BiomeSearchList(this, client, width + 110, height - 40, 40, 45);
-		}
-		addDrawableChild(selectionList);
+		setupWidgets();
 	}
 
 	@Override
 	public void tick() {
-		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
-		
+		searchForNextButton.active = teleportButton.active = selectionList.hasSelection() && selectionList.getSelectedOrNull() != null ? selectionList.getSelectedOrNull().getBiomeId().equals(foundBiomeId) : false;
+		searchForBiomeButton.active = selectionList.hasSelection();
+
 		// Check if the sync packet has been received
-		if (allowedBiomes.size() != NaturesCompass.allowedBiomes.size()) {
+		if (NaturesCompass.synced) {
 			teleportButton.visible = NaturesCompass.canTeleport;
 			remove(selectionList);
-			loadAllowedBiomes(NaturesCompass.allowedBiomes);
-			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, client, width + 110, height - 40, 40, 45);
+			allowedBiomes = new ArrayList<Identifier>(NaturesCompass.allowedBiomes);
+			biomesMatchingSearch = new ArrayList<Identifier>(allowedBiomes);
+			selectionList = new BiomeSearchList(this, client, player, foundBiomeId, 130, 40, width - 140, height - 50, 50);
 			addDrawableChild(selectionList);
+
+			teleportButton.visible = NaturesCompass.canTeleport;
+			searchForNextButton.visible = NaturesCompass.maxNextSearches > 0;
+			if (searchForNextButton.visible) {
+				sortByButton.setPosition(10, 100);
+			} else {
+				sortByButton.setPosition(10, 65);
+			}
+
+			NaturesCompass.synced = false;
 		}
 	}
 
@@ -117,13 +125,13 @@ public class NaturesCompassScreen extends Screen {
 		return ret;
 	}
 
-	public void selectBiome(BiomeSearchEntry entry) {
-		boolean enable = entry != null;
-		startSearchButton.active = enable;
+	public void searchForBiome(Identifier biomeId) {
+		ClientPlayNetworking.send(new SearchPacket(biomeId, player.getBlockPos()));
+		client.setScreen(null);
 	}
 
-	public void searchForBiome(Biome biome) {
-		ClientPlayNetworking.send(new SearchPacket(BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
+	public void searchForNextBiome() {
+		ClientPlayNetworking.send(new SearchForNextPacket());
 		client.setScreen(null);
 	}
 
@@ -132,72 +140,76 @@ public class NaturesCompassScreen extends Screen {
 		client.setScreen(null);
 	}
 
-	public ISorting getSortingCategory() {
+	public ISorting<?> getSortingCategory() {
 		return sortingCategory;
 	}
 
 	public void processSearchTerm() {
-		biomesMatchingSearch = new ArrayList<Biome>();
+		biomesMatchingSearch = new ArrayList<Identifier>();
 		String searchTerm = searchTextField.getText().toLowerCase();
-		for (Biome biome : allowedBiomes) {
+		for (Identifier biomeId : allowedBiomes) {
 			if (searchTerm.startsWith("$")) {
-				if (BiomeUtils.getBiomeTags(world, biome).toLowerCase().contains(searchTerm.substring(1))) {
-					biomesMatchingSearch.add(biome);
+				if (BiomeUtils.getBiomeTags(world, biomeId).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biomeId);
 				}
 			} else if (searchTerm.startsWith("@")) {
-				if (BiomeUtils.getBiomeSource(world, biome).toLowerCase().contains(searchTerm.substring(1))) {
-					biomesMatchingSearch.add(biome);
+				if (BiomeUtils.getBiomeSource(world, biomeId).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biomeId);
 				}
-			} else if (BiomeUtils.getBiomeNameForDisplay(world, biome).toLowerCase().contains(searchTerm)) {
-				biomesMatchingSearch.add(biome);
+			} else if (BiomeUtils.getBiomeNameForDisplay(world, biomeId).toLowerCase().contains(searchTerm)) {
+				biomesMatchingSearch.add(biomeId);
 			}
 		}
-		selectionList.refreshList();
+		selectionList.refreshList(true);
 	}
 
-	public List<Biome> sortBiomes() {
-		final List<Biome> biomes = biomesMatchingSearch;
+	public List<Identifier> sortBiomes() {
+		final List<Identifier> biomes = biomesMatchingSearch;
 		Collections.sort(biomes, new NameSorting());
 		Collections.sort(biomes, sortingCategory);
 
 		return biomes;
 	}
 
-	private void setupButtons() {
-		cancelButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, Text.translatable("gui.cancel"), (onPress) -> {
-			client.setScreen(null);
-		}));
-		sortByButton = addDrawableChild(new TransparentButton(10, 65, 110, 20, Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
-			sortingCategory = sortingCategory.next();
-			sortByButton.setMessage(Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
-			selectionList.refreshList();
-		}));
-		startSearchButton = addDrawableChild(new TransparentButton(10, 40, 110, 20, Text.translatable("string.naturescompass.startSearch"), (onPress) -> {
-			if (selectionList.hasSelection()) {
-				selectionList.getSelectedOrNull().searchForBiome();
+	private void setupWidgets() {
+		clearChildren();
+
+		searchForBiomeButton = addDrawableChild(new TransparentButton(10, 40, 110, 20, Text.translatable("string.naturescompass.search"), (onPress) -> {
+			if (selectionList.hasSelection() && selectionList.getSelectedOrNull() != null) {
+				searchForBiome(selectionList.getSelectedOrNull().getBiomeId());
 			}
 		}));
+		searchForBiomeButton.active = false;
+
+		searchForNextButton = addDrawableChild(new TransparentButton(10, 65, 110, 20, Text.translatable("string.naturescompass.searchForNext"), (onPress) -> {
+			searchForNextBiome();
+		}));
+		searchForNextButton.visible = NaturesCompass.maxNextSearches > 0;
+		searchForNextButton.active = false;
+
+		sortByButton = addDrawableChild(new TransparentButton(10, 100, 110, 20, Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+			sortingCategory = sortingCategory.next();
+			sortByButton.setMessage(Text.literal(I18n.translate("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+			selectionList.refreshList(true);
+		}));
+		if (!searchForNextButton.visible) {
+			sortByButton.setPosition(10, 65);
+		}
+
 		teleportButton = addDrawableChild(new TransparentButton(width - 120, 10, 110, 20, Text.translatable("string.naturescompass.teleport"), (onPress) -> {
 			teleport();
 		}));
-
-		startSearchButton.active = false;
-
 		teleportButton.visible = NaturesCompass.canTeleport;
-	}
+		teleportButton.active = false;
 
-	private void setupTextFields() {
+		cancelButton = addDrawableChild(new TransparentButton(10, height - 30, 110, 20, Text.translatable("gui.cancel"), (onPress) -> {
+			client.setScreen(null);
+		}));
+
 		searchTextField = addDrawableChild(new TransparentTextField(textRenderer, 130, 10, 140, 20, Text.translatable("string.naturescompass.search")));
+
+		selectionList = new BiomeSearchList(this, client, player, foundBiomeId, 130, 40, width - 140, height - 50, 50);
+		addDrawableChild(selectionList);
 	}
-	
-	private void loadAllowedBiomes(List<Identifier> allowedBiomeIDs) {
- 		this.allowedBiomes = new ArrayList<Biome>();
- 		for (Identifier biomeID : allowedBiomeIDs) {
- 			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeID);
- 			if (optionalBiome.isPresent()) {
- 				this.allowedBiomes.add(optionalBiome.get());
- 			}
- 		}
- 	}
 
 }

@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "戻る",
     "string.naturescompass.info": "情報",
-    "string.naturescompass.startSearch": "検索する",
+    "string.naturescompass.searchForNext": "検索する",
     "string.naturescompass.selectBiome": "バイオームを選ぶ",
     "string.naturescompass.sortBy": "並び替え",
     "string.naturescompass.teleport": "テレポート",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "検索",
     "string.naturescompass.searching": "検索中",
     "string.naturescompass.source": "ソース",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "ステータス",
     "string.naturescompass.tags": "タグ",
 

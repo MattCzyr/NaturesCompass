@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeUtils {
-	
+
 	public static Registry<Biome> getBiomeRegistry(World world) {
 		return world.getRegistryManager().get(RegistryKeys.BIOME);
 	}
@@ -51,18 +52,39 @@ public class BiomeUtils {
 	public static List<Identifier> getAllowedBiomeIDs(World world) {
 		final List<Identifier> biomeIDs = new ArrayList<Identifier>();
 		for (Map.Entry<RegistryKey<Biome>, Biome> entry : getBiomeRegistry(world).getEntrySet()) {
+			Identifier biomeID = entry.getKey().getValue();
 			Biome biome = entry.getValue();
-			if (biome != null) {
-				Identifier biomeID = getIdentifierForBiome(world, biome);
-				if (biomeID != null && !biomeIDIsBlacklisted(world, biomeID) && !biomeIDIsHidden(world, biomeID)) {
-					biomeIDs.add(biomeID);
-				}
+			if (biomeID != null && biome != null && !biomeIDIsBlacklisted(world, biomeID) && !biomeIDIsHidden(world, biomeID)) {
+				biomeIDs.add(biomeID);
 			}
 		}
 
 		return biomeIDs;
 	}
-	
+
+	public static int getXpLevelsForBiome(Identifier biomeId) {
+		int xpLevels = NaturesCompassConfig.defaultXpLevels;
+		for (String biomeRegex : NaturesCompassConfig.perBiomeXpLevels.keySet()) {
+			if (biomeId.toString().matches(convertToRegex(biomeRegex))) {
+				xpLevels = NaturesCompassConfig.perBiomeXpLevels.get(biomeRegex);
+				if (xpLevels > 3) {
+					xpLevels = 3;
+				}
+				break;
+			}
+		}
+		return xpLevels;
+	}
+
+	public static Map<Identifier, Integer> getXpLevelsForAllowedBiomes(List<Identifier> allowedBiomes) {
+		final Map<Identifier, Integer> xpLevels = new HashMap<Identifier, Integer>();
+		for (Identifier biomeId : allowedBiomes) {
+			int levels = getXpLevelsForBiome(biomeId);
+			xpLevels.put(biomeId, levels);
+		}
+		return xpLevels;
+	}
+
 	public static List<Identifier> getGeneratingDimensionIDs(ServerWorld serverWorld, Biome biome) {
 		final List<Identifier> dimensions = new ArrayList<Identifier>();
 		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverWorld);
@@ -76,15 +98,15 @@ public class BiomeUtils {
 		return dimensions;
 	}
 
-	public static ListMultimap<Identifier, Identifier> getGeneratingDimensionsForAllowedBiomes(ServerWorld serverWorld) {
-		ListMultimap<Identifier, Identifier> dimensionsForAllowedStructures = ArrayListMultimap.create();
-		for (Identifier biomeID : getAllowedBiomeIDs(serverWorld)) {
+	public static ListMultimap<Identifier, Identifier> getGeneratingDimensionsForAllowedBiomes(ServerWorld serverWorld, List<Identifier> allowedBiomes) {
+		ListMultimap<Identifier, Identifier> dimensionsForAllowedBiomes = ArrayListMultimap.create();
+		for (Identifier biomeID : allowedBiomes) {
 			Optional<Biome> optionalBiome = getBiomeForIdentifier(serverWorld, biomeID);
 			if (optionalBiome.isPresent()) {
-				dimensionsForAllowedStructures.putAll(biomeID, getGeneratingDimensionIDs(serverWorld, optionalBiome.get()));
+				dimensionsForAllowedBiomes.putAll(biomeID, getGeneratingDimensionIDs(serverWorld, optionalBiome.get()));
 			}
 		}
-		return dimensionsForAllowedStructures;
+		return dimensionsForAllowedBiomes;
 	}
 
 	public static int getBiomeSize(World world) {
@@ -99,7 +121,15 @@ public class BiomeUtils {
 	public static int getDistanceToBiome(BlockPos startPos, int biomeX, int biomeZ) {
 		return (int) MathHelper.sqrt((float) startPos.getSquaredDistance(new BlockPos(biomeX, startPos.getY(), biomeZ)));
 	}
-	
+
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeTags(World world, Identifier biomeID) {
+		if (getBiomeForIdentifier(world, biomeID).isPresent()) {
+			return getBiomeTags(world, getBiomeForIdentifier(world, biomeID).get());
+		}
+		return I18n.translate("string.naturescompass.none");
+	}
+
 	@Environment(EnvType.CLIENT)
 	public static String getBiomeTags(World world, Biome biome) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it altogether for clarity
@@ -139,30 +169,27 @@ public class BiomeUtils {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static String getBiomeNameForDisplay(World world, Biome biome) {
-		if (biome != null) {
-			if (NaturesCompassConfig.fixBiomeNames) {
-				final String original = getBiomeName(world, biome);
-				String fixed = "";
-				char pre = ' ';
-				for (int i = 0; i < original.length(); i++) {
-					final char c = original.charAt(i);
-					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-						fixed = fixed + " ";
-					}
-					fixed = fixed + String.valueOf(c);
-					pre = c;
+	public static String getBiomeNameForDisplay(World world, Identifier biomeID) {
+		if (NaturesCompassConfig.fixBiomeNames) {
+			final String original = getBiomeName(world, biomeID);
+			String fixed = "";
+			char pre = ' ';
+			for (int i = 0; i < original.length(); i++) {
+				final char c = original.charAt(i);
+				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+					fixed = fixed + " ";
 				}
-
-				return fixed;
+				fixed = fixed + String.valueOf(c);
+				pre = c;
 			}
-
-			if (getIdentifierForBiome(world, biome) != null) {
-				return I18n.translate(getIdentifierForBiome(world, biome).toString());
-			}
+			return fixed;
 		}
+		return getBiomeName(world, biomeID);
+	}
 
-		return "";
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeNameForDisplay(World world, Biome biome) {
+		return getBiomeNameForDisplay(world, getIdentifierForBiome(world, biome));
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -172,15 +199,12 @@ public class BiomeUtils {
 
 	@Environment(EnvType.CLIENT)
 	public static String getBiomeName(World world, Identifier biomeID) {
-		if (getBiomeForIdentifier(world, biomeID).isPresent()) {
-			return getBiomeName(world, getBiomeForIdentifier(world, biomeID).get());
-		}
-		return "";
+		return I18n.translate(Util.createTranslationKey("biome", biomeID));
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static String getBiomeSource(World world, Biome biome) {
-		String registryEntry = getIdentifierForBiome(world, biome).toString();
+	public static String getBiomeSource(World world, Identifier biomeId) {
+		String registryEntry = biomeId.toString();
 		String modid = registryEntry.substring(0, registryEntry.indexOf(":"));
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
@@ -191,7 +215,12 @@ public class BiomeUtils {
 		}
 		return modid;
 	}
-	
+
+	@Environment(EnvType.CLIENT)
+	public static String getBiomeSource(World world, Biome biome) {
+		return getBiomeSource(world, getIdentifierForBiome(world, biome));
+	}
+
 	@Environment(EnvType.CLIENT)
 	private static String getDimensionName(Identifier dimensionID) {
 		String name = I18n.translate(Util.createTranslationKey("dimension", dimensionID));
@@ -221,19 +250,19 @@ public class BiomeUtils {
  		}
  		return false;
 	}
-	
+
 	public static boolean biomeIDIsHidden(World world, Identifier biomeID) {
 		if (getBiomeForIdentifier(world, biomeID).isPresent()) {
 			final Registry<Biome> biomeRegistry = getBiomeRegistry(world);
 			final Biome biome = getBiomeForIdentifier(world, biomeID).get();
 			if (biomeRegistry.getKey(biome).isPresent() && biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).isPresent()) {
 				final RegistryEntry<Biome> biomeHolder = biomeRegistry.getEntry(biomeRegistry.getKey(biome).get()).get();
-				return biomeHolder.streamTags().anyMatch(tag -> tag.id().getPath().equals("c:hidden_from_locator_selection"));
+				return biomeHolder.streamTags().anyMatch(tag -> tag.id().toString().equals("c:hidden_from_locator_selection"));
 			}
 		}
 		return false;
 	}
-	
+
 	private static String convertToRegex(String glob) {
  		String regex = "^";
  		for (char i = 0; i < glob.length(); i++) {

@@ -7,7 +7,7 @@
     "_comment": "STRINGS - PRZYCISKI",
     "string.naturescompass.back": "Powrót",
     "string.naturescompass.info": "Info",
-    "string.naturescompass.startSearch": "Zacznij szukać",
+    "string.naturescompass.searchForNext": "Zacznij szukać",
     "string.naturescompass.selectBiome": "Wybierz Biom",
     "string.naturescompass.sortBy": "Sortuj Przez",
     "string.naturescompass.teleport": "Teleportuj się",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Szukaj",
     "string.naturescompass.searching": "Szukanie",
     "string.naturescompass.source": "Pochodzenie",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Pozycja",
     "string.naturescompass.tags": "Tagi",
 

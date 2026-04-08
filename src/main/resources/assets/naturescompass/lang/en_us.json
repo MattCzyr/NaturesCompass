@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "Back",
     "string.naturescompass.info": "Info",
-    "string.naturescompass.startSearch": "Start Search",
+    "string.naturescompass.searchForNext": "Search for Next",
     "string.naturescompass.selectBiome": "Select Biome",
     "string.naturescompass.sortBy": "Sort By",
     "string.naturescompass.teleport": "Teleport",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Search",
     "string.naturescompass.searching": "Searching",
     "string.naturescompass.source": "Source",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Status",
     "string.naturescompass.tags": "Tags",
 

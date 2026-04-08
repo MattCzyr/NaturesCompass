@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "返回",
     "string.naturescompass.info": "資訊",
-    "string.naturescompass.startSearch": "開始搜尋",
+    "string.naturescompass.searchForNext": "開始搜尋",
     "string.naturescompass.selectBiome": "選擇生態域",
     "string.naturescompass.sortBy": "排序方式",
     "string.naturescompass.teleport": "傳送",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "搜尋",
     "string.naturescompass.searching": "正在搜尋",
     "string.naturescompass.source": "來源",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "狀態",
     "string.naturescompass.tags": "標籤",
 

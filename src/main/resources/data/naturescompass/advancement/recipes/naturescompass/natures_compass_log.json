@@ -1,17 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "naturescompass:natures_compass"
-    ]
-  },
   "criteria": {
-    "has_compass": {
+    "has_log": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:compass"
+            "tag": "minecraft:logs"
           }
         ]
       }
@@ -25,8 +20,13 @@
   },
   "requirements": [
     [
-      "has_compass",
+      "has_log",
       "has_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "naturescompass:natures_compass"
+    ]
+  }
 }

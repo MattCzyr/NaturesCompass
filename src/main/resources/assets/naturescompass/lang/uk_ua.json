@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "Назад",
     "string.naturescompass.info": "Інформація",
-    "string.naturescompass.startSearch": "Почати пошук",
+    "string.naturescompass.searchForNext": "Почати пошук",
     "string.naturescompass.selectBiome": "Вибрати біом",
     "string.naturescompass.sortBy": "Сорт. за",
     "string.naturescompass.teleport": "Телепортуватися",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Пошук",
     "string.naturescompass.searching": "Пошук",
     "string.naturescompass.source": "Джерело",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Статус",
     "string.naturescompass.tags": "Теги",
 

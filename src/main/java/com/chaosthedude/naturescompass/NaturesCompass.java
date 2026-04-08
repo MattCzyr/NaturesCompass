@@ -1,13 +1,16 @@
 package com.chaosthedude.naturescompass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
@@ -21,10 +24,13 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 public class NaturesCompass implements ModInitializer {
 
@@ -41,9 +47,15 @@ public class NaturesCompass implements ModInitializer {
 	public static final ComponentType<Integer> SEARCH_RADIUS_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 	public static final ComponentType<Integer> SAMPLES_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 	public static final ComponentType<Boolean> DISPLAY_COORDS_COMPONENT = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build();
+    public static final ComponentType<List<BlockPos>> PREV_POS_COMPONENT = ComponentType.<List<BlockPos>>builder().codec(BlockPos.CODEC.listOf().xmap(ArrayList::new, list -> list)).packetCodec(PacketCodecs.collection(ArrayList::new, BlockPos.PACKET_CODEC)).build();
+	public static final ComponentType<Integer> DAMAGE_COMPONENT = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 
+	public static boolean synced;
 	public static boolean canTeleport;
+	public static int maxNextSearches;
+	public static boolean infiniteXp;
 	public static List<Identifier> allowedBiomes;
+	public static Map<Identifier, Integer> xpLevelsForAllowedBiomes;
 	public static ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs;
 
 	@Override
@@ -51,7 +63,7 @@ public class NaturesCompass implements ModInitializer {
 		NaturesCompassConfig.load();
 
 		Registry.register(Registries.ITEM, Identifier.of(MODID, "naturescompass"), NATURES_COMPASS_ITEM);
-		
+
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "biome_id"), BIOME_ID_COMPONENT);
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "compass_state"), COMPASS_STATE_COMPONENT);
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "found_x"), FOUND_X_COMPONENT);
@@ -59,17 +71,22 @@ public class NaturesCompass implements ModInitializer {
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "search_radius"), SEARCH_RADIUS_COMPONENT);
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "samples"), SAMPLES_COMPONENT);
 		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "display_coords"), DISPLAY_COORDS_COMPONENT);
+		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "prev_pos"), PREV_POS_COMPONENT);
+		Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(MODID, "damage"), DAMAGE_COMPONENT);
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(NATURES_COMPASS_ITEM));
-		
+
 		PayloadTypeRegistry.playC2S().register(SearchPacket.PACKET_ID, SearchPacket.PACKET_CODEC);
+		PayloadTypeRegistry.playC2S().register(SearchForNextPacket.PACKET_ID, SearchForNextPacket.PACKET_CODEC);
 		PayloadTypeRegistry.playC2S().register(TeleportPacket.PACKET_ID, TeleportPacket.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(SyncPacket.PACKET_ID, SyncPacket.PACKET_CODEC);
-		
+
 		ServerPlayNetworking.registerGlobalReceiver(SearchPacket.PACKET_ID, SearchPacket::apply);
+		ServerPlayNetworking.registerGlobalReceiver(SearchForNextPacket.PACKET_ID, SearchForNextPacket::apply);
 		ServerPlayNetworking.registerGlobalReceiver(TeleportPacket.PACKET_ID, TeleportPacket::apply);
 
 		allowedBiomes = new ArrayList<Identifier>();
+		xpLevelsForAllowedBiomes = new HashMap<Identifier, Integer>();
 		dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 	}
 

@@ -7,7 +7,7 @@
     "_comment": "STRINGS - BUTTONS",
     "string.naturescompass.back": "Артқа",
     "string.naturescompass.info": "Ақпарат",
-    "string.naturescompass.startSearch": "Іздеуді бастау",
+    "string.naturescompass.searchForNext": "Іздеуді бастау",
     "string.naturescompass.selectBiome": "Биом таңдау",
     "string.naturescompass.sortBy": "Сұрыптау",
     "string.naturescompass.teleport": "Телепорттану",
@@ -38,6 +38,7 @@
     "string.naturescompass.search": "Іздеу",
     "string.naturescompass.searching": "Іздеуде",
     "string.naturescompass.source": "Көз",
+    "string.naturescompass.levels": "Levels",
     "string.naturescompass.status": "Статус",
     "string.naturescompass.tags": "Тәг",
 
