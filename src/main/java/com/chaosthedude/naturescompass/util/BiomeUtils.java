@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,10 @@ public class BiomeUtils {
 	}
 
 	public static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
-		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
+		if (!getBiomeRegistry(level).isPresent()) {
+			return Optional.empty();
+		}
+		return getBiomeRegistry(level).get().getResourceKey(biome).map(ResourceKey::location);
 	}
 
 	public static Optional<Biome> getBiomeForKey(Level level, ResourceLocation key) {
@@ -52,41 +56,83 @@ public class BiomeUtils {
 		final List<ResourceLocation> biomeKeys = new ArrayList<ResourceLocation>();
 		if (getBiomeRegistry(level).isPresent()) {
 			for (Map.Entry<ResourceKey<Biome>, Biome> entry : getBiomeRegistry(level).get().entrySet()) {
+				ResourceLocation biomeKey = entry.getKey().location();
 				Biome biome = entry.getValue();
-				if (biome != null) {
-					Optional<ResourceLocation> optionalBiomeKey = getKeyForBiome(level, biome);
-					if (biome != null && optionalBiomeKey.isPresent() && !biomeKeyIsBlacklisted(level, optionalBiomeKey.get())) {
-						biomeKeys.add(optionalBiomeKey.get());
+				if (biomeKey != null && biome != null && !biomeKeyIsBlacklisted(level, biomeKey)) {
+					biomeKeys.add(biomeKey);
+				}
+			}
+		}
+		return biomeKeys;
+	}
+
+	public static int getXpLevelsForBiome(ResourceLocation biomeKey) {
+		int xpLevels = ConfigHandler.GENERAL.defaultXpLevels.get();
+		final Map<String, Integer> xpLevelOverrides = parseXpLevelOverridesConfig();
+		for (String biomeRegex : xpLevelOverrides.keySet()) {
+			if (biomeKey.toString().matches(convertToRegex(biomeRegex))) {
+				xpLevels = xpLevelOverrides.get(biomeRegex);
+				if (xpLevels > 3) {
+					xpLevels = 3;
+				}
+				break;
+			}
+		}
+		return xpLevels;
+	}
+
+	public static Map<String, Integer> parseXpLevelOverridesConfig() {
+		final List<String> xpLevelOverrides = ConfigHandler.GENERAL.perBiomeXpLevels.get();
+		Map<String, Integer> parsedOverrides = new HashMap<String, Integer>();
+		for (String override : xpLevelOverrides) {
+			String[] split = override.split(",");
+			if (split.length != 2) {
+				continue;
+			}
+			String biomeRegex = split[0];
+			String xpLevelsStr = split[1];
+			try {
+				int xpLevels = Integer.valueOf(xpLevelsStr);
+				parsedOverrides.put(biomeRegex, xpLevels);
+			} catch (NumberFormatException e) {
+				continue;
+			}
+		}
+		return parsedOverrides;
+	}
+
+	public static Map<ResourceLocation, Integer> getXpLevelsForAllowedBiomes(List<ResourceLocation> allowedBiomes) {
+		final Map<ResourceLocation, Integer> xpLevels = new HashMap<ResourceLocation, Integer>();
+		for (ResourceLocation biomeKey : allowedBiomes) {
+			xpLevels.put(biomeKey, getXpLevelsForBiome(biomeKey));
+		}
+		return xpLevels;
+	}
+
+	public static List<ResourceLocation> getGeneratingDimensionKeys(ServerLevel serverLevel, ResourceLocation biomeKey) {
+		final List<ResourceLocation> dimensions = new ArrayList<ResourceLocation>();
+		if (getBiomeRegistry(serverLevel).isPresent()) {
+			final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
+			Optional<Biome> optionalBiome = getBiomeForKey(serverLevel, biomeKey);
+			if (optionalBiome.isPresent()) {
+				for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+					Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
+					Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(optionalBiome.get());
+					if (biomeSet.contains(biomeHolder)) {
+						dimensions.add(level.dimension().location());
 					}
 				}
 			}
 		}
-
-		return biomeKeys;
-	}
-
-	public static List<ResourceLocation> getGeneratingDimensionKeys(ServerLevel serverLevel, Biome biome) {
-		final List<ResourceLocation> dimensions = new ArrayList<ResourceLocation>();
-		final Registry<Biome> biomeRegistry = getBiomeRegistry(serverLevel).get();
-		for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
-			Set<Holder<Biome>> biomeSet = level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
-			Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
-			if (biomeSet.contains(biomeHolder)) {
-				dimensions.add(level.dimension().location());
-			}
-		}
 		return dimensions;
 	}
-	
+
 	public static ListMultimap<ResourceLocation, ResourceLocation> getGeneratingDimensionsForAllowedBiomes(ServerLevel serverLevel) {
-		ListMultimap<ResourceLocation, ResourceLocation> dimensionsForAllowedStructures = ArrayListMultimap.create();
+		ListMultimap<ResourceLocation, ResourceLocation> dimensionsForAllowedBiomes = ArrayListMultimap.create();
 		for (ResourceLocation biomeKey : getAllowedBiomeKeys(serverLevel)) {
-			Optional<Biome> optionalBiome = getBiomeForKey(serverLevel, biomeKey);
-			if (optionalBiome.isPresent()) {
-				dimensionsForAllowedStructures.putAll(biomeKey, getGeneratingDimensionKeys(serverLevel, optionalBiome.get()));
-			}
+			dimensionsForAllowedBiomes.putAll(biomeKey, getGeneratingDimensionKeys(serverLevel, biomeKey));
 		}
-		return dimensionsForAllowedStructures;
+		return dimensionsForAllowedBiomes;
 	}
 
 	public static int getBiomeSize(Level world) {
@@ -103,7 +149,7 @@ public class BiomeUtils {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeTags(Level level, Biome biome) {
+	public static String getBiomeTags(Level level, ResourceLocation biomeKey) {
 		// Some overworld biomes have the is_overworld tag and some don't, so ignore it
 		// altogether for clarity
 		List<String> tagPathsToIgnore = List.of("is_overworld");
@@ -111,9 +157,9 @@ public class BiomeUtils {
 		Set<String> biomeCategories = new TreeSet<String>();
 		if (getBiomeRegistry(level).isPresent()) {
 			Registry<Biome> biomeRegistry = getBiomeRegistry(level).get();
-			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
-				Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
-				// Extremely hacky way of extracting a biome's categories from its tags
+			Optional<Biome> optionalBiome = getBiomeForKey(level, biomeKey);
+			if (optionalBiome.isPresent()) {
+				Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(optionalBiome.get());
 				List<TagKey<Biome>> categoryTags = biomeHolder.getTagKeys().filter(tag -> tag.location().getPath().startsWith("is_")).collect(Collectors.toList());
 				for (TagKey<Biome> tag : categoryTags) {
 					if (tagPathsToIgnore.contains(tag.location().getPath())) {
@@ -123,15 +169,15 @@ public class BiomeUtils {
 					if (fixedPath.contains("/")) {
 						fixedPath = fixedPath.substring(0, fixedPath.indexOf("/"));
 					}
-					String biomeKey = Util.makeDescriptionId("biome", new ResourceLocation(tag.location().getNamespace(), fixedPath));
-					String translatedBiomeKey = I18n.get(biomeKey);
-					if (!biomeKey.equals(translatedBiomeKey)) {
-						return translatedBiomeKey;
+					String biomeTranslationKey = Util.makeDescriptionId("biome", new ResourceLocation(tag.location().getNamespace(), fixedPath));
+					String translatedBiome = I18n.get(biomeTranslationKey);
+					if (!biomeTranslationKey.equals(translatedBiome)) {
+						return translatedBiome;
 					}
-					String categoryKey = Util.makeDescriptionId("category", new ResourceLocation(tag.location().getNamespace(), fixedPath));
-					String translatedCategoryKey = I18n.get(categoryKey);
-					if (!categoryKey.equals(translatedCategoryKey)) {
-						return translatedCategoryKey;
+					String categoryTranslationKey = Util.makeDescriptionId("category", new ResourceLocation(tag.location().getNamespace(), fixedPath));
+					String translatedCategory = I18n.get(categoryTranslationKey);
+					if (!categoryTranslationKey.equals(translatedCategory)) {
+						return translatedCategory;
 					}
 					biomeCategories.add(WordUtils.capitalize(fixedPath.replace('_', ' ')));
 				}
@@ -144,56 +190,32 @@ public class BiomeUtils {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeNameForDisplay(Level level, ResourceLocation biome) {
-		if (getBiomeForKey(level, biome).isPresent()) {
-			return getBiomeNameForDisplay(level, getBiomeForKey(level, biome).get());
-		}
-		return "";
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeNameForDisplay(Level level, Biome biome) {
-		if (biome != null) {
-			if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
-				final String original = getBiomeName(level, biome);
-				String fixed = "";
-				char pre = ' ';
-				for (int i = 0; i < original.length(); i++) {
-					final char c = original.charAt(i);
-					if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-						fixed = fixed + " ";
-					}
-					fixed = fixed + String.valueOf(c);
-					pre = c;
+	public static String getBiomeNameForDisplay(Level level, ResourceLocation biomeKey) {
+		if (ConfigHandler.CLIENT.fixBiomeNames.get()) {
+			final String original = getBiomeName(level, biomeKey);
+			String fixed = "";
+			char pre = ' ';
+			for (int i = 0; i < original.length(); i++) {
+				final char c = original.charAt(i);
+				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+					fixed = fixed + " ";
 				}
-				return fixed;
+				fixed = fixed + String.valueOf(c);
+				pre = c;
 			}
-			if (getKeyForBiome(level, biome) != null) {
-				return I18n.get(getKeyForBiome(level, biome).toString());
-			}
+			return fixed;
 		}
-		return "";
+		return getBiomeName(level, biomeKey);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeName(Level level, Biome biome) {
-		return getKeyForBiome(level, biome).isPresent() ? I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(level, biome).get())) : "";
+	public static String getBiomeName(Level level, ResourceLocation biomeKey) {
+		return I18n.get(Util.makeDescriptionId("biome", biomeKey));
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeName(Level level, ResourceLocation key) {
-		if (getBiomeForKey(level, key).isPresent()) {
-			return getBiomeName(level, getBiomeForKey(level, key).get());
-		}
-		return "";
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static String getBiomeSource(Level level, Biome biome) {
-		if (getKeyForBiome(level, biome).isEmpty()) {
-			return "";
-		}
-		String modid = getKeyForBiome(level, biome).get().getNamespace();
+	public static String getBiomeSource(Level level, ResourceLocation biomeKey) {
+		String modid = biomeKey.getNamespace();
 		if (modid.equals("minecraft")) {
 			return "Minecraft";
 		}
@@ -203,7 +225,7 @@ public class BiomeUtils {
 		}
 		return modid;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	private static String getDimensionName(ResourceLocation dimensionKey) {
 		String name = I18n.get(Util.makeDescriptionId("dimension", dimensionKey));
@@ -216,7 +238,7 @@ public class BiomeUtils {
 		}
 		return name;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static String dimensionKeysToString(List<ResourceLocation> dimensions) {
 		Set<String> dimensionNames = new HashSet<String>();

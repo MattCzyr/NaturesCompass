@@ -1,8 +1,17 @@
 package com.chaosthedude.naturescompass;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.chaosthedude.naturescompass.config.ConfigHandler;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.CompassSearchPacket;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.SyncPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.google.common.collect.ArrayListMultimap;
@@ -25,11 +34,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.server.permission.events.PermissionGatherEvent;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 import net.minecraftforge.server.permission.nodes.PermissionTypes;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod(NaturesCompass.MODID)
 public class NaturesCompass {
@@ -43,8 +47,12 @@ public class NaturesCompass {
 	public static SimpleChannel network;
 	public static NaturesCompassItem naturesCompass;
 
+	public static boolean synced;
 	public static boolean canTeleport;
+	public static int maxNextSearches;
+	public static boolean infiniteXp;
 	public static List<ResourceLocation> allowedBiomes;
+	public static Map<ResourceLocation, Integer> xpLevelsForAllowedBiomes;
 	public static ListMultimap<ResourceLocation, ResourceLocation> dimensionKeysForAllowedBiomeKeys;
 
 	public static NaturesCompass instance;
@@ -67,11 +75,13 @@ public class NaturesCompass {
 		// Server packets
 		network.registerMessage(0, CompassSearchPacket.class, CompassSearchPacket::toBytes, CompassSearchPacket::new, CompassSearchPacket::handle);
 		network.registerMessage(1, TeleportPacket.class, TeleportPacket::toBytes, TeleportPacket::new, TeleportPacket::handle);
+		network.registerMessage(3, SearchForNextPacket.class, SearchForNextPacket::toBytes, SearchForNextPacket::new, SearchForNextPacket::handle);
 
 		// Client packet
 		network.registerMessage(2, SyncPacket.class, SyncPacket::toBytes, SyncPacket::new, SyncPacket::handle);
 
 		allowedBiomes = new ArrayList<ResourceLocation>();
+		xpLevelsForAllowedBiomes = new HashMap<ResourceLocation, Integer>();
 		dimensionKeysForAllowedBiomeKeys = ArrayListMultimap.create();
 	}
 

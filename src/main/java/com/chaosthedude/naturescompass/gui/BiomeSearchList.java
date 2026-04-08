@@ -1,35 +1,40 @@
 package com.chaosthedude.naturescompass.gui;
 
-import java.util.Objects;
-
+import com.chaosthedude.naturescompass.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 
 	private final NaturesCompassScreen parentScreen;
+	private final Player player;
 
-	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
-		super(mc, width, height, top, bottom, slotHeight);
-		setLeftPos(130);
+	public BiomeSearchList(NaturesCompassScreen parentScreen, Minecraft mc, Player player, ResourceLocation biomeKeyToSelect, int x, int y, int width, int height, int slotHeight) {
+		super(mc, width, height, y, y + height, slotHeight);
 		this.parentScreen = parentScreen;
-		refreshList();
+		this.player = player;
+        setLeftPos(x);
+		refreshList(biomeKeyToSelect);
 	}
 
 	@Override
 	protected int getScrollbarPosition() {
-		return x1;
+		return getLeft() + getWidth();
 	}
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 50;
+		return getWidth();
 	}
 
 	@Override
@@ -40,51 +45,62 @@ public class BiomeSearchList extends ObjectSelectionList<BiomeSearchEntry> {
 	@Override
 	protected void renderList(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         enableScissor(guiGraphics);
-		for (int i = 0; i < getItemCount(); ++i) {
-			int top = getRowTop(i);
-			int bottom = getRowBottom(i);
-			if (bottom >= y0 && top <= y1) {
-                guiGraphics.fill(x0, top, x1, bottom, 255 / 2 << 24);
-				BiomeSearchEntry entry = getEntry(i);
-				if (isSelectedItem(i)) {
-					guiGraphics.fill(x0, top, x1, bottom, 255 / 2 << 24);
-				}
-				entry.render(guiGraphics, i, top, getRowLeft(), getRowWidth(), itemHeight, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), entry), partialTicks);
-			}
-		}
+        // Render backgrounds
+        for (int i = 0; i < getItemCount(); ++i) {
+            if (getRowBottom(i) >= getTop() && getRowTop(i) <= getBottom()) {
+                BiomeSearchEntry entry = getEntry(i);
+                int fillColor = RenderUtils.getBackgroundColor(entry.isEnabled(), entry == getSelected());
+                guiGraphics.fill(getRowLeft(), getRowTop(i), getRight(), getRowBottom(i), fillColor);
+            }
+        }
+        // Render entries
+        for (int i = 0; i < getItemCount(); ++i) {
+            int top = getRowTop(i);
+            int bottom = getRowBottom(i);
+            if (bottom >= getTop() && top <= getBottom()) {
+                BiomeSearchEntry entry = getEntry(i);
+                boolean isHovering = isMouseOver(mouseX, mouseY) && Objects.equals(getEntryAtPosition(mouseX, mouseY), entry);
+                entry.render(guiGraphics, i, top, getRowLeft(), getRowWidth(), itemHeight, mouseX, mouseY, isHovering, partialTicks);
+            }
+        }
         guiGraphics.disableScissor();
-
-		if (getMaxScroll() > 0) {
-			int left = getScrollbarPosition();
-			int right = left + 6;
-			int height = (int) ((float) ((y1 - y0) * (y1 - y0)) / (float) getMaxPosition());
-			height = Mth.clamp(height, 32, y1 - y0 - 8);
-			int top = (int) getScrollAmount() * (y1 - y0 - height) / getMaxScroll() + y0;
-			if (top < y0) {
-				top = y0;
-			}
-			
-			guiGraphics.fill(left, y0, right, y1, 255 / 2 << 24);
-			guiGraphics.fill(left, top, right, top + height, 255 / 2 << 24);
-		}
+        // Render scrollbar
+        if (getMaxScroll() > 0) {
+            int left = getScrollbarPosition();
+            int right = left + 6;
+            int height = (int) ((float) ((getBottom() - getTop()) * (getBottom() - getTop())) / (float) getMaxPosition());
+            height = Mth.clamp(height, 32, getBottom() - getTop() - 8);
+            int top = (int) getScrollAmount() * (getBottom() - getTop() - height) / getMaxScroll() + getTop();
+            if (top < getTop()) {
+                top = getTop();
+            }
+            guiGraphics.fill(left, getTop(), right, getBottom(), RenderUtils.getBackgroundColor(false, false));
+            guiGraphics.fill(left, top, right, top + height, RenderUtils.getBackgroundColor(true, true));
+        }
 	}
 
     @Override
-    public int getRowLeft() {
-        return x0;
+    public void setSelected(BiomeSearchEntry entry) {
+        if (entry == null || entry.isEnabled()) {
+            super.setSelected(entry);
+        }
     }
 
-    public void refreshList() {
+    public void refreshList(ResourceLocation biomeKeyToSelect) {
 		clearEntries();
-		for (Biome biome : parentScreen.sortBiomes()) {
-			addEntry(new BiomeSearchEntry(this, biome));
+		for (ResourceLocation biomeKey : parentScreen.sortBiomes()) {
+			BiomeSearchEntry entry = new BiomeSearchEntry(this, biomeKey, player);
+			addEntry(entry);
+			if (biomeKey.equals(biomeKeyToSelect)) {
+				setSelected(entry);
+			}
 		}
-		selectBiome(null);
+		setScrollAmount(0);
 	}
 
-	public void selectBiome(BiomeSearchEntry entry) {
-		setSelected(entry);
-		parentScreen.selectBiome(entry);
+	public void refreshList(boolean maintainSelection) {
+		ResourceLocation select = maintainSelection && hasSelection() ? getSelected().getBiomeKey() : null;
+		refreshList(select);
 	}
 
 	public boolean hasSelection() {

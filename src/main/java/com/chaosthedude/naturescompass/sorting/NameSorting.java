@@ -4,21 +4,21 @@ import com.chaosthedude.naturescompass.util.BiomeUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.resources.ResourceLocation;
 
 public class NameSorting implements ISorting<String> {
-	
+
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@Override
-	public int compare(Biome biome1, Biome biome2) {
-		return getValue(biome1).compareTo(getValue(biome2));
+	public int compare(ResourceLocation biomeKey1, ResourceLocation biomeKey2) {
+		return getValue(biomeKey1).compareTo(getValue(biomeKey2));
 	}
 
 	@Override
-	public String getValue(Biome biome) {
+	public String getValue(ResourceLocation biomeKey) {
 		if (mc.level != null) {
-			return BiomeUtils.getBiomeName(mc.level, biome);
+			return BiomeUtils.getBiomeName(mc.level, biomeKey);
 		}
 		return "";
 	}

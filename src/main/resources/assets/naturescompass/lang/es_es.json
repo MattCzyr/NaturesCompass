@@ -1,15 +1,14 @@
 {
-    "_comment": "LANGUAGE FILE - SPANISH",
+    "_comment": "ESPAÑA - ESPAÑOL",
 
     "_comment": "ITEMS",
-    "item.naturescompass.naturescompass": "Brújula de la Naturaleza",
+    "item.naturescompass.naturescompass": "Brújula de la naturaleza",
 
     "_comment": "STRINGS - BUTTONS",
-    "string.naturescompass.back": "Atras",
+    "string.naturescompass.back": "Atrás",
     "string.naturescompass.info": "Info",
-    "string.naturescompass.startSearch": "Iniciar Busqueda",
-    "string.naturescompass.searchForNext": "Buscar el Siguiente",
-    "string.naturescompass.selectBiome": "Elegir Bioma",
+    "string.naturescompass.searchForNext": "Buscar el siguiente",
+    "string.naturescompass.selectBiome": "Elegir bioma",
     "string.naturescompass.sortBy": "Ordenar por",
     "string.naturescompass.teleport": "Teletransportarse",
 
@@ -30,7 +29,6 @@
     "string.naturescompass.biome": "Bioma",
     "string.naturescompass.category": "Categoría",
     "string.naturescompass.coordinates": "Coordenadas",
-    "string.naturescompass.dimension": "Dimensión",
     "string.naturescompass.distance": "Distancia",
     "string.naturescompass.found": "Encontrado",
     "string.naturescompass.levels": "Niveles",
@@ -53,7 +51,7 @@
     "string.naturescompass.precipitation": "Precipitación",
     "string.naturescompass.rainfall": "Lluvia",
     "string.naturescompass.temperature": "Temperatura",
-    "string.naturescompass.topBlock": "Bloque Superior",
+    "string.naturescompass.topBlock": "Bloque superior",
 
     "_comment": "STRINGS - PRECIPITATION",
     "string.naturescompass.snow": "Nieve",

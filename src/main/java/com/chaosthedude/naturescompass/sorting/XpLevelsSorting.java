@@ -1,14 +1,11 @@
 package com.chaosthedude.naturescompass.sorting;
 
-import com.chaosthedude.naturescompass.util.BiomeUtils;
+import com.chaosthedude.naturescompass.NaturesCompass;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
-public class TagsSorting implements ISorting<String> {
-
-	private static final Minecraft mc = Minecraft.getInstance();
+public class XpLevelsSorting implements ISorting<String> {
 
 	@Override
 	public int compare(ResourceLocation biomeKey1, ResourceLocation biomeKey2) {
@@ -17,20 +14,20 @@ public class TagsSorting implements ISorting<String> {
 
 	@Override
 	public String getValue(ResourceLocation biomeKey) {
-		if (mc.level != null) {
-			return BiomeUtils.getBiomeTags(mc.level, biomeKey);
+		if (NaturesCompass.xpLevelsForAllowedBiomes != null && NaturesCompass.xpLevelsForAllowedBiomes.containsKey(biomeKey)) {
+			return String.valueOf(NaturesCompass.xpLevelsForAllowedBiomes.get(biomeKey));
 		}
-		return "";
+		return "0";
 	}
 
 	@Override
 	public ISorting<?> next() {
-		return new DimensionSorting();
+		return new RainfallSorting();
 	}
 
 	@Override
 	public String getLocalizedName() {
-		return I18n.get("string.naturescompass.tags");
+		return I18n.get("string.naturescompass.levels");
 	}
 
 }

@@ -1,7 +1,31 @@
-## Version 1.11.9
+## Version 3.4.0
+#### NeoForge 1.21.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
+- Backported fix for biomes with c:hidden_from_locator_selection tag not being hidden
+- Backported improvements to biome selection GUI
+- Backported Ecuadorian Spanish translations
+
+## Version 2.6.0
+#### Fabric 1.21.1, 1.20.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
+- Backported fix for biomes with c:hidden_from_locator_selection tag not being hidden
+- Backported improvements to biome selection GUI
+- Backported Spanish translations
+- Backported Ecuadorian Spanish translations
+
+## Version 1.12.0
 #### Forge 1.20.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
 - Backported fix for compass HUD info being rendered twice when certain mods are installed
-- Minor improvements to biome selection GUI
+- Backported improvements to biome selection GUI
+- Backported Spanish translations
+- Backported Ecuadorian Spanish translations
 
 ## Version 3.3.0
 #### NeoForge 26.1, 1.21.11

@@ -3,11 +3,11 @@ package com.chaosthedude.naturescompass.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
 import com.chaosthedude.naturescompass.network.CompassSearchPacket;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.chaosthedude.naturescompass.sorting.ISorting;
 import com.chaosthedude.naturescompass.sorting.NameSorting;
@@ -23,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,11 +31,13 @@ public class NaturesCompassScreen extends Screen {
 
 	public Level level;
 	private Player player;
-	private List<Biome> allowedBiomes;
-	private List<Biome> biomesMatchingSearch;
 	private ItemStack stack;
 	private NaturesCompassItem natureCompass;
+	private List<ResourceLocation> allowedBiomes;
+	private List<ResourceLocation> biomesMatchingSearch;
+	private ResourceLocation foundBiomeKey;
 	private Button startSearchButton;
+	private Button searchForNextButton;
 	private Button teleportButton;
 	private Button cancelButton;
 	private Button sortByButton;
@@ -50,11 +51,14 @@ public class NaturesCompassScreen extends Screen {
 		this.player = player;
 		this.stack = stack;
 		this.natureCompass = natureCompass;
-		this.allowedBiomes = new ArrayList<Biome>();
-		loadAllowedBiomes(allowedBiomes);
+		this.allowedBiomes = new ArrayList<ResourceLocation>(allowedBiomes);
 
 		sortingCategory = new NameSorting();
-		biomesMatchingSearch = new ArrayList<Biome>(this.allowedBiomes);
+		biomesMatchingSearch = new ArrayList<ResourceLocation>(this.allowedBiomes);
+
+		if (natureCompass.getState(stack) == CompassState.FOUND) {
+			foundBiomeKey = natureCompass.getBiomeKey(stack);
+		}
 	}
 
 	@Override
@@ -70,24 +74,35 @@ public class NaturesCompassScreen extends Screen {
 	@Override
 	public void tick() {
 		searchTextField.tick();
-		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND;
-		
+		teleportButton.active = natureCompass.getState(stack) == CompassState.FOUND && selectionList.hasSelection() && selectionList.getSelected().getBiomeKey().equals(foundBiomeKey);
+		searchForNextButton.active = teleportButton.active;
+		startSearchButton.active = selectionList.hasSelection();
+
 		// Check if the sync packet has been received
-		if (allowedBiomes.size() != NaturesCompass.allowedBiomes.size()) {
+		if (NaturesCompass.synced) {
 			teleportButton.visible = NaturesCompass.canTeleport;
+			searchForNextButton.visible = NaturesCompass.maxNextSearches > 0;
+			if (searchForNextButton.visible) {
+				sortByButton.setPosition(10, 100);
+			} else {
+				sortByButton.setPosition(10, 65);
+			}
+
 			removeWidget(selectionList);
-			loadAllowedBiomes(NaturesCompass.allowedBiomes);
-			biomesMatchingSearch = new ArrayList<Biome>(allowedBiomes);
-			selectionList = new BiomeSearchList(this, minecraft, width - 140, height, 40, height - 10, 50);
+			allowedBiomes = new ArrayList<ResourceLocation>(NaturesCompass.allowedBiomes);
+			biomesMatchingSearch = new ArrayList<ResourceLocation>(allowedBiomes);
+			selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeKey, 130, 40, width - 140, height - 50, 50);
 			addRenderableWidget(selectionList);
+
+			NaturesCompass.synced = false;
 		}
 	}
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.drawCenteredString(font, I18n.get("string.naturescompass.selectBiome"), 65, 15, 0xffffff);
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -111,14 +126,16 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void selectBiome(BiomeSearchEntry entry) {
-		boolean enable = entry != null;
-		startSearchButton.active = enable;
+		startSearchButton.active = entry != null;
 	}
 
-	public void searchForBiome(Biome biome) {
-		if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-			NaturesCompass.network.sendToServer(new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()));
-		}
+	public void searchForBiome(ResourceLocation biomeKey) {
+		NaturesCompass.network.sendToServer(new CompassSearchPacket(biomeKey, player.blockPosition()));
+		minecraft.setScreen(null);
+	}
+
+	public void searchForNextBiome() {
+		NaturesCompass.network.sendToServer(new SearchForNextPacket());
 		minecraft.setScreen(null);
 	}
 
@@ -132,69 +149,67 @@ public class NaturesCompassScreen extends Screen {
 	}
 
 	public void processSearchTerm() {
-		biomesMatchingSearch = new ArrayList<Biome>();
+		biomesMatchingSearch = new ArrayList<ResourceLocation>();
 		String searchTerm = searchTextField.getValue().toLowerCase();
-		for (Biome biome : allowedBiomes) {
+		for (ResourceLocation biomeKey : allowedBiomes) {
 			if (searchTerm.startsWith("$")) {
-				if (BiomeUtils.getBiomeTags(level, biome).toLowerCase().contains(searchTerm.substring(1))) {
-					biomesMatchingSearch.add(biome);
+				if (BiomeUtils.getBiomeTags(level, biomeKey).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biomeKey);
 				}
 			} else if (searchTerm.startsWith("@")) {
-				if (BiomeUtils.getBiomeSource(level, biome).toLowerCase().contains(searchTerm.substring(1))) {
-					biomesMatchingSearch.add(biome);
+				if (BiomeUtils.getBiomeSource(level, biomeKey).toLowerCase().contains(searchTerm.substring(1))) {
+					biomesMatchingSearch.add(biomeKey);
 				}
-			} else if (BiomeUtils.getBiomeNameForDisplay(level, biome).toLowerCase().contains(searchTerm)) {
-				biomesMatchingSearch.add(biome);
+			} else if (BiomeUtils.getBiomeNameForDisplay(level, biomeKey).toLowerCase().contains(searchTerm)) {
+				biomesMatchingSearch.add(biomeKey);
 			}
 		}
-		selectionList.refreshList();
+		selectionList.refreshList(true);
 	}
 
-	public List<Biome> sortBiomes() {
-		final List<Biome> biomes = biomesMatchingSearch;
+	public List<ResourceLocation> sortBiomes() {
+		final List<ResourceLocation> biomes = biomesMatchingSearch;
 		Collections.sort(biomes, new NameSorting());
 		Collections.sort(biomes, sortingCategory);
-
 		return biomes;
 	}
 
 	private void setupWidgets() {
 		clearWidgets();
-		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
-			minecraft.setScreen(null);
-		}));
-		sortByButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
-			sortingCategory = sortingCategory.next();
-			sortByButton.setMessage(Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
-			selectionList.refreshList();
-		}));
+
 		startSearchButton = addRenderableWidget(new TransparentButton(10, 40, 110, 20, Component.translatable("string.naturescompass.startSearch"), (onPress) -> {
 			if (selectionList.hasSelection()) {
-				selectionList.getSelected().searchForBiome();
+				searchForBiome(selectionList.getSelected().getBiomeKey());
 			}
 		}));
+		startSearchButton.active = false;
+
+		searchForNextButton = addRenderableWidget(new TransparentButton(10, 65, 110, 20, Component.translatable("string.naturescompass.searchForNext"), (onPress) -> {
+			searchForNextBiome();
+		}));
+		searchForNextButton.visible = NaturesCompass.maxNextSearches > 0;
+		searchForNextButton.active = false;
+
+		sortByButton = addRenderableWidget(new TransparentButton(10, searchForNextButton.visible ? 100 : 65, 110, 20, Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()), (onPress) -> {
+			sortingCategory = sortingCategory.next();
+			sortByButton.setMessage(Component.literal(I18n.get("string.naturescompass.sortBy") + ": " + sortingCategory.getLocalizedName()));
+			selectionList.refreshList(true);
+		}));
+
 		teleportButton = addRenderableWidget(new TransparentButton(width - 120, 10, 110, 20, Component.translatable("string.naturescompass.teleport"), (onPress) -> {
 			teleport();
 		}));
-
-		startSearchButton.active = false;
-
 		teleportButton.visible = NaturesCompass.canTeleport;
-		
+		teleportButton.active = false;
+
+		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
+			minecraft.setScreen(null);
+		}));
+
 		searchTextField = addRenderableWidget(new TransparentTextField(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search")));
-		
-		selectionList = new BiomeSearchList(this, minecraft, width - 140, height, 40, height - 10, 50);
+
+		selectionList = new BiomeSearchList(this, minecraft, player, foundBiomeKey, 130, 40, width - 140, height - 50, 50);
 		addRenderableWidget(selectionList);
-	}
-	
-	private void loadAllowedBiomes(List<ResourceLocation> allowedBiomeKeys) {
-		this.allowedBiomes = new ArrayList<Biome>();
-		for (ResourceLocation biomeKey : allowedBiomeKeys) {
-			Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
-			if (optionalBiome.isPresent()) {
-				this.allowedBiomes.add(optionalBiome.get());
-			}
-		}
 	}
 
 }
