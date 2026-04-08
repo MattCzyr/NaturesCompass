@@ -14,7 +14,7 @@ public enum CompassState {
 		return id;
 	}
 
-	public static CompassState fromID(int id) {
+	public static CompassState fromID(Integer id) {
 		for (CompassState state : values()) {
 			if (state.getID() == id) {
 				return state;

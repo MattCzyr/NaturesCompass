@@ -1,6 +1,7 @@
 package com.chaosthedude.naturescompass.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,55 @@ public class BiomeUtils {
 		}
 
 		return biomeKeys;
+	}
+
+	public static int getXpLevelsForBiome(ResourceLocation biomeKey) {
+		int xpLevels = ConfigHandler.GENERAL.defaultXpLevels.get();
+		final Map<String, Integer> xpLevelOverrides = parseXpLevelOverridesConfig();
+		for (String biomeRegex : xpLevelOverrides.keySet()) {
+			if (biomeKey.toString().matches(convertToRegex(biomeRegex))) {
+				xpLevels = xpLevelOverrides.get(biomeRegex);
+				if (xpLevels > 3) {
+					xpLevels = 3;
+				}
+				break;
+			}
+		}
+		return xpLevels;
+	}
+
+	public static Map<String, Integer> parseXpLevelOverridesConfig() {
+		final List<String> xpLevelOverrides = ConfigHandler.GENERAL.perBiomeXpLevels.get();
+		Map<String, Integer> parsedOverrides = new HashMap<String, Integer>();
+		for (String override : xpLevelOverrides) {
+			String[] split = override.split(",");
+			if (split.length != 2) {
+				// Invalid entry
+				continue;
+			}
+
+			String biomeRegex = split[0];
+			String xpLevelsStr = split[1];
+			try {
+				int xpLevels = Integer.valueOf(xpLevelsStr);
+				parsedOverrides.put(biomeRegex, xpLevels);
+			} catch (NumberFormatException e) {
+				// Invalid entry
+				continue;
+			}
+		}
+
+		return parsedOverrides;
+	}
+
+	public static Map<ResourceLocation, Integer> getXpLevelsForAllowedBiomes(List<ResourceLocation> allowedBiomes) {
+		final Map<ResourceLocation, Integer> xpLevels = new HashMap<ResourceLocation, Integer>();
+		for (ResourceLocation biomeKey : allowedBiomes) {
+			int levels = getXpLevelsForBiome(biomeKey);
+			xpLevels.put(biomeKey, levels);
+		}
+
+		return xpLevels;
 	}
 
 	public static List<ResourceLocation> getGeneratingDimensionKeys(ServerLevel serverLevel, Biome biome) {
@@ -168,9 +218,7 @@ public class BiomeUtils {
 				}
 				return fixed;
 			}
-			if (getKeyForBiome(level, biome) != null) {
-				return I18n.get(getKeyForBiome(level, biome).toString());
-			}
+			return getBiomeName(level, biome);
 		}
 		return "";
 	}
@@ -240,7 +288,7 @@ public class BiomeUtils {
 			final Biome biome = getBiomeForKey(level, biomeKey).get();
 			if (biomeRegistry.getResourceKey(biome).isPresent() && biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).isPresent()) {
 				final Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
-				return biomeHolder.tags().anyMatch(tag -> tag.location().getPath().equals("c:hidden_from_locator_selection"));
+				return biomeHolder.tags().anyMatch(tag -> tag.location().toString().equals("c:hidden_from_locator_selection"));
 			}
 		}
 		return false;

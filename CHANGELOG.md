@@ -1,3 +1,109 @@
+## Version 3.4.0
+#### NeoForge 1.21.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
+- Backported fix for biomes with c:hidden_from_locator_selection tag not being hidden
+- Backported improvements to biome selection GUI
+- Backported Ecuadorian Spanish translations
+
+## Version 2.6.0
+#### Fabric 1.21.1, 1.20.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
+- Backported fix for biomes with c:hidden_from_locator_selection tag not being hidden
+- Backported improvements to biome selection GUI
+- Backported Spanish translations
+- Backported Ecuadorian Spanish translations
+
+## Version 1.12.0
+#### Forge 1.20.1
+- Backported feature to search for the next instance of an already located biome
+- Backported config options to make the compass consume XP levels when searching for a biome
+- Backported config option to add durability to the compass and a recipe to repair a broken compass
+- Backported fix for compass HUD info being rendered twice when certain mods are installed
+- Backported improvements to biome selection GUI
+- Backported Spanish translations
+- Backported Ecuadorian Spanish translations
+
+## Version 3.3.0
+#### NeoForge 26.1, 1.21.11
+- Updated to NeoForge 26.1
+- Added config option to add durability to the compass and a recipe to repair a broken compass
+- Fixed compass HUD info not rendering when any debug elements are set to always-on
+- Fixed biomes with c:hidden_from_locator_selection tag not being hidden
+- Fixed biome names not displaying properly when fixBiomeNames config option is disabled
+
+## Version 2.5.0
+#### Fabric 26.1, 1.21.11
+- Updated to Fabric 26.1
+- Added config option to add durability to the compass and a recipe to repair a broken compass
+- Fixed compass HUD info not rendering when any debug elements are set to always-on
+- Fixed biomes with c:hidden_from_locator_selection tag not being hidden
+- Fixed biome names not displaying properly when fixBiomeNames config option is disabled
+
+## Version 3.2.0
+#### NeoForge 1.21.11
+- Added feature to search for the next instance of an already located biome
+- More minor improvements to biome selection GUI
+
+## Version 2.4.0
+#### Fabric 1.21.11
+- Added feature to search for the next instance of an already located biome
+- More minor improvements to biome selection GUI
+
+## Version 3.1.0
+#### NeoForge 1.21.11
+- Added config options to make the compass consume XP levels when searching for a biome
+- Minor improvements to biome selection GUI
+
+## Version 2.3.0
+#### Fabric 1.21.11
+- Added config options to make the compass consume XP levels when searching for a biome
+- Minor improvements to biome selection GUI
+
+## Version 3.0.5
+#### NeoForge 1.21.11, 1.21.10, 1.21.8, 1.21.7, 1.12.6
+- Updated to NeoForge 1.21.11
+- Updated to NeoForge 1.21.10
+- Updated to NeoForge 1.21.8
+- Updated to NeoForge 1.21.7
+- Updated to NeoForge 1.21.6
+- Added Ecuadorian Spanish translations
+- Fixed compass recipe not unlocking when an ingredient is picked up
+
+## Version 2.2.9
+#### Fabric 1.21.11, 1.21.10, 1.21.8, 1.21.7, 1.21.6
+- Updated to Fabric 1.21.11
+- Updated to Fabric 1.21.10
+- Updated to Fabric 1.21.8
+- Updated to Fabric 1.21.7
+- Updated to Fabric 1.21.6
+- Added Ecuadorian Spanish translations
+- Fixed compass recipe not unlocking when an ingredient is picked up
+
+## Version 3.0.4
+#### NeoForge 1.21.5, 1.21.4, 1.21.3
+- Updated to NeoForge 1.21.5
+- Updated to NeoForge 1.21.4
+- Updated to NeoForge 1.21.3
+- Fixed compass also performing offhand item action after opening GUI
+
+## Version 2.2.8
+#### Fabric 1.21.5, 1.21.4, 1.21.3
+- Updated to Fabric 1.21.5
+- Updated to Fabric 1.21.4
+- Updated to Fabric 1.21.3
+- Fixed compass also performing offhand item action after opening GUI
+
+## Version 1.11.8
+#### Forge 1.21.5, 1.21.4, 1.21.3
+- Updated to Forge 1.21.5
+- Updated to Forge 1.21.4
+- Updated to Forge 1.21.3
+- Fixed compass also performing offhand item action after opening GUI
+
 ## Version 3.0.3
 #### NeoForge 1.21.1, 1.21
 - Updated to NeoForge 1.21.1
@@ -239,10 +345,10 @@
 
 ## Version 1.8.4
 #### Forge 1.15.2, 1.15.1
- - Updated to Forge 1.15.2
- - Added French translations
- - Added Polish translations
- - Added Chinese (Taiwan) translations
+- Updated to Forge 1.15.2
+- Added French translations
+- Added Polish translations
+- Added Chinese (Taiwan) translations
 
 ## Version 1.8.3
 #### Forge 1.15.1, 1.14.4, 1.12.2
@@ -298,13 +404,13 @@
 
 ## Version 1.5.0
 #### Forge 1.12.2
- - Marked 1.12.2 as an accepted version
+- Marked 1.12.2 as an accepted version
 
 ## Version 1.5.0
 #### Forge 1.12.2
- - Added number of biome samples to HUD info after an unsuccessful biome search
- - Fixed mismatched or missing texture issue when certain mods are present
- - Rewrote biome searching algorithm
+- Added number of biome samples to HUD info after an unsuccessful biome search
+- Fixed mismatched or missing texture issue when certain mods are present
+- Rewrote biome searching algorithm
 
 ## Version 1.4.0
 #### Forge 1.12
@@ -324,8 +430,8 @@
 
 ## Version 1.1.0
 #### Forge 1.10.2
- - Added a sorting function to the biome selection GUI
- - HUD info will remain visible while chat is open (can be disabled in the config)
+- Added a sorting function to the biome selection GUI
+- HUD info will remain visible while chat is open (can be disabled in the config)
 
 ## Version 1.0.0
 #### Forge 1.10.2

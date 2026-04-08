@@ -1,6 +1,8 @@
 package com.chaosthedude.naturescompass.items;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
@@ -17,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -40,6 +43,10 @@ public class NaturesCompassItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		if (!player.isCrouching()) {
+			if (isBroken(player.getItemInHand(hand))) {
+				return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, player.getItemInHand(hand));
+			}
+
 			if (level.isClientSide()) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				GuiWrapper.openGUI(level, player, stack);
@@ -47,8 +54,11 @@ public class NaturesCompassItem extends Item {
 				final ServerLevel serverLevel = (ServerLevel) level;
 				final ServerPlayer serverPlayer = (ServerPlayer) player;
 				final boolean canTeleport = ConfigHandler.GENERAL.allowTeleport.get() && PlayerUtils.canTeleport(serverPlayer.getServer(), player);
+				final int maxNextSearches = ConfigHandler.GENERAL.maxNextSearches.get();
+				final boolean hasInfiniteXp = player.hasInfiniteMaterials();
 				final List<ResourceLocation> allowedBiomeKeys = BiomeUtils.getAllowedBiomeKeys(level);
-				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, allowedBiomeKeys, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
+				final Map<ResourceLocation, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(allowedBiomeKeys);
+				PacketDistributor.sendToPlayer(serverPlayer, new SyncPacket(canTeleport, maxNextSearches, hasInfiniteXp, allowedBiomeKeys, xpLevels, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverLevel)));
 			}
 		} else {
 			if (worker != null) {
@@ -60,6 +70,34 @@ public class NaturesCompassItem extends Item {
 
 		return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, player.getItemInHand(hand));
 	}
+
+	@Override
+	public boolean isBarVisible(ItemStack stack) {
+		int max = ConfigHandler.GENERAL.compassDurability.get();
+		if (max > 0) {
+			int damage = stack.getOrDefault(NaturesCompass.DAMAGE, 0);
+			return damage > 0;
+		}
+		return false;
+	}
+
+	@Override
+	public int getBarWidth(ItemStack stack) {
+		int max = ConfigHandler.GENERAL.compassDurability.get();
+		if (max > 0) {
+			int damage = stack.getOrDefault(NaturesCompass.DAMAGE, 0);
+			return Math.round(Math.max(0, Math.min(13, 13.0f * (1.0f - (float) damage / max))));
+		}
+		return 13;
+	}
+
+	@Override
+	public int getBarColor(ItemStack stack) {
+		int max = ConfigHandler.GENERAL.compassDurability.get();
+		int damage = stack.getOrDefault(NaturesCompass.DAMAGE, 0);
+		float f = max > 0 ? (float) damage / max : 0.0f;
+		return Mth.hsvToRgb(Math.max(0.0F, (1.0F - f) / 3.0F), 1.0F, 1.0F);
+	}
 	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
@@ -70,26 +108,74 @@ public class NaturesCompassItem extends Item {
 	}
 
 	public void searchForBiome(ServerLevel level, Player player, ResourceLocation biomeKey, BlockPos pos, ItemStack stack) {
-		setSearching(stack, biomeKey, player);
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForKey(level, biomeKey);
-		if (optionalBiome.isPresent()) {
-			if (worker != null) {
-				worker.stop();
+		if (!isBroken(stack)) {
+			setSearching(stack, biomeKey, player);
+			stack.set(NaturesCompass.SAMPLES, 0);
+			stack.set(NaturesCompass.SEARCH_RADIUS, 0);
+			stack.remove(NaturesCompass.PREV_POS);
+
+            if (worker != null) {
+                worker.stop();
+            }
+            List<BlockPos> prevPos = new ArrayList<BlockPos>();
+            worker = new BiomeSearchWorker(level, player, stack, biomeKey, pos, prevPos);
+            worker.start();
+
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeKey);
+			if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+				player.giveExperienceLevels(-xpLevels);
 			}
-			worker = new BiomeSearchWorker(level, player, stack, optionalBiome.get(), pos);
-			worker.start();
+		}
+	}
+
+	public void searchForNextBiome(ServerLevel level, Player player, BlockPos pos, ItemStack stack) {
+		if (!isBroken(stack)) {
+			List<BlockPos> prevPos = stack.getOrDefault(NaturesCompass.PREV_POS, null);
+			String biomeKeyStr = stack.has(NaturesCompass.BIOME_ID) ? stack.get(NaturesCompass.BIOME_ID) : null;
+			if (prevPos != null && biomeKeyStr != null) {
+				ResourceLocation biomeKey = ResourceLocation.parse(biomeKeyStr);
+				setSearching(stack, biomeKey, player);
+				stack.set(NaturesCompass.SAMPLES, 0);
+				stack.set(NaturesCompass.SEARCH_RADIUS, 0);
+
+                if (worker != null) {
+                    worker.stop();
+                }
+                worker = new BiomeSearchWorker(level, player, stack, biomeKey, pos, prevPos);
+                worker.start();
+
+				int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeKey);
+				if (!player.hasInfiniteMaterials() && xpLevels > 0) {
+					player.giveExperienceLevels(-xpLevels);
+				}
+			}
 		}
 	}
 	
-	public void succeed(ItemStack stack, Player player, int x, int z, int samples, boolean displayCoordinates) {
+	public void succeed(ItemStack stack, Player player, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
 		setFound(stack, x, z, samples, player);
 		setDisplayCoordinates(stack, displayCoordinates);
+		stack.set(NaturesCompass.PREV_POS, prevPos);
+		damageCompass(stack);
 		worker = null;
 	}
-	
+
 	public void fail(ItemStack stack, Player player, int radius, int samples) {
 		setNotFound(stack, player, radius, samples);
 		worker = null;
+	}
+
+	private void damageCompass(ItemStack stack) {
+		int max = ConfigHandler.GENERAL.compassDurability.get();
+		if (max > 0) {
+			int damage = stack.getOrDefault(NaturesCompass.DAMAGE, 0) + 1;
+			stack.set(NaturesCompass.DAMAGE, damage);
+		}
+	}
+
+	public boolean isBroken(ItemStack stack) {
+		int max = ConfigHandler.GENERAL.compassDurability.get();
+		return max > 0 && stack.getOrDefault(NaturesCompass.DAMAGE, 0) >= max;
 	}
 
 	public boolean isActive(ItemStack stack) {

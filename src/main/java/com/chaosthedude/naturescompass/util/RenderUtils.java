@@ -23,6 +23,18 @@ public class RenderUtils {
 		guiGraphics.drawString(font, string, x - font.width(string), y, color);
 	}
 
+	public static int getBackgroundColor(boolean active, boolean hovered) {
+		float state = 2;
+		if (!active) {
+			state = 5;
+		} else if (hovered) {
+			state = 3;
+		}
+		final float f = state / 2 * 0.9F + 0.1F;
+		final int color = (int) (255.0F * f);
+		return color / 2 << 24;
+	}
+
 	public static void drawConfiguredStringOnHUD(GuiGraphics guiGraphics, String string, int xOffset, int yOffset, int color, int relLineOffset) {
 		yOffset += (relLineOffset + ConfigHandler.CLIENT.overlayLineOffset.get()) * 9;
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
