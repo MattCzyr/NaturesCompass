@@ -1,13 +1,16 @@
 package com.chaosthedude.naturescompass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.network.SearchForNextPacket;
 import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.network.TeleportPacket;
 import com.google.common.collect.ArrayListMultimap;
@@ -22,30 +25,36 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class NaturesCompass implements ModInitializer {
-	
+
 	public static final String MODID = "naturescompass";
-	
+
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	
+
 	public static final NaturesCompassItem NATURES_COMPASS_ITEM = new NaturesCompassItem();
-	
+
+	public static boolean synced;
 	public static boolean canTeleport;
+	public static int maxNextSearches;
+	public static boolean infiniteXp;
 	public static List<Identifier> allowedBiomes;
+	public static Map<Identifier, Integer> xpLevelsForAllowedBiomes;
 	public static ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs;
-	
+
 	@Override
 	public void onInitialize() {
 		NaturesCompassConfig.load();
-		
+
 		Registry.register(Registries.ITEM, new Identifier(MODID, "naturescompass"), NATURES_COMPASS_ITEM);
-		
+
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(NATURES_COMPASS_ITEM));
-		
+
 		ServerPlayNetworking.registerGlobalReceiver(SearchPacket.ID, SearchPacket::apply);
+		ServerPlayNetworking.registerGlobalReceiver(SearchForNextPacket.ID, SearchForNextPacket::apply);
 		ServerPlayNetworking.registerGlobalReceiver(TeleportPacket.ID, TeleportPacket::apply);
-		
+
 		allowedBiomes = new ArrayList<Identifier>();
+		xpLevelsForAllowedBiomes = new HashMap<Identifier, Integer>();
 		dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 	}
-	
+
 }

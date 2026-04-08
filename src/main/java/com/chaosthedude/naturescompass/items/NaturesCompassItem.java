@@ -1,8 +1,9 @@
 package com.chaosthedude.naturescompass.items;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.gui.GuiWrapper;
 import com.chaosthedude.naturescompass.network.SyncPacket;
@@ -17,26 +18,33 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 
 public class NaturesCompassItem extends Item {
-	
+
 	private BiomeSearchWorker worker;
-	
+
 	public NaturesCompassItem() {
         super(new FabricItemSettings().maxCount(1));
     }
-	
+
 	@Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		if (!player.isSneaking()) {
+			if (isBroken(player.getStackInHand(hand))) {
+				return TypedActionResult.pass(player.getStackInHand(hand));
+			}
+
 			if (world.isClient) {
 				final ItemStack stack = ItemUtils.getHeldNatureCompass(player);
 				GuiWrapper.openGUI(world, player, stack);
@@ -44,8 +52,11 @@ public class NaturesCompassItem extends Item {
 				final ServerWorld serverWorld = (ServerWorld) world;
 				final ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 				final boolean canTeleport = NaturesCompassConfig.allowTeleport && PlayerUtils.canTeleport(player);
+				final int maxNextSearches = NaturesCompassConfig.maxNextSearches;
+				final boolean hasInfiniteXp = player.isCreative();
 				final List<Identifier> allowedBiomeIDs = BiomeUtils.getAllowedBiomeIDs(world);
-				ServerPlayNetworking.send(serverPlayer, SyncPacket.ID, new SyncPacket(canTeleport, allowedBiomeIDs, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverWorld)));
+				final java.util.Map<Identifier, Integer> xpLevels = BiomeUtils.getXpLevelsForAllowedBiomes(allowedBiomeIDs);
+				ServerPlayNetworking.send(serverPlayer, SyncPacket.ID, new SyncPacket(canTeleport, maxNextSearches, hasInfiniteXp, allowedBiomeIDs, xpLevels, BiomeUtils.getGeneratingDimensionsForAllowedBiomes(serverWorld, allowedBiomeIDs)));
 			}
 		} else {
 			if (worker != null) {
@@ -57,27 +68,142 @@ public class NaturesCompassItem extends Item {
 		return TypedActionResult.pass(player.getStackInHand(hand));
 	}
 
+	@Override
+	public boolean isItemBarVisible(ItemStack stack) {
+		int max = NaturesCompassConfig.compassDurability;
+		if (max > 0) {
+			int damage = getCompassDamage(stack);
+			return damage > 0;
+		}
+		return false;
+	}
+
+	@Override
+	public int getItemBarStep(ItemStack stack) {
+		int max = NaturesCompassConfig.compassDurability;
+		if (max > 0) {
+			int damage = getCompassDamage(stack);
+			return MathHelper.clamp(Math.round(13.0f * (1.0f - (float) damage / max)), 0, 13);
+		}
+		return 13;
+	}
+
+	@Override
+	public int getItemBarColor(ItemStack stack) {
+		int max = NaturesCompassConfig.compassDurability;
+		int damage = getCompassDamage(stack);
+		float f = max > 0 ? (float) damage / max : 0.0f;
+		return MathHelper.hsvToRgb(Math.max(0.0F, (1.0F - f) / 3.0F), 1.0F, 1.0F);
+	}
+
 	public void searchForBiome(ServerWorld world, PlayerEntity player, Identifier biomeID, BlockPos pos, ItemStack stack) {
-		setSearching(stack, biomeID, player);
-		Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeID);
- 		if (optionalBiome.isPresent()) {
- 			if (worker != null) {
- 				worker.stop();
- 			}
- 			worker = new BiomeSearchWorker(world, player, stack, optionalBiome.get(), pos);
- 			worker.start();
- 		}
+		if (!isBroken(stack)) {
+			setSearching(stack, biomeID, player);
+
+			if (worker != null) {
+				worker.stop();
+			}
+			List<BlockPos> prevPos = new ArrayList<BlockPos>();
+			worker = new BiomeSearchWorker(world, player, stack, biomeID, pos, prevPos);
+			worker.start();
+
+			int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeID);
+			if (!player.isCreative() && xpLevels > 0) {
+				player.addExperienceLevels(-xpLevels);
+			}
+		}
 	}
-	
-	public void succeed(ItemStack stack, PlayerEntity player, int x, int z, int samples, boolean displayCoordinates) {
-		setFound(stack, x, z, samples, player);
-		setDisplayCoordinates(stack, displayCoordinates);
+
+	public void searchForNextBiome(ServerWorld world, PlayerEntity player, BlockPos pos, ItemStack stack) {
+		if (!isBroken(stack)) {
+			if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("BiomeID") && stack.getNbt().contains("PrevPos")) {
+				Identifier biomeID = new Identifier(stack.getNbt().getString("BiomeID"));
+				List<BlockPos> prevPos = readPrevPos(stack);
+
+				setSearching(stack, biomeID, player);
+
+				if (worker != null) {
+					worker.stop();
+				}
+				worker = new BiomeSearchWorker(world, player, stack, biomeID, pos, prevPos);
+				worker.start();
+
+				int xpLevels = BiomeUtils.getXpLevelsForBiome(biomeID);
+				if (!player.isCreative() && xpLevels > 0) {
+					player.addExperienceLevels(-xpLevels);
+				}
+			}
+		}
+	}
+
+	public void succeed(ItemStack stack, PlayerEntity player, Identifier biomeID, int x, int z, List<BlockPos> prevPos, int samples, boolean displayCoordinates) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getNbt().putInt("State", CompassState.FOUND.getID());
+			stack.getNbt().putString("BiomeID", biomeID.toString());
+			stack.getNbt().putInt("FoundX", x);
+			stack.getNbt().putInt("FoundZ", z);
+			writePrevPos(stack, prevPos);
+			stack.getNbt().putInt("Samples", samples);
+			stack.getNbt().putBoolean("DisplayCoordinates", displayCoordinates);
+			damageCompass(stack);
+		}
 		worker = null;
 	}
-	
-	public void fail(ItemStack stack, PlayerEntity player, int searchRadius, int samples) {
-		setNotFound(stack, player, searchRadius, samples);
+
+	public void fail(ItemStack stack, PlayerEntity player, Identifier biomeID, int searchRadius, int samples) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getNbt().putInt("State", CompassState.NOT_FOUND.getID());
+			stack.getNbt().putString("BiomeID", biomeID.toString());
+			stack.getNbt().putInt("SearchRadius", searchRadius);
+			stack.getNbt().putInt("Samples", samples);
+		}
 		worker = null;
+	}
+
+	public boolean isBroken(ItemStack stack) {
+		int max = NaturesCompassConfig.compassDurability;
+		return max > 0 && getCompassDamage(stack) >= max;
+	}
+
+	private void damageCompass(ItemStack stack) {
+		int max = NaturesCompassConfig.compassDurability;
+		if (max > 0 && ItemUtils.verifyNBT(stack)) {
+			int damage = getCompassDamage(stack) + 1;
+			stack.getNbt().putInt("CompassDamage", damage);
+		}
+	}
+
+	private int getCompassDamage(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("CompassDamage")) {
+			return stack.getNbt().getInt("CompassDamage");
+		}
+		return 0;
+	}
+
+	private void writePrevPos(ItemStack stack, List<BlockPos> prevPos) {
+		if (ItemUtils.verifyNBT(stack)) {
+			NbtList listTag = new NbtList();
+			for (BlockPos pos : prevPos) {
+				NbtCompound posTag = new NbtCompound();
+				posTag.putInt("X", pos.getX());
+				posTag.putInt("Y", pos.getY());
+				posTag.putInt("Z", pos.getZ());
+				listTag.add(posTag);
+			}
+			stack.getNbt().put("PrevPos", listTag);
+		}
+	}
+
+	private List<BlockPos> readPrevPos(ItemStack stack) {
+		List<BlockPos> prevPos = new ArrayList<BlockPos>();
+		if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("PrevPos", NbtElement.LIST_TYPE)) {
+			NbtList listTag = stack.getNbt().getList("PrevPos", NbtElement.COMPOUND_TYPE);
+			for (int i = 0; i < listTag.size(); i++) {
+				NbtCompound posTag = listTag.getCompound(i);
+				prevPos.add(new BlockPos(posTag.getInt("X"), posTag.getInt("Y"), posTag.getInt("Z")));
+			}
+		}
+		return prevPos;
 	}
 
 	public boolean isActive(ItemStack stack) {
@@ -124,12 +250,12 @@ public class NaturesCompassItem extends Item {
 			stack.getNbt().putInt("State", state.getID());
 		}
 	}
-	
+
 	public void setDisplayCoordinates(ItemStack stack, boolean displayPosition) {
-  		if (ItemUtils.verifyNBT(stack)) {
-  			stack.getNbt().putBoolean("DisplayCoordinates", displayPosition);
-  		}
-  	}
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getNbt().putBoolean("DisplayCoordinates", displayPosition);
+		}
+	}
 
 	public void setFoundBiomeX(ItemStack stack, int x, PlayerEntity player) {
 		if (ItemUtils.verifyNBT(stack)) {
@@ -212,13 +338,13 @@ public class NaturesCompassItem extends Item {
 	public int getDistanceToBiome(PlayerEntity player, ItemStack stack) {
 		return BiomeUtils.getDistanceToBiome(player, getFoundBiomeX(stack), getFoundBiomeZ(stack));
 	}
-	
-	public boolean shouldDisplayCoordinates(ItemStack stack) {
-  		if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("DisplayCoordinates")) {
-  			return stack.getNbt().getBoolean("DisplayCoordinates");
-  		}
 
-  		return true;
-  	}
+	public boolean shouldDisplayCoordinates(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("DisplayCoordinates")) {
+			return stack.getNbt().getBoolean("DisplayCoordinates");
+		}
+
+		return true;
+	}
 
 }

@@ -1,17 +1,14 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "naturescompass:natures_compass"
-    ]
-  },
   "criteria": {
-    "has_compass": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:compass"]
+            "items": [
+              "naturescompass:naturescompass"
+            ]
           }
         ]
       }
@@ -19,14 +16,19 @@
     "has_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "naturescompass:natures_compass"
+        "recipe": "naturescompass:repair_natures_compass"
       }
     }
   },
   "requirements": [
     [
-      "has_compass",
+      "has_item",
       "has_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "naturescompass:repair_natures_compass"
+    ]
+  }
 }

@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class GuiWrapper {
-	
+
 	public static void openGUI(World world, PlayerEntity player, ItemStack stack) {
 		MinecraftClient.getInstance().setScreen(new NaturesCompassScreen(world, player, stack, (NaturesCompassItem) stack.getItem(), NaturesCompass.allowedBiomes));
 	}

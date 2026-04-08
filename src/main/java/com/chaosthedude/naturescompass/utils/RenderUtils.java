@@ -30,4 +30,16 @@ public class RenderUtils {
 		}
 	}
 
+    public static int getBackgroundColor(boolean active, boolean hovered) {
+        float state = 2;
+        if (!active) {
+            state = 5;
+        } else if (hovered) {
+            state = 3;
+        }
+        final float f = state / 2 * 0.9F + 0.1F;
+        final int color = (int) (255.0F * f);
+        return color / 2 << 24;
+    }
+
 }
