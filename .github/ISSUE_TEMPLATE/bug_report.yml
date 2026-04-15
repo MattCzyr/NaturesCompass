@@ -1,0 +1,39 @@
+name: Bug report
+description: Use this template to report a bug.
+labels: "bug"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the bug, including steps to reproduce.
+    validations:
+      required: true
+  - type: input
+    id: minecraft_version
+    attributes:
+      label: Minecraft version
+      placeholder: e.g. 1.20.1
+    validations:
+      required: true
+  - type: input
+    id: mod_version
+    attributes:
+      label: Mod version
+      placeholder: e.g. 3.4.0
+    validations:
+      required: true
+  - type: input
+    id: mod_loader
+    attributes:
+      label: Mod loader
+      placeholder: e.g. NeoForge
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: If applicable to your issue, drag your latest.log file here to upload it, or copy and paste the relevant portion. If you're reporting a game crash, logs are required.
+    validations:
+      required: false

@@ -1,0 +1,10 @@
+name: Question
+description: Use this template to ask a question.
+labels: "question"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true

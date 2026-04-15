@@ -1,0 +1,11 @@
+name: Feature request
+description: Use this template to request a new feature.
+labels: "feature"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the feature. Note that new features are generally only added to the latest Minecraft version.
+    validations:
+      required: true
