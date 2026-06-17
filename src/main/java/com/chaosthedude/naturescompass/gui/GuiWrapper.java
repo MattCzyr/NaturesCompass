@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 public class GuiWrapper {
 	
 	public static void openGUI(Level level, Player player, ItemStack stack) {
-		Minecraft.getInstance().setScreen(new NaturesCompassScreen(level, player, stack, (NaturesCompassItem) stack.getItem(), NaturesCompass.allowedBiomes));
+		Minecraft.getInstance().gui.setScreen(new NaturesCompassScreen(level, player, stack, (NaturesCompassItem) stack.getItem(), NaturesCompass.allowedBiomes));
 	}
 
 }

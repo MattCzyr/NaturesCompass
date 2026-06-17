@@ -6,7 +6,7 @@
     "MinecraftServerMixin"
   ],
   "client": [
-    "GuiMixin",
+    "HudMixin",
     "ItemInHandRendererMixin",
     "RangeSelectItemModelPropertiesMixin"
   ],

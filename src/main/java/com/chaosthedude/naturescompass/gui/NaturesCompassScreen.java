@@ -118,17 +118,17 @@ public class NaturesCompassScreen extends Screen {
 
 	public void searchForBiome(Identifier biomeId) {
 		ClientPlayNetworking.send(new SearchPacket(biomeId, player.blockPosition()));
-		minecraft.setScreen(null);
+		minecraft.gui.setScreen(null);
 	}
 
 	public void searchForNextBiome() {
 		ClientPlayNetworking.send(new SearchForNextPacket());
-		minecraft.setScreen(null);
+		minecraft.gui.setScreen(null);
 	}
 
 	public void teleport() {
 		ClientPlayNetworking.send(new TeleportPacket());
-		minecraft.setScreen(null);
+		minecraft.gui.setScreen(null);
 	}
 
 	public ISorting<?> getSortingCategory() {
@@ -194,7 +194,7 @@ public class NaturesCompassScreen extends Screen {
 		teleportButton.active = false;
 
 		cancelButton = addRenderableWidget(new TransparentButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
-			minecraft.setScreen(null);
+			minecraft.gui.setScreen(null);
 		}));
 
 		searchBox = addRenderableWidget(new TransparentEditBox(font, 130, 10, 140, 20, Component.translatable("string.naturescompass.search").withColor(0xff808080)));

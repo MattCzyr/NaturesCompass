@@ -30,7 +30,7 @@ public class NaturesCompassConfig {
 	public static int sampleSpaceModifier = 16;
 	public static List<String> biomeBlacklist = new ArrayList<String>();
 	public static int defaultXpLevels = 0;
-	public static Map<String, Integer> perBiomeXpLevels;
+	public static Map<String, Integer> perBiomeXpLevels = new HashMap<String, Integer>();;
 	public static int compassDurability = 0;
 
 	public static boolean displayWithChatOpen = true;
