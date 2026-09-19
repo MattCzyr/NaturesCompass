@@ -1,5 +1,6 @@
 ## Version 2.5.1
-#### Fabric 26.2, 26.1
+#### Fabric 26.3, 26.2, 26.1
+- Updated to Fabric 26.3
 - Updated to Fabric 26.2
 - Fixed no biomes appearing in biome selection GUI when perBiomeXpLevels config field was empty
 
@@ -33,7 +34,8 @@
 - Backported Ecuadorian Spanish translations
 
 ## Version 3.3.0
-#### NeoForge 26.2, 26.1, 1.21.11
+#### NeoForge 26.3, 26.2, 26.1, 1.21.11
+- Updated to NeoForge 26.3
 - Updated to NeoForge 26.2
 - Updated to NeoForge 26.1
 - Added config option to add durability to the compass and a recipe to repair a broken compass

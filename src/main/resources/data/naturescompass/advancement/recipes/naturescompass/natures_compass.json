@@ -12,18 +12,11 @@
           }
         ]
       }
-    },
-    "has_recipe": {
-       "trigger": "minecraft:recipe_unlocked",
-       "conditions": {
-         "recipe": "naturescompass:natures_compass"
-       }
-     }
+    }
   },
   "requirements": [
     [
-      "has_item",
-      "has_recipe"
+      "has_item"
     ]
   ],
   "rewards": {
