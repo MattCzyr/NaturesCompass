@@ -7,7 +7,6 @@
   ],
   "client": [
     "HudMixin",
-    "ItemInHandRendererMixin",
     "RangeSelectItemModelPropertiesMixin"
   ],
   "injectors": {

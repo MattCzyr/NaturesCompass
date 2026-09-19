@@ -3,6 +3,7 @@ package com.chaosthedude.naturescompass.worker;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.world.level.biome.BiomeResolver;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
@@ -28,6 +29,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private final int maxSamples;
 	private final int maxRadius;
 	private ServerLevel level;
+	private BiomeResolver biomeResolver;
 	private Identifier biomeId;
 	private BlockPos startPos;
 	private int samples;
@@ -56,6 +58,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
         this.biomeId = biomeId;
 		this.startPos = startPos;
 		this.prevPos = prevPos;
+		biomeResolver = level.getChunkSource().getGenerator().getBiomeSource().createCachingResolver(level.getChunkSource().randomState());
 		x = startPos.getX();
 		z = startPos.getZ();
 		yValues = Mth.outFromOrigin(startPos.getY(), level.getMinY() + 1, level.getMaxY(), 64).toArray();
@@ -109,7 +112,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 			for (int y : yValues) {
 				int sampleY = QuartPos.fromBlock(y);
-				final Biome biomeAtPos = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(sampleX, sampleY, sampleZ, level.getChunkSource().randomState().sampler()).value();
+				final Biome biomeAtPos = biomeResolver.getNoiseBiome(sampleX, sampleY, sampleZ).value();
 				final Optional<Identifier> optionalBiomeAtPosId = BiomeUtils.getIdForBiome(level, biomeAtPos);
 				if (optionalBiomeAtPosId.isPresent() && optionalBiomeAtPosId.get().equals(biomeId)) {
 					if (prevPos.isEmpty()) {
@@ -185,7 +188,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 		boolean foundMatchingBiome = false;
 		for (int y : yValues) {
 			int checkSampleY = QuartPos.fromBlock(y);
-			final Biome biomeAtCheck = level.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(checkSampleX, checkSampleY, checkSampleZ, level.getChunkSource().randomState().sampler()).value();
+			final Biome biomeAtCheck = biomeResolver.getNoiseBiome(checkSampleX, checkSampleY, checkSampleZ).value();
 			final Optional<Identifier> checkBiomeId = BiomeUtils.getIdForBiome(level, biomeAtCheck);
 			if (checkBiomeId.isPresent() && checkBiomeId.get().equals(biomeId)) {
 				foundMatchingBiome = true;
