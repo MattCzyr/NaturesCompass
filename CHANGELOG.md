@@ -1,3 +1,7 @@
+## Version 3.3.1
+#### NeoForge 26.3
+- Fixed crash on startup with NeoForge 26.3.0.37-beta and later
+
 ## Version 2.5.1
 #### Fabric 26.3, 26.2, 26.1
 - Updated to Fabric 26.3

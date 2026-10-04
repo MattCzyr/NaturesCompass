@@ -78,7 +78,7 @@ public class NaturesCompass {
 		modContainer.getEventBus().addListener(this::buildCreativeTabContents);
 		modContainer.getEventBus().addListener(this::registerPayloads);
 
-		modContainer.registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
+		modContainer.registerConfig(ModConfig.Type.LOCAL, ConfigHandler.GENERAL_SPEC);
 		modContainer.registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 
 		NeoForge.EVENT_BUS.register(this);
